@@ -92,7 +92,7 @@ export class ApiClient {
   private getCsrfToken(): string | null {
     if (typeof document === 'undefined') return null;
     const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
+    return match?.[1] ? decodeURIComponent(match[1]) : null;
   }
 
   private async handleUnauthorized(): Promise<void> {
@@ -103,7 +103,7 @@ export class ApiClient {
         await fetch(`${this.config.baseUrl}/admin/auth/me`, {
           credentials: 'include',
           headers: {
-            'X-CSRF-Token': this.getCsrfToken() || '',
+            'X-CSRF-Token': this.getCsrfToken() ?? '',
           },
         });
       } catch {

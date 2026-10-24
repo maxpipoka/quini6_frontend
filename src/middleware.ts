@@ -1,6 +1,12 @@
 import { defineMiddleware } from 'astro:middleware';
 
-const PUBLIC_PATHS = ['/admin/login', '/admin/auth/login', '/admin/auth/me', '/admin/auth/logout', '/admin/auth/change-password'];
+const PUBLIC_PATHS = [
+  '/admin/login',
+  '/admin/auth/login',
+  '/admin/auth/me',
+  '/admin/auth/logout',
+  '/admin/auth/change-password',
+];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;
@@ -18,8 +24,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     if (!sessionCookie) {
       // Redirect to login with redirect parameter
-      const redirectUrl = new URL('/admin/login', url.origin);
-      redirectUrl.searchParams.set('redirect', pathname + url.search);
+      const redirectUrl = `/admin/login?redirect=${encodeURIComponent(pathname + url.search)}`;
       return redirect(redirectUrl, 302);
     }
   }

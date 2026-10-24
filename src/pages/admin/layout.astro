@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { Sidebar } from '../../components/admin/Sidebar.tsx';
 ---
 
 <Layout title="Admin - Quini 6">
@@ -55,9 +56,9 @@ import Layout from '../../layouts/Layout.astro';
 
     <main class="admin-main">
       <header class="admin-header">
-        <h1 class="text-xl font-display font-semibold text-text-primary">Administración</h1>
+        <h1 class="font-display text-xl font-semibold text-text-primary">Administración</h1>
         <div class="flex items-center gap-4">
-          <span class="text-sm text-text-secondary hidden sm:block" id="user-email"></span>
+          <span class="hidden text-sm text-text-secondary sm:block" id="user-email"></span>
         </div>
       </header>
       <div class="admin-content">

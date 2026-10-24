@@ -34,7 +34,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         method: 'POST',
         credentials: 'include',
         headers: {
-          'X-CSRF-Token': getCsrfToken() || '',
+          'X-CSRF-Token': getCsrfToken() ?? '',
         },
       });
       if (response.ok) {
@@ -47,7 +47,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
 
   function getCsrfToken(): string | null {
     const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
+    return match?.[1] ? decodeURIComponent(match[1]) : null;
   }
 
   return (
@@ -56,18 +56,21 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
       style={{ width: collapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)' }}
       aria-label="Navegación principal"
     >
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto" style={{ minWidth: 'var(--sidebar-collapsed-width)' }}>
-        <ul className="space-y-1" role="list">
+      <nav
+        className="flex-1 space-y-1 overflow-y-auto p-4"
+        style={{ minWidth: 'var(--sidebar-collapsed-width)' }}
+      >
+        <ul className="space-y-1">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
             <li key={href}>
               <a
                 href={href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface transition-colors ${
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
                   window.location.pathname === href ? 'bg-primary/10 text-primary' : ''
                 }`}
                 title={collapsed ? label : undefined}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                <Icon className="size-5 flex-shrink-0" aria-hidden="true" />
                 {!collapsed && <span className="font-medium">{label}</span>}
               </a>
             </li>
@@ -75,29 +78,29 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-border">
+      <div className="border-t border-border p-4">
         {!collapsed && (
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-text-secondary hover:text-error hover:bg-error/10 transition-colors"
+            className="hover:text-error hover:bg-error/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors"
           >
-            <LogOut className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+            <LogOut className="size-5 flex-shrink-0" aria-hidden="true" />
             <span className="font-medium">Cerrar sesión</span>
           </button>
         )}
 
         <button
           onClick={toggle}
-          className={`flex items-center justify-center w-full px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface transition-colors ${
+          className={`flex w-full items-center justify-center rounded-lg px-3 py-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
             collapsed ? 'ml-auto' : ''
           }`}
           aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
           aria-expanded={!collapsed}
         >
           {collapsed ? (
-            <ChevronRight className="w-5 h-5" aria-hidden="true" />
+            <ChevronRight className="size-5" aria-hidden="true" />
           ) : (
-            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+            <ChevronLeft className="size-5" aria-hidden="true" />
           )}
         </button>
       </div>

@@ -1,0 +1,65 @@
+---
+import AdminLayout from '@pages/admin/layout.astro';
+import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
+---
+
+<AdminLayout title="Crear Sorteo - Admin Quini 6">
+  <div class="mx-auto max-w-4xl">
+    <div class="mb-6">
+      <h1 class="font-display text-2xl font-bold text-text-primary">Crear Nuevo Sorteo</h1>
+      <p class="mt-1 text-text-secondary">
+        Complete los 4 pasos para crear un sorteo con todas sus modalidades
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-border bg-surface-elevated p-6">
+      <DrawFormWizard
+        client:visible
+        isEditing={false}
+        onSubmit={async (data) => {
+          const response = await fetch('/api/admin/draws', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+              'X-CSRF-Token': window.getCsrfToken?.() ?? '',
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const errorData: unknown = await response.json();
+            // Manual type check instead of type guard
+            const isValidError =
+              errorData !== null &&
+              typeof errorData === 'object' &&
+              'message' in errorData &&
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              typeof (errorData as Record<string, unknown>).message === 'string';
+            let message = 'Error al crear sorteo';
+            if (isValidError) {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+              message = String((errorData as Record<string, unknown>).message);
+            }
+            throw new Error(message);
+          }
+
+          window.location.href = '/admin/draws';
+        }}
+        onCancel={() => {
+          window.location.href = '/admin/draws';
+        }}
+      />
+    </div>
+  </div>
+
+  <script>
+    function getCsrfToken(): string | null {
+      const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+    window.getCsrfToken = getCsrfToken;
+  </script>
+</AdminLayout>

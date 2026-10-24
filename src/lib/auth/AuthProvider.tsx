@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { getCsrfToken } from './csrf';
 import type { AuthContextValue, User, LoginCredentials, ChangePasswordInput } from './types';
 
@@ -20,12 +20,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const response = await fetch('/api/admin/auth/me', {
           credentials: 'include',
           headers: {
-            'X-CSRF-Token': getCsrfToken() || '',
+            'X-CSRF-Token': getCsrfToken() ?? '',
           },
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as { user: User };
           setUser(data.user);
         } else {
           setUser(null);
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [refresh]);
 
   const login = useCallback(async (creds: LoginCredentials) => {
@@ -51,17 +51,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': getCsrfToken() || '',
+        'X-CSRF-Token': getCsrfToken() ?? '',
       },
       body: JSON.stringify(creds),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
+      const error = (await response.json()) as { message?: string };
+      throw new Error(error.message ?? 'Login failed');
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as { user: User };
     setUser(data.user);
   }, []);
 
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'X-CSRF-Token': getCsrfToken() || '',
+        'X-CSRF-Token': getCsrfToken() ?? '',
       },
     });
     setUser(null);
@@ -82,14 +82,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': getCsrfToken() || '',
+        'X-CSRF-Token': getCsrfToken() ?? '',
       },
       body: JSON.stringify(data),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Change password failed');
+      const error = (await response.json()) as { message?: string };
+      throw new Error(error.message ?? 'Change password failed');
     }
   }, []);
 
