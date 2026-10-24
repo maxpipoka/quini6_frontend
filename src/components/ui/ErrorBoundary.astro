@@ -1,0 +1,98 @@
+---
+/**
+ * ErrorBoundary - Astro component for catching errors in React/Preact islands
+ * Uses Astro's built-in error handling for islands
+ */
+
+interface Props {
+  fallback?: string;
+}
+
+const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.props;
+---
+
+<div class="error-boundary" data-error-boundary>
+  <slot />
+
+  <!-- Error fallback UI (shown when island errors) -->
+  <template data-error-fallback>
+    <div class="card-elevated p-6 text-center" role="alert">
+      <svg
+        class="mx-auto mb-4 size-12 text-error-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+        ></path>
+      </svg>
+      <h2 class="mb-2 text-heading-md text-text-primary">Error en el componente</h2>
+      <p class="mb-4 text-text-secondary">{fallback}</p>
+      <button
+        type="button"
+        class="rounded-lg bg-primary-600 px-4 py-2 text-white transition-colors hover:bg-primary-700"
+        onclick="window.location.reload()"
+      >
+        Recargar página
+      </button>
+    </div>
+  </template>
+</div>
+
+<!-- Client-side error handling for hydration errors -->
+<script is:inline>
+  // Global error handler for island hydration errors
+  window.addEventListener(
+    'error',
+    (event) => {
+      // Check if error is from an island
+      const errorBoundary = document.querySelector('[data-error-boundary]');
+      if (errorBoundary && event.target instanceof HTMLElement) {
+        const islandRoot = event.target.closest('[data-astro-island]');
+        if (islandRoot) {
+          event.preventDefault();
+          showErrorFallback(errorBoundary, event.error?.message || 'Error desconocido');
+        }
+      }
+    },
+    true
+  );
+
+  window.addEventListener('unhandledrejection', (event) => {
+    const errorBoundary = document.querySelector('[data-error-boundary]');
+    if (errorBoundary) {
+      const islandRoot = document.querySelector('[data-astro-island]');
+      if (islandRoot) {
+        event.preventDefault();
+        showErrorFallback(errorBoundary, event.reason?.message || 'Error asíncrono');
+      }
+    }
+  });
+
+  function showErrorFallback(boundary: HTMLElement, message: string) {
+    const fallback = boundary.querySelector('[data-error-fallback]');
+    if (fallback) {
+      const content = fallback.content.cloneNode(true) as DocumentFragment;
+      const messageEl = content.querySelector('p');
+      if (messageEl) {
+        messageEl.textContent = message;
+      }
+      // Replace island content with fallback
+      const island = boundary.querySelector('[data-astro-island]');
+      if (island) {
+        island.replaceWith(content);
+      }
+    }
+  }
+</script>
+
+<style is:global>
+  .error-boundary {
+    display: contents;
+  }
+</style>

@@ -1,0 +1,242 @@
+---
+/**
+ * Header - Site header with logo, navigation, and mobile menu
+ * Features: Logo (6 badge + "Quini 6 Estadísticas"), Nav links, Mobile hamburger menu (React island)
+ * Uses design tokens from global.css
+ */
+
+import NumberBall from '../draws/NumberBall.tsx';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+---
+
+<header class="sticky top-0 z-sticky border-b border-border bg-surface" role="banner">
+  <div class="container-page">
+    <div class="flex h-16 items-center justify-between md:h-20">
+      <!-- Logo -->
+      <a
+        href="/"
+        class="flex items-center gap-2 text-xl font-bold text-text-primary transition-opacity hover:opacity-80"
+        aria-label="Quini 6 Estadísticas - Inicio"
+      >
+        <NumberBall number={6} size="lg" variant="primary" class="shrink-0" />
+        <span>Quini 6 Estadísticas</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav
+        class="hidden items-center gap-6 md:flex"
+        role="navigation"
+        aria-label="Navegación principal"
+      >
+        <a
+          href="/"
+          class={`font-medium transition-colors ${
+            currentPath === '/'
+              ? 'text-text-primary'
+              : 'text-text-secondary hover:text-text-primary'
+          }`}
+          aria-current={currentPath === '/' ? 'page' : undefined}
+        >
+          Inicio
+        </a>
+        <a
+          href="/sorteos"
+          class={`font-medium transition-colors ${
+            currentPath.startsWith('/sorteos')
+              ? 'text-text-primary'
+              : 'text-text-secondary hover:text-text-primary'
+          }`}
+          aria-current={currentPath.startsWith('/sorteos') ? 'page' : undefined}
+        >
+          Historial de sorteos
+        </a>
+        <a
+          href="/buscar"
+          class={`font-medium transition-colors ${
+            currentPath === '/buscar'
+              ? 'text-text-primary'
+              : 'text-text-secondary hover:text-text-primary'
+          }`}
+          aria-current={currentPath === '/buscar' ? 'page' : undefined}
+        >
+          Buscar combinación
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <!-- Theme Toggle -->
+        <button
+          id="theme-toggle"
+          type="button"
+          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary"
+          aria-label="Cambiar tema"
+          aria-pressed="false"
+        >
+          <svg
+            class="size-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary md:hidden"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <svg
+            class="size-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobile-menu"
+      class="hidden border-t border-border py-4 md:hidden"
+      role="navigation"
+      aria-label="Menú móvil"
+    >
+      <nav class="flex flex-col gap-2">
+        <a
+          href="/"
+          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+            currentPath === '/'
+              ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
+              : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
+          }`}
+          aria-current={currentPath === '/' ? 'page' : undefined}
+        >
+          Inicio
+        </a>
+        <a
+          href="/sorteos"
+          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+            currentPath.startsWith('/sorteos')
+              ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
+              : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
+          }`}
+          aria-current={currentPath.startsWith('/sorteos') ? 'page' : undefined}
+        >
+          Historial de sorteos
+        </a>
+        <a
+          href="/buscar"
+          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+            currentPath === '/buscar'
+              ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
+              : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
+          }`}
+          aria-current={currentPath === '/buscar' ? 'page' : undefined}
+        >
+          Buscar combinación
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    if (themeToggle) {
+      const updateThemeIcon = (isDark: boolean) => {
+        themeToggle.innerHTML = isDark
+          ? '<svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>'
+          : '<svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+      };
+
+      updateThemeIcon(document.documentElement.getAttribute('data-theme') === 'dark');
+
+      themeToggle.addEventListener('click', () => {
+        const html = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        updateThemeIcon(!isDark);
+      });
+    }
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('hidden');
+        menuToggle.setAttribute('aria-expanded', String(!isOpen));
+        menuToggle.setAttribute('aria-label', isOpen ? 'Abrir menú' : 'Cerrar menú');
+      });
+
+      // Close menu when clicking a link
+      mobileMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          menuToggle.setAttribute('aria-label', 'Abrir menú');
+        });
+      });
+    }
+  });
+</script>
+
+<style>
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    header {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+    nav a {
+      color: LinkText;
+      border-color: transparent;
+    }
+    nav a:hover,
+    nav a:focus {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+    nav a[aria-current='page'] {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    button {
+      transition: none;
+    }
+  }
+</style>

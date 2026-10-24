@@ -1,0 +1,313 @@
+---
+/**
+ * Modal - Accessible modal dialog component
+ * Features: open/close, title, size (sm/md/lg), backdrop, focus trap, escape to close
+ * Uses design tokens from global.css (CSS custom properties)
+ * Minimal client-side JS for focus management
+ */
+
+type ModalSize = 'sm' | 'md' | 'lg';
+
+interface Props {
+  isOpen: boolean;
+  title?: string;
+  size?: ModalSize;
+  closeOnBackdrop?: boolean;
+  closeOnEscape?: boolean;
+  onClose?: () => void;
+  'aria-describedby'?: string;
+  'aria-labelledby'?: string;
+}
+
+const {
+  isOpen,
+  title,
+  size = 'md',
+  closeOnBackdrop = true,
+  closeOnEscape = true,
+  // onClose is handled via custom event in client script
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onClose: _onClose,
+  'aria-describedby': ariaDescribedBy,
+  // aria-labelledby is handled via aria-labelledby={titleId} in the template
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  'aria-labelledby': _ariaLabelledBy,
+  // rest is not needed as we spread on the root element
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ..._rest
+} = Astro.props;
+
+const modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
+const titleId = title ? `${modalId}-title` : undefined;
+
+// Size classes
+const sizeClasses = {
+  sm: 'max-w-sm',
+  md: 'max-w-lg',
+  lg: 'max-w-2xl',
+};
+
+if (!isOpen) {
+  // Render nothing when closed - the portal will handle mounting
+  // But we need to render the portal target
+}
+---
+
+{
+  isOpen && (
+    <div
+      class="fixed inset-0 z-modal-backdrop flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={ariaDescribedBy}
+      data-modal-root
+      data-close-on-backdrop={closeOnBackdrop}
+      data-close-on-escape={closeOnEscape}
+    >
+      {/* Backdrop */}
+      <div
+        class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200"
+        aria-hidden="true"
+        data-modal-backdrop
+      />
+
+      {/* Modal Panel */}
+      <div
+        id={modalId}
+        class={`
+        relative w-full ${sizeClasses[size]}
+        fade-in zoom-in-95 max-h-[90vh]
+        transform animate-in overflow-hidden rounded-xl
+        bg-surface shadow-xl transition-all
+        duration-200 ease-out
+        focus:outline-none
+      `}
+        data-modal-panel
+      >
+        {title && (
+          <header class="flex items-center justify-between border-b border-border px-6 py-4">
+            <h2 id={titleId} class="text-heading-md font-semibold text-text-primary">
+              {title}
+            </h2>
+            <button
+              type="button"
+              class="rounded-lg p-1 text-text-muted transition-colors hover:bg-neutral-100 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 dark:hover:bg-neutral-800"
+              aria-label="Cerrar modal"
+              data-modal-close
+            >
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </header>
+        )}
+
+        <div class="max-h-[calc(90vh-80px)] overflow-y-auto px-6 py-4" data-modal-content>
+          <slot />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script is:inline>
+  // Focus trap implementation
+  let previouslyFocusedElement: HTMLElement | null = null;
+  let focusableElements: HTMLElement[] = [];
+
+  function getFocusableElements(container: HTMLElement): HTMLElement[] {
+    const selector = [
+      'button:not([disabled]):not([tabindex="-1"])',
+      '[href]:not([disabled]):not([tabindex="-1"])',
+      'input:not([disabled]):not([tabindex="-1"])',
+      'select:not([disabled]):not([tabindex="-1"])',
+      'textarea:not([disabled]):not([tabindex="-1"])',
+      '[tabindex]:not([tabindex="-1"])',
+      '[contenteditable="true"]:not([tabindex="-1"])',
+    ].join(', ');
+
+    return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter(
+      (el) => el.offsetParent !== null
+    ); // Only visible elements
+  }
+
+  function trapFocus(event: KeyboardEvent) {
+    if (event.key !== 'Tab') return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey) {
+      if (document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement?.focus();
+      }
+    } else {
+      if (document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement?.focus();
+      }
+    }
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    const modalRoot = document.querySelector('[data-modal-root]');
+    if (!modalRoot) return;
+
+    const closeOnEscape = modalRoot.dataset.closeOnEscape === 'true';
+    if (closeOnEscape && event.key === 'Escape') {
+      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+      closeBtn?.click();
+    }
+
+    trapFocus(event);
+  }
+
+  function handleBackdropClick(event: MouseEvent) {
+    const modalRoot = document.querySelector('[data-modal-root]');
+    if (!modalRoot) return;
+
+    const closeOnBackdrop = modalRoot.dataset.closeOnBackdrop === 'true';
+    if (!closeOnBackdrop) return;
+
+    const panel = modalRoot.querySelector('[data-modal-panel]');
+    if (panel && !panel.contains(event.target as Node)) {
+      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+      closeBtn?.click();
+    }
+  }
+
+  function initializeModal() {
+    const modalRoot = document.querySelector('[data-modal-root]');
+    if (!modalRoot) return;
+
+    // Store previously focused element
+    previouslyFocusedElement = document.activeElement as HTMLElement;
+
+    // Get focusable elements
+    const panel = modalRoot.querySelector('[data-modal-panel]');
+    if (panel) {
+      focusableElements = getFocusableElements(panel as HTMLElement);
+
+      // Focus first focusable element or close button
+      const firstFocusable = focusableElements[0];
+      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+      (firstFocusable || closeBtn)?.focus();
+    }
+
+    // Add event listeners
+    document.addEventListener('keydown', handleKeydown);
+    modalRoot.addEventListener('click', handleBackdropClick);
+
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cleanupModal() {
+    document.removeEventListener('keydown', handleKeydown);
+    const modalRoot = document.querySelector('[data-modal-root]');
+    modalRoot?.removeEventListener('click', handleBackdropClick);
+
+    // Restore body scroll
+    document.body.style.overflow = '';
+
+    // Return focus to previously focused element
+    previouslyFocusedElement?.focus();
+    previouslyFocusedElement = null;
+    focusableElements = [];
+  }
+
+  // Initialize on mount
+  initializeModal();
+
+  // Handle close button
+  const closeBtn = document.querySelector('[data-modal-close]');
+  closeBtn?.addEventListener('click', () => {
+    cleanupModal();
+    // Dispatch custom event for parent to handle
+    document.dispatchEvent(new CustomEvent('modal-close'));
+  });
+
+  // Listen for external close requests
+  window.addEventListener(
+    'modal-close-request',
+    () => {
+      cleanupModal();
+    },
+    { once: true }
+  );
+</script>
+
+<style>
+  /* Animation keyframes */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoom-in-95 {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-in {
+    animation:
+      fade-in 0.2s ease-out,
+      zoom-in-95 0.2s ease-out;
+  }
+
+  /* Backdrop animation */
+  [data-modal-backdrop] {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  /* Focus visible for modal elements */
+  [data-modal-panel] *:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    [data-modal-backdrop] {
+      background-color: Canvas;
+      opacity: 0.8;
+    }
+    [data-modal-panel] {
+      border: 2px solid CanvasText;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-in,
+    [data-modal-backdrop] {
+      animation: none;
+    }
+    [data-modal-panel] {
+      transition: none;
+    }
+  }
+</style>

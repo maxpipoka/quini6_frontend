@@ -1,0 +1,192 @@
+---
+/**
+ * Footer - Site footer with copyright, admin link, and legal links
+ * Features: Copyright, admin link (discrete), legal links
+ * Uses design tokens from global.css
+ */
+
+interface Props {
+  adminHref?: string;
+  showAdmin?: boolean;
+}
+
+const { adminHref = '/admin', showAdmin = false } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border bg-surface" role="contentinfo">
+  <div class="container-page py-12 md:py-16">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
+      <!-- Brand -->
+      <div class="md:col-span-2 lg:col-span-2">
+        <a
+          href="/"
+          class="mb-4 flex items-center gap-2 text-xl font-bold text-text-primary"
+          aria-label="Quini 6 Estadísticas - Inicio"
+        >
+          <svg
+            class="size-8 text-primary-600"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
+            ></path>
+          </svg>
+          <span>Quini 6</span>
+        </a>
+        <p class="max-w-xs text-text-secondary">
+          Estadísticas históricas oficiales del Quini 6. Consulte sorteos pasados, busque
+          combinaciones y analice frecuencias de números.
+        </p>
+      </div>
+
+      <!-- Navigation Links -->
+      <div>
+        <h3 class="mb-4 font-semibold text-text-primary">Navegación</h3>
+        <nav aria-label="Enlaces de navegación del pie de página">
+          <ul class="space-y-2">
+            <li>
+              <a href="/" class="text-text-secondary transition-colors hover:text-text-primary">
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a
+                href="/sorteos"
+                class="text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Historial de sorteos
+              </a>
+            </li>
+            <li>
+              <a
+                href="/buscar"
+                class="text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Buscar combinación
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Legal Links -->
+      <div>
+        <h3 class="mb-4 font-semibold text-text-primary">Legal</h3>
+        <nav aria-label="Enlaces legales">
+          <ul class="space-y-2">
+            <li>
+              <a
+                href="/privacidad"
+                class="text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Política de Privacidad
+              </a>
+            </li>
+            <li>
+              <a
+                href="/terminos"
+                class="text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Términos de Uso
+              </a>
+            </li>
+            <li>
+              <a
+                href="/cookies"
+                class="text-text-secondary transition-colors hover:text-text-primary"
+              >
+                Política de Cookies
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div
+      class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row"
+    >
+      <p class="text-center text-sm text-text-muted md:text-left">
+        © {currentYear} Quini 6 Estadísticas. Datos oficiales de la Lotería de Santa Fe.
+      </p>
+      <div class="flex items-center gap-6">
+        {
+          showAdmin && (
+            <a
+              href={adminHref}
+              class="text-xs text-text-muted transition-colors hover:text-text-primary"
+              aria-label="Acceso administrador"
+            >
+              Admin
+            </a>
+          )
+        }
+        <a
+          href="https://twitter.com/quini6stats"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-text-muted transition-colors hover:text-text-primary"
+          aria-label="Twitter"
+        >
+          <svg class="size-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 9.24-3.308.88-8.502-9.24L6.02 20.23h-3.308l7.227-8.26-8.502-9.24 3.308-.88 8.502 9.24 1.71-2.14-1.71-.72z"
+            ></path>
+          </svg>
+        </a>
+        <a
+          href="https://github.com/quini6/stats"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-text-muted transition-colors hover:text-text-primary"
+          aria-label="GitHub"
+        >
+          <svg class="size-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"
+            ></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    footer {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+    footer a {
+      color: LinkText;
+    }
+    footer a:hover,
+    footer a:focus {
+      color: HighlightText;
+    }
+    footer svg {
+      color: LinkText;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    footer a {
+      transition: none;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    footer {
+      display: none !important;
+    }
+  }
+</style>

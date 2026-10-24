@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Header, Footer, Container } from '../components/layout';
+import Button from '../components/ui/Button.astro';
+---
+
+<Layout
+  title="Página no encontrada"
+  description="La página que busca no existe. Vuelva al inicio para consultar los sorteos del Quini 6."
+  noIndex={true}
+  noFollow={true}
+>
+  <Header currentPath="/404" />
+
+  <main id="main-content" class="flex flex-1 items-center" role="main">
+    <Container maxWidth="md" class="py-16 text-center">
+      <p class="font-display text-6xl font-bold text-primary-600">404</p>
+      <h1 class="font-display mt-4 text-display-sm text-text-primary">Página no encontrada</h1>
+      <p class="mt-2 text-text-secondary">
+        La página que busca no existe o fue movida. Puede volver al inicio y consultar el historial
+        de sorteos.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <Button href="/" variant="primary">Volver al inicio</Button>
+      </div>
+    </Container>
+  </main>
+
+  <Footer />
+</Layout>

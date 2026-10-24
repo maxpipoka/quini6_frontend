@@ -1,0 +1,311 @@
+---
+/**
+ * Pagination - Server-rendered pagination with real links
+ * Renders anchors so navigation works without client JS and stays SEO-friendly.
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+interface Props {
+  page: number; // 1-based
+  totalPages: number;
+  buildHref: (page: number) => string;
+  showFirstLast?: boolean;
+  showPrevNext?: boolean;
+  maxPageButtons?: number;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+}
+
+const {
+  page,
+  totalPages,
+  buildHref,
+  showFirstLast = true,
+  showPrevNext = true,
+  maxPageButtons = 5,
+  'aria-label': ariaLabel = 'Paginación',
+  'aria-describedby': ariaDescribedBy,
+  ...rest
+} = Astro.props;
+
+const paginationId = `pagination-${Math.random().toString(36).slice(2, 9)}`;
+
+const linkClass =
+  'inline-flex items-center justify-center rounded-lg border border-border bg-surface p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 dark:hover:bg-neutral-800';
+const disabledLinkClass =
+  'inline-flex items-center justify-center rounded-lg border border-border bg-surface p-2 text-text-secondary opacity-50';
+
+// Calculate visible page range
+function getVisiblePages(
+  currentPage: number,
+  total: number,
+  maxButtons: number
+): (number | 'ellipsis')[] {
+  if (total <= maxButtons) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const half = Math.floor(maxButtons / 2);
+  let start = Math.max(2, currentPage - half);
+  let end = Math.min(total - 1, currentPage + half);
+
+  if (end - start + 1 < maxButtons - 2) {
+    if (start === 2) {
+      end = start + maxButtons - 3;
+    } else if (end === total - 1) {
+      start = end - maxButtons + 3;
+    }
+  }
+
+  const pages: (number | 'ellipsis')[] = [1];
+
+  if (start > 2) {
+    pages.push('ellipsis');
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (end < total - 1) {
+    pages.push('ellipsis');
+  }
+
+  if (total > 1) {
+    pages.push(total);
+  }
+
+  return pages;
+}
+
+const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
+---
+
+<nav
+  id={paginationId}
+  class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+  aria-label={ariaLabel}
+  aria-describedby={ariaDescribedBy}
+  {...rest}
+>
+  <div class="flex items-center gap-1">
+    {
+      showFirstLast &&
+        (page > 1 ? (
+          <a href={buildHref(1)} class={linkClass} aria-label="Primera página">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+              />
+            </svg>
+          </a>
+        ) : (
+          <span class={disabledLinkClass} aria-disabled="true" aria-label="Primera página">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+              />
+            </svg>
+          </span>
+        ))
+    }
+
+    {
+      showPrevNext &&
+        (page > 1 ? (
+          <a href={buildHref(page - 1)} class={linkClass} aria-label="Página anterior">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </a>
+        ) : (
+          <span class={disabledLinkClass} aria-disabled="true" aria-label="Página anterior">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </span>
+        ))
+    }
+
+    <div class="flex items-center gap-0.5" role="group" aria-label="Seleccionar página">
+      {
+        visiblePages.map((pageNum) =>
+          pageNum === 'ellipsis' ? (
+            <span class="px-3 py-2 text-sm text-text-muted" aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <a
+              href={buildHref(pageNum)}
+              class={`
+                inline-flex h-10 min-w-[40px] items-center justify-center rounded-lg px-3 py-2 text-sm font-medium
+                transition-colors focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2
+                ${
+                  pageNum === page
+                    ? 'bg-primary-600 text-white hover:bg-primary-700'
+                    : 'bg-surface text-text-primary hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                }
+              `}
+              aria-label={`Página ${pageNum}`}
+              aria-current={pageNum === page ? 'page' : undefined}
+            >
+              {pageNum}
+            </a>
+          )
+        )
+      }
+    </div>
+
+    {
+      showPrevNext &&
+        (page < totalPages ? (
+          <a href={buildHref(page + 1)} class={linkClass} aria-label="Página siguiente">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+        ) : (
+          <span class={disabledLinkClass} aria-disabled="true" aria-label="Página siguiente">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </span>
+        ))
+    }
+
+    {
+      showFirstLast &&
+        (page < totalPages ? (
+          <a href={buildHref(totalPages)} class={linkClass} aria-label="Última página">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+        ) : (
+          <span class={disabledLinkClass} aria-disabled="true" aria-label="Última página">
+            <svg
+              class="size-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+              />
+            </svg>
+          </span>
+        ))
+    }
+  </div>
+
+  <div class="whitespace-nowrap text-sm text-text-secondary" aria-live="polite">
+    Página {page} de {totalPages}
+  </div>
+</nav>
+
+<style>
+  a:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (forced-colors: active) {
+    a {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+    a:hover {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+    a[aria-current='page'] {
+      background-color: Highlight;
+      color: HighlightText;
+      border-color: HighlightText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a {
+      transition: none;
+    }
+  }
+</style>

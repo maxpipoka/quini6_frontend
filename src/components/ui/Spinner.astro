@@ -1,0 +1,131 @@
+---
+/**
+ * Spinner - Loading spinner component
+ * Sizes: sm, md, lg
+ * Display: inline, block
+ * Color variants: primary, secondary, accent, white
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+type SpinnerSize = 'sm' | 'md' | 'lg';
+type SpinnerDisplay = 'inline' | 'block';
+type SpinnerColor = 'primary' | 'secondary' | 'accent' | 'white';
+
+interface Props {
+  size?: SpinnerSize;
+  display?: SpinnerDisplay;
+  color?: SpinnerColor;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+}
+
+const {
+  size = 'md',
+  display = 'inline',
+  color = 'primary',
+  'aria-label': ariaLabel = 'Cargando',
+  'aria-describedby': ariaDescribedBy,
+  ...rest
+} = Astro.props;
+
+// Size classes (width/height)
+const sizeClasses = {
+  sm: 'w-4 h-4',
+  md: 'w-8 h-8',
+  lg: 'w-12 h-12',
+};
+
+// Color classes (border colors)
+const colorClasses = {
+  primary: 'border-primary-600 border-t-transparent',
+  secondary: 'border-secondary-600 border-t-transparent',
+  accent: 'border-accent-600 border-t-transparent',
+  white: 'border-white border-t-transparent',
+};
+
+// Display classes
+const displayClasses = {
+  inline: 'inline-block',
+  block: 'block mx-auto',
+};
+
+const combinedClasses = `${displayClasses[display]} ${sizeClasses[size]} ${colorClasses[color]}`;
+---
+
+<div
+  class={combinedClasses}
+  role="status"
+  aria-label={ariaLabel}
+  aria-describedby={ariaDescribedBy}
+  aria-busy="true"
+  {...rest}
+>
+  <svg
+    class="animate-spin"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+    ></circle>
+    <path
+      class="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+  <span class="visually-hidden">{ariaLabel}</span>
+</div>
+
+<style>
+  /* Animation */
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Ensure proper sizing */
+  .animate-spin {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    .animate-spin circle,
+    .animate-spin path {
+      forced-color-adjust: none;
+      stroke: CanvasText;
+    }
+    .animate-spin circle {
+      stroke-opacity: 0.25;
+    }
+    .animate-spin path {
+      stroke-opacity: 0.75;
+      fill: CanvasText;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-spin {
+      animation: none;
+    }
+    /* Show a static indicator instead */
+    .animate-spin::after {
+      content: '⏳';
+      display: block;
+      text-align: center;
+      font-size: 1em;
+    }
+  }
+</style>
