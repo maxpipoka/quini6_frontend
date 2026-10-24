@@ -87,6 +87,34 @@ export function extractRequestId(headers: Headers): string {
 export class ApiClient {
   private client: KyInstance;
   private config: Required<ApiClientConfig>;
+  private refreshPromise: Promise<void> | null = null;
+
+  private getCsrfToken(): string | null {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  private async handleUnauthorized(): Promise<void> {
+    if (this.refreshPromise) return this.refreshPromise;
+
+    this.refreshPromise = (async () => {
+      try {
+        await fetch(`${this.config.baseUrl}/admin/auth/me`, {
+          credentials: 'include',
+          headers: {
+            'X-CSRF-Token': this.getCsrfToken() || '',
+          },
+        });
+      } catch {
+        // Refresh failed - will be handled by auth context
+      } finally {
+        this.refreshPromise = null;
+      }
+    })();
+
+    return this.refreshPromise;
+  }
 
   constructor(config: ApiClientConfig) {
     this.config = {
@@ -105,11 +133,32 @@ export class ApiClient {
       prefixUrl: this.config.baseUrl,
       timeout: this.config.timeout,
       headers: this.config.defaultHeaders,
+      credentials: 'include',
       hooks: {
         beforeRequest: [
           (request) => {
             // Add request ID to all requests
             request.headers.set('X-Request-ID', generateRequestId());
+
+            // Inject CSRF token for mutating requests
+            const method = request.method.toUpperCase();
+            if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+              const csrfToken = this.getCsrfToken();
+              if (csrfToken) {
+                request.headers.set('X-CSRF-Token', csrfToken);
+              }
+            }
+          },
+        ],
+        afterResponse: [
+          async (_request, _options, response) => {
+            // Handle 401 - trigger silent refresh
+            if (response.status === 401) {
+              await this.handleUnauthorized();
+              // Note: retry logic would need to be handled at a higher level
+              // since ky doesn't support retry after afterResponse easily
+            }
+            return response;
           },
         ],
         beforeError: [
