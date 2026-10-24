@@ -1,0 +1,7 @@
+:root {
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 72px;
+  --modal-z-index: 1000;
+  --admin-header-height: 64px;
+  --admin-transition: 0.2s ease;
+}

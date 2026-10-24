@@ -1,0 +1,39 @@
+---
+/**
+ * Container - Responsive wrapper with max-width and padding
+ * Features: max-w-[1152px] mx-auto px-4 responsive wrapper, Slot for content
+ * Uses design tokens from global.css
+ */
+
+interface Props {
+  /** Maximum width of the container */
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  /** Custom CSS class */
+  class?: string;
+}
+
+const { maxWidth = 'lg', class: customClass = '' } = Astro.props;
+
+const maxWidthClasses = {
+  sm: 'max-w-3xl', // ~48rem / 768px
+  md: 'max-w-5xl', // ~64rem / 1024px
+  lg: 'max-w-[1152px]', // Custom 1152px
+  xl: 'max-w-7xl', // ~80rem / 1280px
+  full: 'max-w-full',
+};
+
+const containerClass = `mx-auto px-4 ${maxWidthClasses[maxWidth]} ${customClass}`;
+---
+
+<div class={containerClass}>
+  <slot />
+</div>
+
+<style>
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    div {
+      forced-color-adjust: none;
+    }
+  }
+</style>

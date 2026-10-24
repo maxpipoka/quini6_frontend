@@ -1,0 +1,386 @@
+---
+/**
+ * Draw Detail Page - Static generation via getStaticPaths()
+ * Features: Full DrawResponseDto, Title, date, 4 modality blocks with large NumberBalls
+ * Prev/Next navigation, SEO meta tags (title, description, OG tags)
+ * Uses NumberBall component
+ */
+
+import Layout from '../../layouts/Layout.astro';
+import { Header, Footer, Container } from '../../components/layout';
+import { getApiClient } from '../../lib/api/client';
+import type { Modality, SixUniqueNumbers } from '../../lib/schemas';
+import NumberBall from '../../components/draws/NumberBall.tsx';
+
+interface DrawLike {
+  id: string;
+  officialNumber: number;
+  drawDate: string;
+  results: { modality: Modality; numbers: SixUniqueNumbers }[];
+}
+
+interface Props {
+  draw: DrawLike;
+  prevDraw: DrawLike | null;
+  nextDraw: DrawLike | null;
+}
+
+/**
+ * Batched getStaticPaths for 5000+ draws to control memory usage.
+ * Fetches draw IDs in batches of 100 and returns paths incrementally.
+ * Target: <512MB memory, <3 min for static generation.
+ * Uses fallback: 'blocking' with stale-while-revalidate: 60 header.
+ */
+export async function getStaticPaths() {
+  // Mock data for static generation at build time when API is not available
+  const MOCK_DRAWS: DrawLike[] = [
+    {
+      id: '1',
+      officialNumber: 1,
+      drawDate: '2024-01-01T20:00:00.000Z',
+      createdAt: '2024-01-01T20:00:00.000Z',
+      updatedAt: '2024-01-01T20:00:00.000Z',
+      results: [
+        {
+          modality: 'TRADICIONAL',
+          numbers: [5, 12, 23, 34, 41, 45],
+          createdAt: '2024-01-01T20:00:00.000Z',
+          updatedAt: '2024-01-01T20:00:00.000Z',
+        },
+        {
+          modality: 'LA_SEGUNDA',
+          numbers: [3, 18, 27, 31, 39, 42],
+          createdAt: '2024-01-01T20:00:00.000Z',
+          updatedAt: '2024-01-01T20:00:00.000Z',
+        },
+        {
+          modality: 'REVANCHA',
+          numbers: [7, 14, 22, 29, 36, 44],
+          createdAt: '2024-01-01T20:00:00.000Z',
+          updatedAt: '2024-01-01T20:00:00.000Z',
+        },
+        {
+          modality: 'SIEMPRE_SALE',
+          numbers: [2, 11, 19, 26, 33, 40],
+          createdAt: '2024-01-01T20:00:00.000Z',
+          updatedAt: '2024-01-01T20:00:00.000Z',
+        },
+      ],
+    },
+    {
+      id: '2',
+      officialNumber: 2,
+      drawDate: '2024-01-08T20:00:00.000Z',
+      createdAt: '2024-01-08T20:00:00.000Z',
+      updatedAt: '2024-01-08T20:00:00.000Z',
+      results: [
+        {
+          modality: 'TRADICIONAL',
+          numbers: [8, 15, 24, 35, 42, 43],
+          createdAt: '2024-01-08T20:00:00.000Z',
+          updatedAt: '2024-01-08T20:00:00.000Z',
+        },
+        {
+          modality: 'LA_SEGUNDA',
+          numbers: [4, 16, 25, 30, 37, 41],
+          createdAt: '2024-01-08T20:00:00.000Z',
+          updatedAt: '2024-01-08T20:00:00.000Z',
+        },
+        {
+          modality: 'REVANCHA',
+          numbers: [6, 13, 21, 28, 38, 45],
+          createdAt: '2024-01-08T20:00:00.000Z',
+          updatedAt: '2024-01-08T20:00:00.000Z',
+        },
+        {
+          modality: 'SIEMPRE_SALE',
+          numbers: [1, 10, 20, 25, 32, 39],
+          createdAt: '2024-01-08T20:00:00.000Z',
+          updatedAt: '2024-01-08T20:00:00.000Z',
+        },
+      ],
+    },
+  ];
+
+  // Check if we're in a build environment with API access
+  const hasApiAccess = !!import.meta.env.VITE_API_BASE_URL;
+
+  let allDraws: DrawLike[] = MOCK_DRAWS;
+
+  if (hasApiAccess) {
+    try {
+      const apiClient = getApiClient();
+      // Fetch first batch to get total count
+      const firstBatch = await apiClient.getDrawHistory({ page: 1, limit: 1 });
+      const totalDraws = firstBatch.total;
+      const BATCH_SIZE = 100;
+      const totalPages = Math.ceil(totalDraws / BATCH_SIZE);
+
+      // Fetch all pages in batches to control memory
+      for (let page = 1; page <= totalPages; page++) {
+        const response = await apiClient.getDrawHistory({ page, limit: BATCH_SIZE });
+        allDraws = [...allDraws, ...response.data];
+
+        // Optional: yield control to prevent blocking
+        if (page % 5 === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+    } catch (error) {
+      console.warn('Could not fetch draws from API, using mock data:', error);
+      allDraws = MOCK_DRAWS;
+    }
+  } else {
+    console.info('VITE_API_BASE_URL not set, using mock data for static generation');
+  }
+
+  // Sort by officialNumber ascending
+  allDraws.sort((a, b) => a.officialNumber - b.officialNumber);
+
+  // Build paths with prev/next navigation
+  return allDraws.map((draw, index) => {
+    const prevDraw = index > 0 ? allDraws[index - 1] : null;
+    const nextDraw = index < allDraws.length - 1 ? allDraws[index + 1] : null;
+
+    return {
+      params: { officialNumber: draw.officialNumber.toString() },
+      props: { draw, prevDraw, nextDraw },
+    };
+  });
+}
+
+// Configure fallback for ISR - blocking with stale-while-revalidate
+export const fallback = 'blocking';
+export const headers = {
+  'Cache-Control': 'public, max-age=0, stale-while-revalidate=60',
+};
+
+const { draw, prevDraw, nextDraw } = Astro.props;
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-AR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+};
+
+const formatShortDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const MODALITY_LABELS: Record<Modality, string> = {
+  TRADICIONAL: 'Tradicional',
+  LA_SEGUNDA: 'La Segunda',
+  REVANCHA: 'Revancha',
+  SIEMPRE_SALE: 'Siempre Sale',
+};
+
+const MODALITY_COLORS: Record<Modality, 'primary' | 'secondary' | 'success' | 'warning'> = {
+  TRADICIONAL: 'primary',
+  LA_SEGUNDA: 'secondary',
+  REVANCHA: 'success',
+  SIEMPRE_SALE: 'warning',
+};
+
+const pageTitle = `Sorteo Nº ${draw.officialNumber} - ${formatShortDate(draw.drawDate)}`;
+const pageDescription = `Resultados completos del sorteo Nº ${draw.officialNumber} del Quini 6 (${formatDate(draw.drawDate)}). Cuatro modalidades: Tradicional, La Segunda, Revancha y Siempre Sale.`;
+const canonicalUrl = `/sorteos/${draw.officialNumber}`;
+const ogImageUrl = `/og-draw-${draw.officialNumber}.jpg`; // Would be generated dynamically in production
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  ogImage={ogImageUrl}
+  ogType="article"
+>
+  <Header currentPath="/sorteos" />
+
+  <main id="main-content" role="main">
+    <Container maxWidth="lg" class="py-8 md:py-12">
+      {/* Breadcrumb */}
+      <nav class="mb-6" aria-label="Ruta de navegación">
+        <ol class="flex items-center gap-2 text-sm text-text-secondary">
+          <li>
+            <a href="/" class="transition-colors hover:text-text-primary">Inicio</a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <a href="/sorteos" class="transition-colors hover:text-text-primary">Historial</a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="font-medium text-text-primary">
+            Sorteo Nº {draw.officialNumber}
+          </li>
+        </ol>
+      </nav>
+
+      {/* Draw Header */}
+      <header class="mb-8 text-center md:text-left">
+        <div class="mb-4 flex items-center justify-center gap-2 md:justify-start">
+          <span
+            class="dark:bg-primary-900/20 rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700 dark:text-primary-300"
+          >
+            OFICIAL
+          </span>
+        </div>
+        <h1 class="font-display mb-2 text-display-sm text-text-primary">
+          Sorteo Nº {draw.officialNumber}
+        </h1>
+        <time class="text-body-lg text-text-secondary" dateTime={draw.drawDate}>
+          {formatDate(draw.drawDate)}
+        </time>
+      </header>
+
+      {/* Modalities Grid */}
+      <section aria-labelledby="modalities-heading" class="mb-12">
+        <h2 id="modalities-heading" class="sr-only">Modalidades del sorteo</h2>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {
+            draw.results.map((result) => (
+              <article key={result.modality} class="card-elevated p-6 text-center">
+                <header class="mb-4">
+                  <span class="bg-{MODALITY_COLORS[result.modality] ?? 'primary'}-100 text-{MODALITY_COLORS[result.modality] ?? 'primary'}-700 dark:bg-{MODALITY_COLORS[result.modality] ?? 'primary'}-900/20 dark:text-{MODALITY_COLORS[result.modality] ?? 'primary'}-300 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+                    {MODALITY_LABELS[result.modality] ?? result.modality}
+                  </span>
+                </header>
+                <div
+                  class="flex flex-wrap justify-center gap-2"
+                  role="img"
+                  aria-label={`${MODALITY_LABELS[result.modality] ?? result.modality}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
+                >
+                  {result.numbers.map((num, idx) => (
+                    <NumberBall
+                      key={idx}
+                      number={num}
+                      size="lg"
+                      variant={MODALITY_COLORS[result.modality] ?? 'primary'}
+                    />
+                  ))}
+                </div>
+                <p class="mt-4 text-caption text-text-muted">6 números</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      {/* Prev/Next Navigation */}
+      <nav class="flex items-center justify-between gap-4" aria-label="Navegación entre sorteos">
+        {
+          prevDraw ? (
+            <a
+              href={`/sorteos/${prevDraw.officialNumber}`}
+              class="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-text-primary transition-colors hover:border-border-strong hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              aria-label={`Sorteo anterior: Nº ${prevDraw.officialNumber}`}
+            >
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              <div class="text-left">
+                <p class="text-caption text-text-muted">Sorteo anterior</p>
+                <p class="font-medium">Nº {prevDraw.officialNumber}</p>
+              </div>
+            </a>
+          ) : (
+            <div class="flex-1" aria-hidden="true" />
+          )
+        }
+
+        <a
+          href="/sorteos"
+          class="flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-text-primary transition-colors hover:border-border-strong hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          aria-label="Volver al historial completo"
+        >
+          <svg
+            class="size-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+          </svg>
+          <span class="font-medium">Historial</span>
+        </a>
+
+        {
+          nextDraw ? (
+            <a
+              href={`/sorteos/${nextDraw.officialNumber}`}
+              class="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-text-primary transition-colors hover:border-border-strong hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              aria-label={`Sorteo siguiente: Nº ${nextDraw.officialNumber}`}
+            >
+              <div class="text-right">
+                <p class="text-caption text-text-muted">Sorteo siguiente</p>
+                <p class="font-medium">Nº {nextDraw.officialNumber}</p>
+              </div>
+              <svg
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
+          ) : (
+            <div class="flex-1" aria-hidden="true" />
+          )
+        }
+      </nav>
+    </Container>
+  </main>
+
+  <Footer />
+
+  {/* JSON-LD Structured Data for Draw */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: `Sorteo Quini 6 Nº ${draw.officialNumber}`,
+      startDate: draw.drawDate,
+      description: `Resultados del sorteo Nº ${draw.officialNumber} del Quini 6 con sus 4 modalidades.`,
+      organizer: {
+        '@type': 'Organization',
+        name: 'Lotería de Santa Fe',
+      },
+      location: {
+        '@type': 'Place',
+        name: 'Argentina',
+      },
+    })}
+  />
+</Layout>

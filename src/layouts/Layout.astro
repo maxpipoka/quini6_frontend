@@ -1,0 +1,126 @@
+---
+/**
+ * Root Layout - Main HTML structure with SEO meta tags, fonts, and CSS variables
+ */
+
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noIndex?: boolean;
+  noFollow?: boolean;
+}
+
+const {
+  title,
+  description = 'Estadísticas históricas del Quini 6 - Consulte sorteos, busque combinaciones y analice frecuencias.',
+  canonical,
+  ogImage,
+  ogType = 'website',
+  noIndex = false,
+  noFollow = false,
+} = Astro.props;
+
+const siteUrl = import.meta.env.VITE_SITE_URL || 'https://quini6.com';
+const canonicalUrl = canonical ? `${siteUrl}${canonical}` : Astro.url.href;
+const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-default.jpg`;
+
+const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 Estadísticas`;
+---
+
+<!doctype html>
+<html lang="es-AR" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary SEO -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Robots -->
+    <meta
+      name="robots"
+      content={`${noIndex ? 'noindex' : 'index'}, ${noFollow ? 'nofollow' : 'follow'}`}
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="Quini 6 Estadísticas" />
+    <meta property="og:locale" content="es_AR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Favicon & Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts: Inter (self-hosted for performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+
+    <!-- Lucide Icons (inline SVG via CDN for now, can be bundled later) -->
+    <script src="https://unpkg.com/lucide@latest" defer data-lucide="auto"></script>
+
+    <!-- Theme initialization script (prevents flash) -->
+    <script is:inline>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = theme === 'dark' || (!theme && prefersDark);
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        } catch (e) {
+          // Ignore localStorage errors (e.g., private browsing)
+        }
+      })();
+    </script>
+
+    <!-- JSON-LD Structured Data for Organization -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Quini 6 Estadísticas',
+        url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
+        sameAs: ['https://twitter.com/quini6stats', 'https://github.com/quini6/stats'],
+      })}
+    />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link"> Saltar al contenido principal </a>
+
+    <slot />
+  </body>
+</html>

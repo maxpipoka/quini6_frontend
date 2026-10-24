@@ -1,0 +1,29 @@
+project: quini6_frontend
+stack:
+  framework: Astro
+  styling: Tailwind CSS
+  language: TypeScript
+  ui: Astro components + React/Preact islands for interactivity
+  deployment: Vercel (static + hybrid on-demand)
+  design: Kombai Canvas (variants: Inicio A desktop + mobile)
+persistence: hybrid
+strict_tdd: false
+context: |
+  Astro + Tailwind frontend for Quini 6 lottery statistics app.
+  Public pages: Home (latest draw), Draw history, Draw detail, Exact combination search.
+  Admin area: Login, Draw CRUD, Bulk import (CSV/XLSX preview/commit).
+  API: NestJS backend on Vercel, JWT in HttpOnly cookies + CSRF.
+  No package.json yet - greenfield project.
+
+testing:
+  runner: none
+  framework: none
+  layers:
+    unit: false
+    integration: false
+    e2e: false
+  coverage: false
+  quality:
+    linter: false
+    typechecker: false
+    formatter: false

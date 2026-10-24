@@ -1,0 +1,69 @@
+---
+import AdminLayout from '@pages/admin/layout.astro';
+import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
+
+export function getStaticPaths() {
+  return [];
+}
+
+const drawId = Astro.params.id;
+---
+
+<AdminLayout title="Editar Sorteo - Admin Quini 6">
+  <div class="mx-auto max-w-4xl">
+    <div class="mb-6">
+      <h1 class="font-display text-2xl font-bold text-text-primary">Editar Sorteo</h1>
+      <p class="mt-1 text-text-secondary">Modifique los datos del sorteo y sus modalidades</p>
+    </div>
+
+    <div class="rounded-xl border border-border bg-surface-elevated p-6">
+      <DrawFormWizard
+        client:load
+        isEditing={true}
+        drawId={drawId}
+        onSubmit={async (data) => {
+          const response = await fetch(`/api/admin/draws/${drawId}`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': (window.getCsrfToken as (() => string | null) | undefined)?.() ?? '',
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) {
+            let message = 'Error al actualizar sorteo';
+            try {
+              const errorData: unknown = await response.json();
+              const isValidError =
+                errorData !== null &&
+                typeof errorData === 'object' &&
+                'message' in errorData &&
+                typeof (errorData as Record<string, unknown>).message === 'string';
+              if (isValidError) {
+                message = String((errorData as Record<string, unknown>).message);
+              }
+            } catch {
+              // ignore parse error
+            }
+            throw new Error(message);
+          }
+
+          window.location.href = '/admin/draws';
+        }}
+        onCancel={() => {
+          window.location.href = '/admin/draws';
+        }}
+      />
+    </div>
+  </div>
+
+  <script>
+    function getCsrfToken(): string | null {
+      const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+    window.getCsrfToken = getCsrfToken;
+  </script>
+</AdminLayout>

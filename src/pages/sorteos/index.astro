@@ -1,0 +1,301 @@
+---
+/**
+ * History Page - Paginated draw history with year filter
+ * Features: Table (desktop) / Cards (mobile), Year select, Pagination
+ * States: Loading (skeletons), Empty, Error (with requestId + retry)
+ * Uses Table component and design tokens
+ */
+
+import Layout from '../../layouts/Layout.astro';
+import { Header, Footer, Container } from '../../components/layout';
+import { getApiClient } from '../../lib/api/client';
+import type { DrawSummary } from '../../lib/schemas';
+import Table from '../../components/ui/Table.astro';
+import Pagination from '../../components/ui/Pagination.astro';
+import Select from '../../components/ui/Select.astro';
+import Button from '../../components/ui/Button.astro';
+import Spinner from '../../components/ui/Spinner.astro';
+
+// Get query params
+const page = parseInt(Astro.url.searchParams.get('page') ?? '1', 10);
+const yearParam = Astro.url.searchParams.get('year');
+const year = yearParam ? parseInt(yearParam, 10) : undefined;
+const limit = 20;
+
+let drawsResponse = null;
+let drawsError = null;
+let availableYears: number[] = [];
+
+try {
+  const apiClient = getApiClient();
+  drawsResponse = await apiClient.getDrawHistory({ page, limit, year });
+  // Fetch available years for filter (we could optimize this)
+  if (!year) {
+    // Get first page with large limit to extract years, or use a separate endpoint
+    // For now, we'll extract from response or use a reasonable range
+    const currentYear = new Date().getFullYear();
+    availableYears = Array.from({ length: 10 }, (_, i) => currentYear - i);
+  }
+} catch (error) {
+  console.error('Error fetching draw history:', error);
+  drawsError = error;
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const MODALITY_LABELS: Record<string, string> = {
+  TRADICIONAL: 'Trad.',
+  LA_SEGUNDA: '2da',
+  REVANCHA: 'Rev.',
+  SIEMPRE_SALE: 'S.S.',
+};
+
+const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'warning'> = {
+  TRADICIONAL: 'primary',
+  LA_SEGUNDA: 'secondary',
+  REVANCHA: 'success',
+  SIEMPRE_SALE: 'warning',
+};
+
+const totalPages = drawsResponse?.totalPages ?? 1;
+const totalDraws = drawsResponse?.total ?? 0;
+
+const buildPageHref = (targetPage: number): string => {
+  const url = new URL(Astro.url);
+  if (targetPage > 1) {
+    url.searchParams.set('page', targetPage.toString());
+  } else {
+    url.searchParams.delete('page');
+  }
+  return `${url.pathname}${url.search}`;
+};
+
+const columns = [
+  {
+    key: 'officialNumber',
+    header: 'Sorteo',
+    align: 'center' as const,
+    render: (row: DrawSummary) => `Nº ${row.officialNumber}`,
+  },
+  {
+    key: 'drawDate',
+    header: 'Fecha',
+    align: 'center' as const,
+    render: (row: DrawSummary) => formatDate(row.drawDate),
+  },
+  {
+    key: 'modalities',
+    header: 'Modalidades',
+    render: (row: DrawSummary) => ({
+      html: `
+        <div class="flex flex-wrap gap-1 justify-center" role="img" aria-label="${row.results.map((r) => `${MODALITY_LABELS[r.modality]}: ${r.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`).join('; ')}">
+          ${row.results
+            .map(
+              (result) => `
+            <div class="flex flex-col items-center gap-1 text-center">
+              <span class="text-[10px] font-medium text-text-muted uppercase">${MODALITY_LABELS[result.modality] ?? result.modality}</span>
+              <div class="flex gap-0.5">
+                ${result.numbers
+                  .map(
+                    (num) => `
+                  <span class="inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-[10px] font-bold ${getModalityColorClass(result.modality)}">
+                    ${num.toString().padStart(2, '0')}
+                  </span>
+                `
+                  )
+                  .join('')}
+              </div>
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      `,
+    }),
+  },
+  {
+    key: 'actions',
+    header: '',
+    align: 'center' as const,
+    render: (row: DrawSummary) => ({
+      html: `
+        <a
+          href="/sorteos/${row.officialNumber}"
+          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+          aria-label="Ver resultados del sorteo Nº ${row.officialNumber}"
+        >
+          Ver resultados
+          <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      `,
+    }),
+  },
+];
+
+function getModalityColorClass(modality: string) {
+  const color = MODALITY_COLORS[modality] ?? 'primary';
+  const colors: Record<string, string> = {
+    primary: 'bg-primary-500 text-white border-primary-500',
+    secondary: 'bg-secondary-500 text-white border-secondary-500',
+    success: 'bg-success-500 text-white border-success-500',
+    warning: 'bg-warning-500 text-white border-warning-500',
+  };
+  return colors[color];
+}
+---
+
+<Layout
+  title="Historial de sorteos"
+  description="Historial completo de sorteos del Quini 6 con paginación y filtro por año. Consulte resultados oficiales de cada sorteo."
+  canonical="/sorteos"
+>
+  <Header currentPath="/sorteos" />
+
+  <main id="main-content" role="main">
+    <Container maxWidth="lg" class="py-8 md:py-12">
+      <header class="mb-8">
+        <h1 class="font-display text-display-sm text-text-primary">Historial de sorteos</h1>
+        <p class="mt-2 text-text-secondary">
+          Consulte todos los sorteos oficiales del Quini 6. Filtre por año y navegue por páginas.
+          <span class="hidden sm:inline"> Total: <strong>{totalDraws}</strong> sorteos.</span>
+        </p>
+      </header>
+
+      {/* Filters */}
+      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="whitespace-nowrap text-sm font-medium text-text-secondary">
+            Filtrar por año:
+          </span>
+          <Select
+            id="year-filter"
+            name="year"
+            value={year?.toString() ?? ''}
+            options={[
+              { value: '', label: 'Todos los años' },
+              ...availableYears.map((y) => ({ value: y.toString(), label: y.toString() })),
+            ]}
+            class="w-auto min-w-[160px]"
+            aria-label="Seleccionar año"
+          />
+        </div>
+
+        {
+          year && (
+            <a
+              href="/sorteos"
+              class="text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+            >
+              Limpiar filtro
+            </a>
+          )
+        }
+      </div>
+
+      {/* Table / Cards */}
+      {
+        drawsError ? (
+          <div class="card-elevated p-8 text-center" role="alert">
+            <div class="mb-4">
+              <svg
+                class="mx-auto size-12 text-error-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h2 class="font-heading mb-2 text-heading-md text-text-primary">
+              No pudimos cargar el historial
+            </h2>
+            <p class="mb-4 text-text-secondary">
+              {drawsError instanceof Error && 'requestId' in drawsError
+                ? `Error: ${drawsError.message} (ID: ${(drawsError as { requestId?: string }).requestId})`
+                : 'Ocurrió un error al obtener los sorteos.'}
+            </p>
+            <Button
+              variant="primary"
+              href={`${Astro.url.pathname}${Astro.url.search}`}
+              aria-label="Reintentar carga"
+            >
+              Reintentar
+            </Button>
+          </div>
+        ) : drawsResponse ? (
+          <>
+            <Table
+              columns={columns}
+              data={drawsResponse.data}
+              rowKey="id"
+              emptyState="No hay sorteos registrados para el período seleccionado."
+              loadingState={false}
+              aria-label="Historial de sorteos del Quini 6"
+              aria-describedby="table-description"
+            />
+
+            <p id="table-description" class="sr-only">
+              Tabla con {drawsResponse.data.length} sorteos. Use la paginación para navegar.
+            </p>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div class="mt-8">
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  showFirstLast
+                  showPrevNext
+                  maxPageButtons={5}
+                  buildHref={buildPageHref}
+                  aria-label="Paginación del historial de sorteos"
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <div class="card-elevated p-12 text-center" role="status" aria-live="polite">
+            <Spinner size="lg" color="primary" aria-label="Cargando historial de sorteos" />
+            <p class="mt-4 text-text-secondary">Cargando historial de sorteos...</p>
+          </div>
+        )
+      }
+    </Container>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const yearFilter = document.getElementById('year-filter');
+
+  if (yearFilter instanceof HTMLSelectElement) {
+    yearFilter.addEventListener('change', () => {
+      const url = new URL(window.location.href);
+
+      if (yearFilter.value) {
+        url.searchParams.set('year', yearFilter.value);
+      } else {
+        url.searchParams.delete('year');
+      }
+
+      url.searchParams.set('page', '1');
+      window.location.href = url.toString();
+    });
+  }
+</script>

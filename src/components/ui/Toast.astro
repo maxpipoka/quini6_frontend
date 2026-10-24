@@ -1,0 +1,264 @@
+---
+/**
+ * Toast - Notification toast component
+ * Types: success, error, warning, info
+ * Features: requestId display, auto-dismiss, action button
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+interface ToastTypeConfig {
+  icon: string;
+  bg: string;
+  border: string;
+  text: string;
+  titleText: string;
+  ariaLabel: string;
+}
+
+interface Props {
+  type: ToastType;
+  title: string;
+  message?: string;
+  requestId?: string;
+  duration?: number; // ms, 0 = no auto-dismiss
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+  onClose?: () => void;
+  'aria-live'?: 'polite' | 'assertive';
+}
+
+const {
+  type,
+  title,
+  message,
+  requestId,
+  duration = 5000,
+  action,
+  onClose,
+  'aria-live': ariaLive = 'polite',
+  ...rest
+} = Astro.props;
+
+const toastId = `toast-${Math.random().toString(36).slice(2, 9)}`;
+
+// Icons as HTML strings
+const successIconHtml = `
+  <svg class="size-5 text-success-600 dark:text-success-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+  </svg>
+`;
+
+const errorIconHtml = `
+  <svg class="size-5 text-error-600 dark:text-error-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-7a1 1 0 10-2 0v4a1 1 0 102 0V11zm1-9a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+  </svg>
+`;
+
+const warningIconHtml = `
+  <svg class="size-5 text-warning-600 dark:text-warning-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+  </svg>
+`;
+
+const infoIconHtml = `
+  <svg class="size-5 text-info-600 dark:text-info-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+  </svg>
+`;
+
+// Type configuration
+const typeConfig: Record<ToastType, ToastTypeConfig> = {
+  success: {
+    icon: successIconHtml,
+    bg: 'bg-success-50 dark:bg-success-900/20',
+    border: 'border-success-200 dark:border-success-800',
+    text: 'text-success-800 dark:text-success-200',
+    titleText: 'text-success-900 dark:text-success-100',
+    ariaLabel: 'Éxito',
+  },
+  error: {
+    icon: errorIconHtml,
+    bg: 'bg-error-50 dark:bg-error-900/20',
+    border: 'border-error-200 dark:border-error-800',
+    text: 'text-error-800 dark:text-error-200',
+    titleText: 'text-error-900 dark:text-error-100',
+    ariaLabel: 'Error',
+  },
+  warning: {
+    icon: warningIconHtml,
+    bg: 'bg-warning-50 dark:bg-warning-900/20',
+    border: 'border-warning-200 dark:border-warning-800',
+    text: 'text-warning-800 dark:text-warning-200',
+    titleText: 'text-warning-900 dark:text-warning-100',
+    ariaLabel: 'Advertencia',
+  },
+  info: {
+    icon: infoIconHtml,
+    bg: 'bg-info-50 dark:bg-info-900/20',
+    border: 'border-info-200 dark:border-info-800',
+    text: 'text-info-800 dark:text-info-200',
+    titleText: 'text-info-900 dark:text-info-100',
+    ariaLabel: 'Información',
+  },
+};
+
+const config = typeConfig[type] as ToastTypeConfig;
+---
+
+<div
+  id={toastId}
+  class={`
+    flex items-start gap-3 rounded-lg
+    border p-4 shadow-lg
+    ${config.bg} ${config.border} ${config.text}
+    slide-in-from-top-2 fade-in min-w-[300px] max-w-md
+    animate-in duration-300
+    ${duration === 0 ? '' : 'animate-out duration-200'}
+  `}
+  role="alert"
+  aria-live={ariaLive}
+  aria-label={config.ariaLabel}
+  data-toast
+  data-duration={duration}
+  {...rest}
+>
+  <div class="mt-0.5 flex-shrink-0" aria-hidden="true">
+    <Fragment set:html={config.icon} />
+  </div>
+
+  <div class="min-w-0 flex-1">
+    <p
+      class={`
+      font-semibold ${config.titleText}
+      ${message ? 'mb-1' : ''}
+    `}
+    >
+      {title}
+    </p>
+
+    {message && <p class="text-sm opacity-90">{message}</p>}
+
+    {
+      requestId && (
+        <details class="mt-2" data-request-id>
+          <summary class="text-current/60 cursor-pointer select-none font-mono text-xs hover:text-current">
+            Request ID: {requestId}
+          </summary>
+          <pre class="bg-neutral-900/50 dark:bg-neutral-100/50 text-current/80 mt-1 overflow-x-auto rounded p-2 font-mono text-xs">
+            {requestId}
+          </pre>
+        </details>
+      )
+    }
+  </div>
+
+  <div class="flex flex-shrink-0 items-start gap-2">
+    {
+      action && (
+        <button
+          class="text-sm font-medium underline hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+          onClick={action.onClick}
+        >
+          {action.label}
+        </button>
+      )
+    }
+    <button
+      class="text-current/60 hover:text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+      onClick={() => {
+        const toast = document.getElementById(toastId);
+        if (toast) {
+          toast.style.animation = 'fade-out 200ms ease-in forwards';
+          setTimeout(() => toast.remove(), 200);
+        }
+        onClose?.();
+      }}
+      aria-label="Cerrar"
+    >
+      <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* Toast animations */
+  @keyframes slide-in-from-top-2 {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .slide-in-from-top-2 {
+    animation: slide-in-from-top-2 300ms ease-out;
+  }
+
+  .fade-in {
+    animation: fade-in 300ms ease-out;
+  }
+
+  .animate-out {
+    animation: fade-out 200ms ease-in forwards;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .slide-in-from-top-2,
+    .fade-in,
+    .animate-out {
+      animation: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    [data-toast] {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+    [data-toast] svg {
+      stroke: CanvasText;
+    }
+    [data-toast] summary {
+      color: CanvasText;
+    }
+    [data-toast] pre {
+      background-color: Canvas;
+      border: 1px solid CanvasText;
+    }
+  }
+</style>

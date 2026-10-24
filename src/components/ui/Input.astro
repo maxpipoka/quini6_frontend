@@ -1,0 +1,162 @@
+---
+/**
+ * Input - Reusable form input component
+ * Supports text, number, email types with label, error, helperText, required
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+type InputType = 'text' | 'number' | 'email' | 'password' | 'tel' | 'url';
+
+interface Props {
+  type?: InputType;
+  label?: string;
+  error?: string;
+  helperText?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
+  placeholder?: string;
+  value?: string;
+  name?: string;
+  id?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean;
+  'aria-required'?: boolean;
+  onChange?: (event: Event) => void;
+  onBlur?: (event: Event) => void;
+  onFocus?: (event: Event) => void;
+}
+
+const {
+  type = 'text',
+  label,
+  error,
+  helperText,
+  required = false,
+  disabled = false,
+  readonly = false,
+  placeholder,
+  value,
+  name,
+  id: propId,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
+  onChange,
+  onBlur,
+  onFocus,
+  ...rest
+} = Astro.props;
+
+// Generate unique ID if not provided
+const inputId = propId ?? `input-${Math.random().toString(36).slice(2, 9)}`;
+
+// Build describedby string
+const describedByParts = [];
+if (error) describedByParts.push(`${inputId}-error`);
+if (helperText) describedByParts.push(`${inputId}-helper`);
+if (ariaDescribedBy) describedByParts.push(ariaDescribedBy);
+const describedBy = describedByParts.length > 0 ? describedByParts.join(' ') : undefined;
+
+// Determine aria-invalid
+const isInvalid = error ? true : ariaInvalid;
+---
+
+<div class="w-full">
+  {
+    label && (
+      <label for={inputId} class="mb-1.5 block font-medium text-text-primary">
+        {label}
+        {required && (
+          <span class="ml-1 text-error-500" aria-hidden="true">
+            *
+          </span>
+        )}
+        {required && <span class="visually-hidden"> (requerido)</span>}
+      </label>
+    )
+  }
+
+  <input
+    id={inputId}
+    type={type}
+    name={name}
+    value={value}
+    placeholder={placeholder}
+    disabled={disabled}
+    readonly={readonly}
+    required={required}
+    aria-invalid={isInvalid}
+    aria-required={required || ariaRequired}
+    aria-describedby={describedBy}
+    class={`
+      readonly:bg-neutral-50 dark:readonly:bg-neutral-800 w-full
+      rounded-lg border bg-surface
+      px-4 py-2.5
+      text-text-primary placeholder-text-muted
+      transition-colors duration-150
+      focus:outline-none focus:ring-2
+      focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50
+      ${
+        error
+          ? 'dark:focus:ring-error-900/30 border-error-500 focus:border-error-500 focus:ring-error-100'
+          : 'border-border focus:border-focus focus:ring-focus-ring'
+      }
+    `}
+    onChange={onChange}
+    onBlur={onBlur}
+    onFocus={onFocus}
+    {...rest}
+  />
+
+  {
+    error && (
+      <p
+        id={`${inputId}-error`}
+        class="mt-1.5 text-sm text-error-600 dark:text-error-400"
+        role="alert"
+      >
+        {error}
+      </p>
+    )
+  }
+
+  {
+    helperText && !error && (
+      <p id={`${inputId}-helper`} class="mt-1.5 text-sm text-text-muted">
+        {helperText}
+      </p>
+    )
+  }
+</div>
+
+<style>
+  /* Ensure consistent focus styles across browsers */
+  input:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Better number input styling */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* High contrast mode support */
+  @media (forced-colors: active) {
+    input {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+    }
+    input:focus {
+      border-color: Highlight;
+      box-shadow: 0 0 0 3px Highlight;
+    }
+  }
+</style>

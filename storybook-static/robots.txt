@@ -1,0 +1,15 @@
+# Quini 6 Frontend - Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://quini6.com/sitemap.xml
+
+# Disallow admin paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /_image/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 10

@@ -1,0 +1,198 @@
+---
+/**
+ * Select - Reusable select dropdown component
+ * Supports options, placeholder, error, label, multiple
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+interface Option {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+interface Props {
+  options: Option[];
+  label?: string;
+  error?: string;
+  helperText?: string;
+  placeholder?: string;
+  value?: string | string[];
+  name?: string;
+  id?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean;
+  'aria-required'?: boolean;
+  onChange?: (event: Event) => void;
+  onBlur?: (event: Event) => void;
+  onFocus?: (event: Event) => void;
+}
+
+const {
+  options,
+  label,
+  error,
+  helperText,
+  placeholder = 'Seleccionar...',
+  value,
+  name,
+  id: propId,
+  multiple = false,
+  disabled = false,
+  required = false,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
+  onChange,
+  onBlur,
+  onFocus,
+  ...rest
+} = Astro.props;
+
+// Generate unique ID if not provided
+const selectId = propId ?? `select-${Math.random().toString(36).slice(2, 9)}`;
+
+// Build describedby string
+const describedByParts = [];
+if (error) describedByParts.push(`${selectId}-error`);
+if (helperText) describedByParts.push(`${selectId}-helper`);
+if (ariaDescribedBy) describedByParts.push(ariaDescribedBy);
+const describedBy = describedByParts.length > 0 ? describedByParts.join(' ') : undefined;
+
+// Determine aria-invalid
+const isInvalid = error ? true : ariaInvalid;
+
+// Normalize value to array for comparison
+const selectedValues = Array.isArray(value) ? value : value ? [value] : [];
+---
+
+<div class="w-full">
+  {
+    label && (
+      <label for={selectId} class="mb-1.5 block font-medium text-text-primary">
+        {label}
+        {required && (
+          <span class="ml-1 text-error-500" aria-hidden="true">
+            *
+          </span>
+        )}
+        {required && <span class="visually-hidden"> (requerido)</span>}
+      </label>
+    )
+  }
+
+  <select
+    id={selectId}
+    name={name}
+    multiple={multiple}
+    disabled={disabled}
+    required={required}
+    aria-invalid={isInvalid}
+    aria-required={required || ariaRequired}
+    aria-describedby={describedBy}
+    class={`
+      bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none'
+      viewBox='0 0 20
+      20'%3E%3Cpath
+      stroke='%236b7280' stroke-linecap='round'
+      stroke-linejoin='round' stroke-width='1.5'
+      d='M6
+      8l4 4 4-4'/%3E%3C/svg%3E")] w-full appearance-none rounded-lg border bg-surface bg-[right_0.75rem_center] bg-no-repeat px-4 py-2.5 pr-10 text-text-primary transition-colors
+      duration-150
+      focus:outline-none
+      focus:ring-2
+      focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50
+      ${
+        error
+          ? 'dark:focus:ring-error-900/30 border-error-500 focus:border-error-500 focus:ring-error-100'
+          : 'border-border focus:border-focus focus:ring-focus-ring'
+      }
+      ${multiple ? 'min-h-[100px] pr-4' : ''}
+    `}
+    onChange={onChange}
+    onBlur={onBlur}
+    onFocus={onFocus}
+    {...rest}
+  >
+    {
+      !multiple && placeholder && (
+        <option value="" disabled selected hidden>
+          {placeholder}
+        </option>
+      )
+    }
+    {
+      options.map((option) => (
+        <option
+          value={option.value}
+          disabled={option.disabled}
+          selected={selectedValues.includes(option.value)}
+        >
+          {option.label}
+        </option>
+      ))
+    }
+  </select>
+
+  {
+    error && (
+      <p
+        id={`${selectId}-error`}
+        class="mt-1.5 text-sm text-error-600 dark:text-error-400"
+        role="alert"
+      >
+        {error}
+      </p>
+    )
+  }
+
+  {
+    helperText && !error && (
+      <p id={`${selectId}-helper`} class="mt-1.5 text-sm text-text-muted">
+        {helperText}
+      </p>
+    )
+  }
+</div>
+
+<style>
+  /* Ensure consistent focus styles */
+  select:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Multiple select styling */
+  select[multiple] {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    background-image: none;
+  }
+
+  /* Option styling */
+  option {
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  option:disabled {
+    color: var(--color-text-muted);
+  }
+
+  /* High contrast mode support */
+  @media (forced-colors: active) {
+    select {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='CanvasText' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    }
+    select:focus {
+      border-color: Highlight;
+      box-shadow: 0 0 0 3px Highlight;
+    }
+  }
+</style>
