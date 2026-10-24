@@ -1,6 +1,7 @@
 import { beforeAll, afterAll, afterEach, vi } from 'vitest';
 import { setupServer } from 'msw/node';
 import { handlers } from '../mock/handlers';
+import '@testing-library/jest-dom';
 
 // MSW server for API mocking
 export const server = setupServer(...handlers);

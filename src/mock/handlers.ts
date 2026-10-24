@@ -1,6 +1,41 @@
 import { http, HttpResponse } from 'msw';
 
 export const handlers = [
+  // Auth endpoints
+  http.get('/api/admin/auth/me', () => {
+    return HttpResponse.json({
+      user: {
+        id: '1',
+        email: 'test@test.com',
+        name: 'Test User',
+        role: 'admin',
+      },
+    });
+  }),
+
+  http.post('/api/admin/auth/login', async ({ request }) => {
+    const body = await request.json();
+    if (body.email === 'test@test.com' && body.password === 'pass') {
+      return HttpResponse.json({
+        user: {
+          id: '1',
+          email: 'test@test.com',
+          name: 'Test User',
+          role: 'admin',
+        },
+      });
+    }
+    return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+  }),
+
+  http.post('/api/admin/auth/logout', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  http.post('/api/admin/auth/change-password', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
   // Draw list endpoint
   http.get('/api/sorteos', ({ request }) => {
     const url = new URL(request.url);

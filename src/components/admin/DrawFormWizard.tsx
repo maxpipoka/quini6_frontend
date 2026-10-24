@@ -107,6 +107,13 @@ function reducer(state: WizardState, action: WizardAction): WizardState {
       return { ...state, drawDate: action.value, drawDateError };
     }
 
+    case 'SET_OFFICIAL_NUMBER': {
+      const num = parseInt(action.value, 10);
+      const officialNumberError =
+        action.value && (isNaN(num) || num <= 0) ? 'El número oficial debe ser positivo' : '';
+      return { ...state, officialNumber: action.value, officialNumberError };
+    }
+
     case 'NEXT_STEP': {
       const currentStep = state.steps[state.currentStep];
       if (state.currentStep < 3 && currentStep?.isValid) {
