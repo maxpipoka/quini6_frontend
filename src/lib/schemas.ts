@@ -365,6 +365,22 @@ export const ImportProgressSchema = z.object({
 
 export type ImportProgress = z.infer<typeof ImportProgressSchema>;
 
+// Import Preview Row (for table display)
+export interface ImportPreviewRow {
+  rowNumber: number;
+  date: string;
+  modality: string;
+  tradicional: number[] | null;
+  laSegunda: number[] | null;
+  revancha: number[] | null;
+  siempreSale: number[] | null;
+  reintegro: number | null;
+  isValid: boolean;
+  errors: ImportErrorDetail[];
+}
+
+export type ImportPreviewRows = ImportPreviewRow[];
+
 // Existing ImportListParamsSchema (updated to use ImportPolicySchema)
 export const ImportListParamsSchema = z.object({
   page: z.number().int().positive().default(1),
