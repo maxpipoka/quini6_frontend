@@ -486,6 +486,68 @@ export class ApiClient {
   async adminGetImport(id: string): Promise<unknown> {
     return this.request('get', `/admin/import/${id}`);
   }
+
+  // ============================================================================
+  // Import Methods (Phase 3 Bulk Import)
+  // ============================================================================
+
+  /**
+   * Submit parsed rows for import preview
+   * POST /admin/imports/preview
+   */
+  async importPreview(rows: schemas.DrawRowInput[]): Promise<schemas.ImportPreviewResponse> {
+    return this.request('post', '/admin/imports/preview', {
+      json: { rows },
+      validateBodyWith: schemas.ImportPreviewRequestSchema,
+      validateWith: schemas.ImportPreviewResponseSchema,
+    });
+  }
+
+  /**
+   * Commit a previewed import with conflict resolution policy
+   * POST /admin/imports/{importId}/commit?policy={policy}
+   */
+  async importCommit(
+    importId: string,
+    policy: schemas.ImportPolicy,
+    options?: { onProgress?: (progress: schemas.ImportProgress) => void }
+  ): Promise<schemas.ImportCommitResponse> {
+    // Note: import commit is non-retryable (POST with side effects)
+    // The polling for progress is handled at a higher level if needed
+    const url = `/admin/imports/${importId}/commit?policy=${policy}`;
+    return this.request('post', url, {
+      validateWith: schemas.ImportCommitResponseSchema,
+    });
+  }
+
+  /**
+   * Get paginated import history
+   * GET /admin/imports
+   */
+  async getImportHistory(
+    params: schemas.ImportHistoryParams = { page: 1, limit: 10 }
+  ): Promise<schemas.ImportHistoryResponse> {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        searchParams.set(key, String(value));
+      }
+    });
+    const url = `/admin/imports${searchParams.toString() ? `?${searchParams}` : ''}`;
+    return this.request('get', url, {
+      validateWith: schemas.ImportHistoryResponseSchema,
+    });
+  }
+
+  /**
+   * Get detailed errors for a specific import
+   * GET /admin/imports/{importId}/errors
+   */
+  async getImportErrors(importId: string): Promise<schemas.ImportErrorsResponse> {
+    return this.request('get', `/admin/imports/${importId}/errors`, {
+      validateWith: schemas.ImportErrorsResponseSchema,
+    });
+  }
 }
 
 // ============================================================================

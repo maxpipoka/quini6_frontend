@@ -595,4 +595,538 @@ describe('Zod schemas', () => {
       expect(schemas.parseDrawNumber('45')).toBe(45);
     });
   });
+
+  // ============================================================================
+  // Import Schemas (Phase 3 Bulk Import)
+  // ============================================================================
+
+  describe('DrawRowInputSchema', () => {
+    const validDrawRow = {
+      officialNumber: 3246,
+      drawDate: '2024-01-20T10:00:00Z',
+      results: [
+        { modality: 'TRADICIONAL', numbers: [5, 12, 23, 34, 41, 45] },
+        { modality: 'LA_SEGUNDA', numbers: [1, 2, 3, 4, 5, 6] },
+        { modality: 'REVANCHA', numbers: [7, 8, 9, 10, 11, 12] },
+        { modality: 'SIEMPRE_SALE', numbers: [13, 14, 15, 16, 17, 18] },
+      ],
+    };
+
+    it('accepts valid draw row input', () => {
+      const result = schemas.DrawRowInputSchema.safeParse(validDrawRow);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid officialNumber', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        officialNumber: 0,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid drawDate', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        drawDate: 'invalid-date',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects wrong number of results', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        results: validDrawRow.results.slice(0, 3),
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid modality in results', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        results: [
+          ...validDrawRow.results.slice(0, 3),
+          { modality: 'INVALID', numbers: [1, 2, 3, 4, 5, 6] },
+        ],
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid numbers in results', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        results: [
+          ...validDrawRow.results.slice(0, 3),
+          { modality: 'SIEMPRE_SALE', numbers: [1, 2, 3, 4, 5, 46] },
+        ],
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects duplicate numbers in modality', () => {
+      const result = schemas.DrawRowInputSchema.safeParse({
+        ...validDrawRow,
+        results: [
+          ...validDrawRow.results.slice(0, 3),
+          { modality: 'SIEMPRE_SALE', numbers: [1, 2, 3, 4, 5, 1] },
+        ],
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportPolicySchema', () => {
+    it('accepts valid policies', () => {
+      expect(schemas.ImportPolicySchema.safeParse('skip').success).toBe(true);
+      expect(schemas.ImportPolicySchema.safeParse('replace').success).toBe(true);
+      expect(schemas.ImportPolicySchema.safeParse('merge').success).toBe(true);
+    });
+
+    it('rejects invalid policy', () => {
+      const result = schemas.ImportPolicySchema.safeParse('invalid');
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportPreviewRequestSchema', () => {
+    const validRequest = {
+      rows: [
+        {
+          officialNumber: 3246,
+          drawDate: '2024-01-20T10:00:00Z',
+          results: [
+            { modality: 'TRADICIONAL', numbers: [5, 12, 23, 34, 41, 45] },
+            { modality: 'LA_SEGUNDA', numbers: [1, 2, 3, 4, 5, 6] },
+            { modality: 'REVANCHA', numbers: [7, 8, 9, 10, 11, 12] },
+            { modality: 'SIEMPRE_SALE', numbers: [13, 14, 15, 16, 17, 18] },
+          ],
+        },
+      ],
+    };
+
+    it('accepts valid preview request', () => {
+      const result = schemas.ImportPreviewRequestSchema.safeParse(validRequest);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects missing rows', () => {
+      const result = schemas.ImportPreviewRequestSchema.safeParse({});
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects non-array rows', () => {
+      const result = schemas.ImportPreviewRequestSchema.safeParse({
+        rows: 'not-an-array',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportPreviewResponseSchema', () => {
+    const validResponse = {
+      importId: '123e4567-e89b-12d3-a456-426614174000',
+      validCount: 10,
+      invalidCount: 2,
+    };
+
+    it('accepts valid preview response', () => {
+      const result = schemas.ImportPreviewResponseSchema.safeParse(validResponse);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid UUID', () => {
+      const result = schemas.ImportPreviewResponseSchema.safeParse({
+        ...validResponse,
+        importId: 'invalid-uuid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects negative validCount', () => {
+      const result = schemas.ImportPreviewResponseSchema.safeParse({
+        ...validResponse,
+        validCount: -1,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects negative invalidCount', () => {
+      const result = schemas.ImportPreviewResponseSchema.safeParse({
+        ...validResponse,
+        invalidCount: -1,
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportCommitRequestSchema', () => {
+    it('accepts valid commit request', () => {
+      const result = schemas.ImportCommitRequestSchema.safeParse({
+        importId: '123e4567-e89b-12d3-a456-426614174000',
+        policy: 'skip',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid policy', () => {
+      const result = schemas.ImportCommitRequestSchema.safeParse({
+        importId: '123e4567-e89b-12d3-a456-426614174000',
+        policy: 'invalid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('accepts all valid policies', () => {
+      expect(
+        schemas.ImportCommitRequestSchema.safeParse({
+          importId: '123e4567-e89b-12d3-a456-426614174000',
+          policy: 'skip',
+        }).success
+      ).toBe(true);
+      expect(
+        schemas.ImportCommitRequestSchema.safeParse({
+          importId: '123e4567-e89b-12d3-a456-426614174000',
+          policy: 'replace',
+        }).success
+      ).toBe(true);
+      expect(
+        schemas.ImportCommitRequestSchema.safeParse({
+          importId: '123e4567-e89b-12d3-a456-426614174000',
+          policy: 'merge',
+        }).success
+      ).toBe(true);
+    });
+  });
+
+  describe('ImportErrorSchema', () => {
+    it('accepts valid import error', () => {
+      const result = schemas.ImportErrorSchema.safeParse({
+        row: 5,
+        field: 'TRADICIONAL_number_3',
+        message: 'Number must be between 0 and 45',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects non-positive row', () => {
+      const result = schemas.ImportErrorSchema.safeParse({
+        row: 0,
+        field: 'field',
+        message: 'error',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportCommitResponseSchema', () => {
+    const validResponse = {
+      created: 45,
+      updated: 3,
+      skipped: 2,
+      failed: 0,
+      errors: [],
+    };
+
+    it('accepts valid commit response', () => {
+      const result = schemas.ImportCommitResponseSchema.safeParse(validResponse);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects negative counts', () => {
+      expect(
+        schemas.ImportCommitResponseSchema.safeParse({
+          ...validResponse,
+          created: -1,
+        }).success
+      ).toBe(false);
+      expect(
+        schemas.ImportCommitResponseSchema.safeParse({
+          ...validResponse,
+          updated: -1,
+        }).success
+      ).toBe(false);
+      expect(
+        schemas.ImportCommitResponseSchema.safeParse({
+          ...validResponse,
+          skipped: -1,
+        }).success
+      ).toBe(false);
+      expect(
+        schemas.ImportCommitResponseSchema.safeParse({
+          ...validResponse,
+          failed: -1,
+        }).success
+      ).toBe(false);
+    });
+
+    it('accepts errors array', () => {
+      const result = schemas.ImportCommitResponseSchema.safeParse({
+        ...validResponse,
+        failed: 1,
+        errors: [
+          { row: 5, field: 'TRADICIONAL_number_3', message: 'Number out of range' },
+        ],
+      });
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('ImportHistoryParamsSchema', () => {
+    it('uses defaults', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({});
+      expect(result.success).toBe(true);
+      if (!result.success) throw new Error('expected success');
+      expect(result.data.page).toBe(1);
+      expect(result.data.limit).toBe(20); // Schema default is 20
+    });
+
+    it('accepts valid params', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({
+        page: 2,
+        limit: 25,
+        sort: 'date',
+        order: 'desc',
+        startDate: '2024-01-01T00:00:00Z',
+        endDate: '2024-12-31T23:59:59Z',
+        policy: 'skip',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects limit > 100', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({
+        limit: 101,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid sort', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({
+        sort: 'invalid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid order', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({
+        order: 'invalid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid policy', () => {
+      const result = schemas.ImportHistoryParamsSchema.safeParse({
+        policy: 'invalid',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportSummarySchema', () => {
+    const validSummary = {
+      importId: '123e4567-e89b-12d3-a456-426614174000',
+      fileName: 'draws.csv',
+      date: '2024-03-15T10:30:00Z',
+      rowsProcessed: 50,
+      succeeded: 48,
+      failed: 2,
+      policy: 'skip',
+    };
+
+    it('accepts valid import summary', () => {
+      const result = schemas.ImportSummarySchema.safeParse(validSummary);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid UUID', () => {
+      const result = schemas.ImportSummarySchema.safeParse({
+        ...validSummary,
+        importId: 'invalid-uuid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects negative counts', () => {
+      expect(
+        schemas.ImportSummarySchema.safeParse({
+          ...validSummary,
+          rowsProcessed: -1,
+        }).success
+      ).toBe(false);
+      expect(
+        schemas.ImportSummarySchema.safeParse({
+          ...validSummary,
+          succeeded: -1,
+        }).success
+      ).toBe(false);
+      expect(
+        schemas.ImportSummarySchema.safeParse({
+          ...validSummary,
+          failed: -1,
+        }).success
+      ).toBe(false);
+    });
+  });
+
+  describe('ImportHistoryResponseSchema', () => {
+    const validResponse = {
+      data: [
+        {
+          importId: '123e4567-e89b-12d3-a456-426614174000',
+          fileName: 'draws.csv',
+          date: '2024-03-15T10:30:00Z',
+          rowsProcessed: 50,
+          succeeded: 48,
+          failed: 2,
+          policy: 'skip',
+        },
+      ],
+      page: 1,
+      limit: 10,
+      total: 1,
+      totalPages: 1,
+    };
+
+    it('accepts valid history response', () => {
+      const result = schemas.ImportHistoryResponseSchema.safeParse(validResponse);
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects non-positive page', () => {
+      const result = schemas.ImportHistoryResponseSchema.safeParse({
+        ...validResponse,
+        page: 0,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects negative total', () => {
+      const result = schemas.ImportHistoryResponseSchema.safeParse({
+        ...validResponse,
+        total: -1,
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportErrorDetailSchema', () => {
+    it('accepts valid error detail', () => {
+      const result = schemas.ImportErrorDetailSchema.safeParse({
+        rowNumber: 5,
+        field: 'TRADICIONAL_number_3',
+        message: 'Number must be between 0 and 45',
+        rawValue: 50,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('accepts error detail without rawValue', () => {
+      const result = schemas.ImportErrorDetailSchema.safeParse({
+        rowNumber: 5,
+        field: 'TRADICIONAL_number_3',
+        message: 'Number must be between 0 and 45',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects non-positive rowNumber', () => {
+      const result = schemas.ImportErrorDetailSchema.safeParse({
+        rowNumber: 0,
+        field: 'field',
+        message: 'error',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportErrorsResponseSchema', () => {
+    it('accepts valid errors response', () => {
+      const result = schemas.ImportErrorsResponseSchema.safeParse({
+        errors: [
+          {
+            rowNumber: 5,
+            field: 'TRADICIONAL_number_3',
+            message: 'Number must be between 0 and 45',
+            rawValue: 50,
+          },
+        ],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('accepts empty errors array', () => {
+      const result = schemas.ImportErrorsResponseSchema.safeParse({
+        errors: [],
+      });
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('ImportProgressStageSchema', () => {
+    it('accepts valid stages', () => {
+      expect(schemas.ImportProgressStageSchema.safeParse('processing').success).toBe(true);
+      expect(schemas.ImportProgressStageSchema.safeParse('committing').success).toBe(true);
+      expect(schemas.ImportProgressStageSchema.safeParse('completed').success).toBe(true);
+    });
+
+    it('rejects invalid stage', () => {
+      const result = schemas.ImportProgressStageSchema.safeParse('invalid');
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportProgressSchema', () => {
+    it('accepts valid progress', () => {
+      const result = schemas.ImportProgressSchema.safeParse({
+        stage: 'processing',
+        progress: 50,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects progress < 0', () => {
+      const result = schemas.ImportProgressSchema.safeParse({
+        stage: 'processing',
+        progress: -1,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects progress > 100', () => {
+      const result = schemas.ImportProgressSchema.safeParse({
+        stage: 'processing',
+        progress: 101,
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('ImportListParamsSchema (updated)', () => {
+    it('uses defaults', () => {
+      const result = schemas.ImportListParamsSchema.safeParse({});
+      expect(result.success).toBe(true);
+      if (!result.success) throw new Error('expected success');
+      expect(result.data.page).toBe(1);
+      expect(result.data.limit).toBe(20);
+    });
+
+    it('accepts valid params', () => {
+      const result = schemas.ImportListParamsSchema.safeParse({
+        page: 2,
+        limit: 50,
+        status: 'completed',
+        type: 'csv',
+        fromDate: '2024-01-01T00:00:00Z',
+        toDate: '2024-12-31T23:59:59Z',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects limit > 100', () => {
+      const result = schemas.ImportListParamsSchema.safeParse({
+        limit: 101,
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });
