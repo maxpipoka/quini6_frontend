@@ -90,5 +90,8 @@ export default defineConfig({
         '@mock': '/src/mock',
       },
     },
+    worker: {
+      format: 'es',
+    },
   },
 });

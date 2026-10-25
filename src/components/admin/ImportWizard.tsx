@@ -146,15 +146,19 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       progressStageRef.current = progress.stage;
     });
 
-    if (result) {
-      setToast({
-        type: 'success',
-        title: 'Importación completada',
-        message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
-      });
-      setStep('result');
-      onImportSuccess?.();
-    } else if (commitError) {
+if (result) {
+        setToast({
+          type: 'success',
+          title: 'Importación completada',
+          message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
+        });
+        setStep('result');
+        // Dispatch custom event for cross-tab refresh
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('draws:refresh'));
+        }
+        onImportSuccess?.();
+      } else if (commitError) {
       setToast({ type: 'error', title: 'Error en importación', message: commitError.message });
       setStep('result');
     }

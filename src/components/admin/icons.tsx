@@ -9,6 +9,15 @@ export const ChevronDownIcon: React.FC<{ className?: string; 'aria-hidden'?: boo
   </svg>
 );
 
+export const ChevronUpIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
+  className = '',
+  'aria-hidden': ariaHidden = true,
+}) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+  </svg>
+);
+
 export const CheckCircleIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
   className = '',
   'aria-hidden': ariaHidden = true,
@@ -102,5 +111,37 @@ export const ErrorIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }
       d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-7a1 1 0 10-2 0v4a1 1 0 102 0V11zm1-9a1 1 0 100 2 1 1 0 000-2z"
       clipRule="evenodd"
     />
+  </svg>
+);
+
+export const XCircleIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
+  className = '',
+  'aria-hidden': ariaHidden = true,
+}) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" aria-hidden={ariaHidden}>
+    <path
+      fillRule="evenodd"
+      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10 6.293 12.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293a1 1 0 00-1.414-1.414L10 8.586 12.293 6.293a1 1 0 00-1.414-1.414L8.586 8 6.293 5.707a1 1 0 00-1.414 0L5.707 7.707 7.707 9.707a1 1 0 000 1.414L8.586 11 6.293 13.293a1 1 0 001.414 1.414L10 12.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
+export const CalendarIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
+  className = '',
+  'aria-hidden': ariaHidden = true,
+}) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
+export const EyeIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
+  className = '',
+  'aria-hidden': ariaHidden = true,
+}) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
   </svg>
 );

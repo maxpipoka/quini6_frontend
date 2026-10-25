@@ -42,14 +42,14 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Core Implementation (UI Components, Wizard, Parsing)
 
-- [ ] 2.1 Create `src/components/ui/FileDropzone.astro` — drag-drop zone with file input fallback, accepts `.csv,.xlsx`, shows file name/size, emits `fileSelected` event with File object
-- [ ] 2.2 Create `src/components/ui/Progress.astro` — accessible progress bar with stage labels (processing/committing/completed), ARIA live region for screen readers
-- [ ] 2.3 Create `src/components/admin/ImportPreviewTable.tsx` — TanStack Table or native table with: row checkbox, row number, date, modality, 6 numbers, reintegro, status badge (valid/invalid), expandable error detail row, horizontal scroll wrapper, column sorting
-- [ ] 2.4 Create `src/components/admin/ImportProgress.tsx` — consumes Progress.astro, polls `/admin/imports/:id/status` or uses SSE, displays stage + percentage, calls onComplete callback
-- [ ] 2.5 Create `src/components/admin/PolicySelect.tsx` — radio group (Skip/Replace/Merge) with help tooltips, disabled until validCount > 0, maps to ImportPolicy enum
-- [ ] 2.6 Create `src/components/admin/ImportWizard.tsx` — orchestrates flow: FileDropzone → parser worker → validation (CreateDrawSchema) → ImportPreviewTable → PolicySelect → confirm modal → ImportProgress → result toast; React Context for shared state (rows, validRows, policy, importId)
-- [ ] 2.7 Add validation hook `useImportValidation.ts` — runs CreateDrawSchema per row, returns `{ validRows, invalidRows, rowErrors }`, memoized
-- [ ] 2.8 Add `useImportCommit.ts` hook — calls importPreview, then importCommit with policy, handles progress callbacks, returns commit result
+- [x] 2.1 Create `src/components/ui/FileDropzone.astro` — drag-drop zone with file input fallback, accepts `.csv,.xlsx`, shows file name/size, emits `fileSelected` event with File object
+- [x] 2.2 Create `src/components/ui/Progress.astro` — accessible progress bar with stage labels (processing/committing/completed), ARIA live region for screen readers
+- [x] 2.3 Create `src/components/admin/ImportPreviewTable.tsx` — native table with: row checkbox, row number, date, modality, 6 numbers, reintegro, status badge (valid/invalid), expandable error detail row, horizontal scroll wrapper, column sorting
+- [x] 2.4 Create `src/components/admin/ImportProgress.tsx` — consumes Progress component, displays stage + percentage, calls onComplete callback
+- [x] 2.5 Create `src/components/admin/PolicySelect.tsx` — radio group (Skip/Replace/Merge) with help tooltips, disabled until validCount > 0, maps to ImportPolicy enum
+- [x] 2.6 Create `src/components/admin/ImportWizard.tsx` — orchestrates flow: FileDropzone → parser worker → validation (CreateDrawSchema) → ImportPreviewTable → PolicySelect → confirm modal → ImportProgress → result toast; React Context for shared state (rows, validRows, policy, importId)
+- [x] 2.7 Add validation hook `useImportValidation.ts` — runs CreateDrawSchema per row, returns `{ validRows, invalidRows, rowErrors }`, memoized
+- [x] 2.8 Add `useImportCommit.ts` hook — calls importPreview, then importCommit with policy, handles progress callbacks, returns commit result
 - [ ] 2.9 Unit tests for ImportPreviewTable (render, sort, expand, checkbox toggle) in `src/components/admin/ImportPreviewTable.test.tsx`
 - [ ] 2.10 Unit tests for PolicySelect (disabled state, policy mapping, tooltips) in `src/components/admin/PolicySelect.test.tsx`
 - [ ] 2.11 Unit tests for ImportWizard integration (full flow mock) in `src/components/admin/ImportWizard.test.tsx`
