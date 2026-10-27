@@ -27,6 +27,9 @@ const props = sampleProps.FileDropzone[state as keyof typeof sampleProps.FileDro
     </style>
   </head>
   <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
-    <FileDropzone {...props} client:load />
+    <main>
+      <h1 class="sr-only">FileDropzone Component Test</h1>
+      <FileDropzone {...props} client:load />
+    </main>
   </body>
 </html>

@@ -28,15 +28,7 @@ module.exports = {
     },
   },
   plugins: ['astro', '@typescript-eslint', 'jsx-a11y', 'tailwindcss', 'prettier'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended-type-checked',
-    'plugin:@typescript-eslint/stylistic-type-checked',
-    'plugin:astro/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:tailwindcss/recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'plugin:@typescript-eslint/stylistic-type-checked', 'plugin:astro/recommended', 'plugin:jsx-a11y/recommended', 'plugin:tailwindcss/recommended', 'prettier', 'plugin:storybook/recommended'],
   rules: {
     'prettier/prettier': 'error',
     '@typescript-eslint/no-unused-vars': [

@@ -92,7 +92,7 @@ export const ImportPreviewTable: React.FC<Props> = ({
     { id: 'siempreSale', header: 'Siempre Sale', width: 150, sortable: false },
     { id: 'reintegro', header: 'Reintegro', width: 80, sortable: false },
     { id: 'status', header: 'Estado', width: 100, sortable: false },
-    { id: 'expand', header: '', width: 48, sortable: false },
+    { id: 'expand', header: 'Acciones', width: 48, sortable: false },
   ];
 
   return (

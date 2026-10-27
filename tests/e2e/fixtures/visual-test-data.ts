@@ -1,21 +1,21 @@
 // Deterministic test data for visual regression and Storybook stories
 // All values are fixed - no timestamps, random IDs, or dynamic content
 
-import type { ImportPreviewRow } from '@/components/admin/ImportPreviewTable';
+import type { ImportPreviewRow } from '@/lib/schemas';
 import type { ImportProgressStage } from '@/lib/schemas';
 
 export const sampleImportRows: ImportPreviewRow[] = [
-  { rowNumber: 1, date: '2024-01-15', modality: 'TRADICIONAL', tradicional: [5, 12, 23, 34, 41, 45], laSegunda: [7, 14, 21, 28, 35, 42], revancha: [3, 10, 17, 24, 31, 38], siempreSale: [1, 8, 15, 22, 29, 36], reintegro: 7, isValid: true, errors: [] },
-  { rowNumber: 2, date: '2024-01-22', modality: 'TRADICIONAL', tradicional: [2, 18, 29, 31, 38, 44], laSegunda: [4, 11, 18, 25, 32, 39], revancha: [6, 13, 20, 27, 34, 41], siempreSale: [2, 9, 16, 23, 30, 37], reintegro: 4, isValid: true, errors: [] },
-  { rowNumber: 3, date: '2024-01-29', modality: 'TRADICIONAL', tradicional: [11, 20, 25, 33, 40, 42], laSegunda: [5, 12, 19, 26, 33, 40], revancha: [7, 14, 21, 28, 35, 42], siempreSale: [3, 10, 17, 24, 31, 38], reintegro: 2, isValid: true, errors: [] },
-  { rowNumber: 4, date: '2024-02-05', modality: 'TRADICIONAL', tradicional: [8, 14, 27, 30, 36, 43], laSegunda: [6, 13, 20, 27, 34, 41], revancha: [2, 9, 16, 23, 30, 37], siempreSale: [4, 11, 18, 25, 32, 39], reintegro: 6, isValid: false, errors: [{ rowNumber: 4, field: 'date', message: 'Duplicate draw date', rawValue: '2024-02-05' }] },
-  { rowNumber: 5, date: '2024-02-12', modality: 'TRADICIONAL', tradicional: [3, 17, 24, 32, 39, 46], laSegunda: [8, 15, 22, 29, 36, 43], revancha: [4, 11, 18, 25, 32, 39], siempreSale: [6, 13, 20, 27, 34, 41], reintegro: 8, isValid: true, errors: [] },
+  { rowNumber: 1, date: '2024-01-15', modality: 'Tradicional', tradicional: [5, 12, 23, 34, 41, 45], laSegunda: null, revancha: null, siempreSale: null, reintegro: 7, isValid: true, errors: [] },
+  { rowNumber: 2, date: '2024-01-22', modality: 'La Segunda', tradicional: null, laSegunda: [4, 11, 18, 25, 32, 39], revancha: null, siempreSale: null, reintegro: 4, isValid: true, errors: [] },
+  { rowNumber: 3, date: '2024-01-29', modality: 'Revancha', tradicional: null, laSegunda: null, revancha: [7, 14, 21, 28, 35, 42], siempreSale: null, reintegro: 2, isValid: true, errors: [] },
+  { rowNumber: 4, date: '2024-02-05', modality: 'Tradicional', tradicional: [8, 14, 27, 30, 36, 43], laSegunda: null, revancha: null, siempreSale: null, reintegro: 6, isValid: false, errors: [{ field: 'date', message: 'Duplicate draw date', rawValue: '2024-02-05' }] },
+  { rowNumber: 5, date: '2024-02-12', modality: 'Siempre Sale', tradicional: null, laSegunda: null, revancha: null, siempreSale: [6, 13, 20, 27, 34, 41], reintegro: 8, isValid: true, errors: [] },
 ];
 
 export const largeImportRows: ImportPreviewRow[] = [
   ...sampleImportRows,
-  { rowNumber: 6, date: '2024-02-19', modality: 'TRADICIONAL', tradicional: [6, 13, 26, 35, 37, 47], laSegunda: [1, 8, 15, 22, 29, 36], revancha: [5, 12, 19, 26, 33, 40], siempreSale: [7, 14, 21, 28, 35, 42], reintegro: 1, isValid: true, errors: [] },
-  { rowNumber: 7, date: '2024-02-26', modality: 'TRADICIONAL', tradicional: [9, 16, 28, 34, 44, 48], laSegunda: [3, 10, 17, 24, 31, 38], revancha: [7, 14, 21, 28, 35, 42], siempreSale: [1, 8, 15, 22, 29, 36], reintegro: 3, isValid: true, errors: [] },
+  { rowNumber: 6, date: '2024-02-19', modality: 'Tradicional', tradicional: [6, 13, 26, 35, 37, 47], laSegunda: null, revancha: null, siempreSale: null, reintegro: 1, isValid: true, errors: [] },
+  { rowNumber: 7, date: '2024-02-26', modality: 'La Segunda', tradicional: null, laSegunda: [3, 10, 17, 24, 31, 38], revancha: null, siempreSale: null, reintegro: 3, isValid: true, errors: [] },
 ];
 
 export const sampleHistoryData = [
@@ -50,7 +50,7 @@ export const sampleProps = {
     default: { rows: sampleImportRows },
     empty: { rows: [] },
     error: { rows: sampleImportRows }, // row with error is in sampleImportRows[3]
-    loading: { rows: [], isLoading: true },
+    loading: { rows: [] },
   },
   ImportHistoryTable: {
     default: {}, // Uses internal hook - no props

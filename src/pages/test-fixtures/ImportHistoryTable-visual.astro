@@ -1,10 +1,8 @@
 ---
 // Test fixture page for ImportHistoryTable visual regression
-import ImportHistoryTable from '@/components/admin/ImportHistoryTable';
-import { sampleProps } from '@tests/e2e/fixtures/visual-test-data';
+import { ImportHistoryTableVisual } from '@/components/admin/ImportHistoryTable.visual';
 
 const { state = 'default' } = Astro.url.searchParams;
-const _props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.ImportHistoryTable] ?? sampleProps.ImportHistoryTable.default;
 ---
 
 <!DOCTYPE html>
@@ -26,7 +24,10 @@ const _props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.
       }
     </style>
   </head>
-<body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
-    <ImportHistoryTable client:load />
+  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+    <main>
+      <h1 class="sr-only">ImportHistoryTable Component Test</h1>
+      <ImportHistoryTableVisual state={state} client:load />
+    </main>
   </body>
 </html>

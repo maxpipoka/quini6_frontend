@@ -27,6 +27,9 @@ const props = sampleProps.ImportProgress[state as keyof typeof sampleProps.Impor
     </style>
   </head>
   <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
-    <ImportProgress {...props} client:load />
+    <main>
+      <h1 class="sr-only">ImportProgress Component Test</h1>
+      <ImportProgress {...props} client:load />
+    </main>
   </body>
 </html>

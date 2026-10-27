@@ -121,16 +121,6 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
     [handleFile]
   );
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
-        e.preventDefault();
-        inputRef.current?.click();
-      }
-    },
-    [disabled]
-  );
-
   const handleRemoveClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -153,14 +143,9 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
         dark:bg-neutral-800/50 bg-neutral-50
         ${className}
       `}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      aria-label="Área de carga de archivos"
-      aria-disabled={disabled}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onKeyDown={handleKeyDown}
     >
       <input
         ref={inputRef}
@@ -171,31 +156,30 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
         disabled={disabled}
         aria-describedby={`${dropzoneId}-hint`}
         onChange={handleInputChange}
+        aria-label="Seleccionar archivo CSV o XLSX"
       />
-      <label htmlFor={`${dropzoneId}-input`} className="cursor-pointer" aria-hidden="true">
-        <div className="inline-flex flex-col items-center gap-4">
-          <svg
-            className="size-12 text-neutral-400 dark:text-neutral-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            />
-          </svg>
-          <div>
-            <p className="text-lg font-medium text-neutral-900 dark:text-neutral-100">
-              Arrastra y suelta un archivo aquí
-            </p>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-hint`}>
-              o haz clic para seleccionar <span className="font-medium">.csv, .xlsx</span>
-            </p>
-          </div>
+      <label htmlFor={`${dropzoneId}-input`} className="cursor-pointer inline-flex flex-col items-center gap-4">
+        <svg
+          className="size-12 text-neutral-400 dark:text-neutral-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+          />
+        </svg>
+        <div>
+          <p className="text-lg font-medium text-neutral-900 dark:text-neutral-100">
+            Arrastra y suelta un archivo aquí
+          </p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-hint`}>
+            o haz clic para seleccionar <span className="font-medium">.csv, .xlsx</span>
+          </p>
         </div>
       </label>
 

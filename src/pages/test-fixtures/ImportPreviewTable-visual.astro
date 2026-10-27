@@ -27,6 +27,9 @@ const props = sampleProps.ImportPreviewTable[state as keyof typeof sampleProps.I
     </style>
   </head>
   <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
-    <ImportPreviewTable {...props} client:load />
+    <main>
+      <h1 class="sr-only">ImportPreviewTable Component Test</h1>
+      <ImportPreviewTable {...props} client:load />
+    </main>
   </body>
 </html>

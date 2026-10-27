@@ -1,7 +1,0 @@
-import{R as n}from"./index-Dq4ZvVuH.js";import{f as i}from"./schemas-D7573uKe.js";const m={sm:"w-6 h-6 text-caption",md:"w-8 h-8 text-body-sm",lg:"w-12 h-12 text-body-lg"},o={primary:"bg-primary-500 text-white border-primary-500",secondary:"bg-secondary-500 text-white border-secondary-500",success:"bg-success-500 text-white border-success-500",warning:"bg-warning-500 text-white border-warning-500"},u=({number:a,size:r="md",variant:t="primary",className:s=""})=>{const l=Math.max(0,Math.min(45,Math.floor(a))),e=i(l);return n.createElement("span",{className:`
-        inline-flex items-center justify-center
-        rounded-full border-2 font-bold
-        ${m[r]}
-        ${o[t]}
-        ${s}
-      `,role:"img","aria-label":`Número ${e}`},e)};u.__docgenInfo={description:"",methods:[],displayName:"NumberBall",props:{number:{required:!0,tsType:{name:"number"},description:""},size:{required:!1,tsType:{name:"union",raw:"'sm' | 'md' | 'lg'",elements:[{name:"literal",value:"'sm'"},{name:"literal",value:"'md'"},{name:"literal",value:"'lg'"}]},description:"",defaultValue:{value:"'md'",computed:!1}},variant:{required:!1,tsType:{name:"union",raw:"'primary' | 'secondary' | 'success' | 'warning'",elements:[{name:"literal",value:"'primary'"},{name:"literal",value:"'secondary'"},{name:"literal",value:"'success'"},{name:"literal",value:"'warning'"}]},description:"",defaultValue:{value:"'primary'",computed:!1}},className:{required:!1,tsType:{name:"string"},description:"",defaultValue:{value:"''",computed:!1}}}};export{u as N};

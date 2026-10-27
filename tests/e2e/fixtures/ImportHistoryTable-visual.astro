@@ -1,0 +1,32 @@
+---
+// Visual test fixture for ImportHistoryTable component
+import ImportHistoryTable from '@/components/admin/ImportHistoryTable';
+import { sampleProps } from './visual-test-data';
+
+const { state = 'default' } = Astro.props;
+const props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.ImportHistoryTable] ?? sampleProps.ImportHistoryTable.default;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visual Test: ImportHistoryTable - {state}</title>
+    <style>
+      /* Disable animations for consistent screenshots */
+      [data-test-animate="false"],
+      [data-test-animate="false"] *,
+      [data-test-animate="false"] *::before,
+      [data-test-animate="false"] *::after {
+        animation-duration: 0s !important;
+        animation-delay: -1ms !important;
+        transition-duration: 0s !important;
+        transition-delay: -1ms !important;
+      }
+    </style>
+  </head>
+  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+    <ImportHistoryTable {...props} client:load />
+  </body>
+</html>
