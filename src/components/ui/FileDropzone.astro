@@ -1,0 +1,275 @@
+---
+/**
+ * FileDropzone - Drag and drop file upload zone with input fallback
+ * Accepts .csv, .xlsx files
+ * Emits fileSelected event with File object
+ */
+
+interface Props {
+  accept?: string;
+  maxSize?: number; // in bytes
+  onFileSelected?: (file: File) => void;
+  onError?: (error: string) => void;
+  disabled?: boolean;
+}
+
+const {
+  accept = '.csv,.xlsx',
+  maxSize = 10 * 1024 * 1024, // 10MB default
+  onFileSelected,
+  onError,
+  disabled = false,
+  ...rest
+} = Astro.props;
+
+const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={dropzoneId}
+  class={`
+    rounded-lg border-2 border-dashed p-8 text-center
+    transition-all duration-200
+    ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-primary-400'}
+    dark:bg-neutral-800/50 border-neutral-300
+    bg-neutral-50 dark:border-neutral-600
+  `}
+  role="button"
+  tabindex={disabled ? -1 : 0}
+  aria-label="Área de carga de archivos"
+  aria-disabled={disabled}
+  {...rest}
+>
+  <input
+    type="file"
+    id={`${dropzoneId}-input`}
+    class="sr-only"
+    accept={accept}
+    disabled={disabled}
+    aria-describedby={`${dropzoneId}-hint`}
+  />
+  <label for={`${dropzoneId}-input`} class="cursor-pointer" aria-hidden="true">
+    <div class="inline-flex flex-col items-center gap-4">
+      <svg
+        class="size-12 text-neutral-400 dark:text-neutral-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+        />
+      </svg>
+      <div>
+        <p class="text-lg font-medium text-neutral-900 dark:text-neutral-100">
+          Arrastra y suelta un archivo aquí
+        </p>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-hint`}>
+          o haz clic para seleccionar <span class="font-medium">.csv, .xlsx</span>
+        </p>
+      </div>
+    </div>
+  </label>
+
+  <div id={`${dropzoneId}-selected`} class="mt-4 hidden" aria-live="polite">
+    <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800">
+      <div class="flex items-center gap-3">
+        <svg
+          class="size-6 text-primary-600 dark:text-primary-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <div>
+          <p class="font-medium text-neutral-900 dark:text-neutral-100" id={`${dropzoneId}-filename`}></p>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-filesize`}></p>
+        </div>
+      </div>
+      <button
+        type="button"
+        id={`${dropzoneId}-remove`}
+        class="rounded p-1 text-neutral-400 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:hover:text-neutral-300"
+        aria-label="Eliminar archivo seleccionado"
+      >
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id={`${dropzoneId}-error`} class="dark:bg-error-900/20 border-error-200 dark:border-error-800 mt-3 hidden rounded-lg border bg-error-50 p-3 text-sm text-error-600 dark:text-error-400" role="alert" aria-live="assertive"></div>
+</div>
+
+<script>
+  (() => {
+    const dropzone = document.getElementById(dropzoneId);
+    const input = document.getElementById(`${dropzoneId}-input`);
+    const selected = document.getElementById(`${dropzoneId}-selected`);
+    const filename = document.getElementById(`${dropzoneId}-filename`);
+    const filesize = document.getElementById(`${dropzoneId}-filesize`);
+    const removeBtn = document.getElementById(`${dropzoneId}-remove`);
+    const errorEl = document.getElementById(`${dropzoneId}-error`);
+
+    let currentFile: File | null = null;
+
+    const showError = (message: string) => {
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+      onError?.(message);
+    };
+
+    const clearError = () => {
+      errorEl.classList.add('hidden');
+      errorEl.textContent = '';
+    };
+
+    const formatSize = (bytes: number): string => {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const validateFile = (file: File): boolean => {
+      clearError();
+
+      const allowedTypes = accept.split(',').map(t => t.trim().toLowerCase());
+      const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
+      const isValidType = allowedTypes.some(t => t === fileExt || t === file.type);
+
+      if (!isValidType) {
+        showError(`Tipo de archivo no permitido. Use: ${accept}`);
+        return false;
+      }
+
+      if (file.size > maxSize) {
+        showError(`Archivo demasiado grande. Máximo: ${formatSize(maxSize)}`);
+        return false;
+      }
+
+      return true;
+    };
+
+    const handleFile = (file: File) => {
+      if (!validateFile(file)) return;
+
+      currentFile = file;
+      filename.textContent = file.name;
+      filesize.textContent = formatSize(file.size);
+      selected.classList.remove('hidden');
+      dropzone.classList.add('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20');
+      dropzone.classList.remove('border-neutral-300', 'dark:border-neutral-600');
+      onFileSelected?.(file);
+    };
+
+    const clearFile = () => {
+      currentFile = null;
+      input.value = '';
+      selected.classList.add('hidden');
+      dropzone.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20');
+      dropzone.classList.add('border-neutral-300', 'dark:border-neutral-600');
+      onFileSelected?.(null as any);
+    };
+
+    // Drag and drop handlers
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!disabled) {
+        dropzone.classList.add('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20');
+      }
+    };
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!currentFile && !disabled) {
+        dropzone.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20');
+        dropzone.classList.add('border-neutral-300', 'dark:border-neutral-600');
+      }
+    };
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (disabled) return;
+
+      dropzone.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20');
+      dropzone.classList.add('border-neutral-300', 'dark:border-neutral-600');
+
+      const file = e.dataTransfer?.files[0];
+      if (file) handleFile(file);
+    };
+
+    const handleInputChange = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      const file = target.files?.[0];
+      if (file) handleFile(file);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+        e.preventDefault();
+        input.click();
+      }
+    };
+
+    // Event listeners
+    dropzone.addEventListener('dragover', handleDragOver);
+    dropzone.addEventListener('dragleave', handleDragLeave);
+    dropzone.addEventListener('drop', handleDrop);
+    dropzone.addEventListener('keydown', handleKeyDown);
+    input.addEventListener('change', handleInputChange);
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearFile();
+    });
+
+    // Cleanup
+    const observer = new MutationObserver(() => {
+      if (!document.contains(dropzone)) {
+        dropzone.removeEventListener('dragover', handleDragOver);
+        dropzone.removeEventListener('dragleave', handleDragLeave);
+        dropzone.removeEventListener('drop', handleDrop);
+        dropzone.removeEventListener('keydown', handleKeyDown);
+        input.removeEventListener('change', handleInputChange);
+        removeBtn.removeEventListener('click', clearFile);
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
+
+<style>
+  /* Focus visible for accessibility */
+  #${dropzoneId}:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    #${dropzoneId} {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+    #${dropzoneId}:hover {
+      border-color: Highlight;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    #${dropzoneId} {
+      transition: none;
+    }
+  }
+</style>

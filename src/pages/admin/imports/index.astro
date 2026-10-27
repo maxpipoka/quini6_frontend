@@ -1,0 +1,17 @@
+---
+import AdminLayout from '../layout.astro';
+import { ImportHistoryTable } from '../../../components/admin/ImportHistoryTable.tsx';
+---
+
+<AdminLayout title="Historial de Importaciones - Admin Quini 6">
+  <div class="mx-auto max-w-6xl space-y-6">
+    <div>
+      <h1 class="font-display text-2xl font-bold text-text-primary">Historial de Importaciones</h1>
+      <p class="mt-1 text-text-secondary">
+        Visualiza y gestiona el historial de importaciones masivas
+      </p>
+    </div>
+
+    <ImportHistoryTable client:visible />
+  </div>
+</AdminLayout>

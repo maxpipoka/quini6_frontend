@@ -148,10 +148,11 @@ jobs:
           curl -f http://localhost:3001/api/draws || exit 1
           curl -f http://localhost:4321/ || exit 1
 
-      - name: Run E2E tests
+      - name: Run E2E tests (including visual + a11y)
         run: npm run test:e2e -- --project=chromium
         env:
           VITE_API_BASE_URL: http://localhost:3001/api
+          VISUAL: "1"
 
       - name: Stop servers
         if: always()
@@ -173,6 +174,22 @@ jobs:
         with:
           name: playwright-screenshots
           path: test-results/
+          retention-days: 7
+
+      - name: Upload visual diff images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: test-results/**/*-diff.png
+          retention-days: 7
+
+      - name: Upload axe a11y reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-reports
+          path: test-results/**/a11y-*.json
           retention-days: 7
 
   lighthouse:

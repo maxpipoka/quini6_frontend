@@ -1,0 +1,53 @@
+/* Animation keyframes */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in-95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation:
+    fade-in 0.2s ease-out,
+    zoom-in-95 0.2s ease-out;
+}
+
+/* Focus visible for modal elements */
+[data-modal-panel] *:focus-visible {
+  outline: 2px solid var(--color-primary-500, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+  .fixed.inset-0 > div:first-child {
+    background-color: Canvas;
+    opacity: 0.8;
+  }
+  [data-modal-panel] {
+    border: 2px solid CanvasText;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none;
+  }
+  [data-modal-panel] {
+    transition: none;
+  }
+}

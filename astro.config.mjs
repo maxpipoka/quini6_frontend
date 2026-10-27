@@ -79,6 +79,8 @@ export default defineConfig({
     }),
   ],
   vite: {
+    envDir: process.cwd(),
+    envPrefix: 'VITE_',
     resolve: {
       alias: {
         '@': '/src',
@@ -88,6 +90,29 @@ export default defineConfig({
         '@layouts': '/src/layouts',
         '@pages': '/src/pages',
         '@mock': '/src/mock',
+      },
+    },
+    worker: {
+      format: 'es',
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          cookieDomainRewrite: { 'localhost': '' },
+          configure: (proxy, _options) => {
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              // Forward Set-Cookie headers from the target server
+              const cookies = proxyRes.headers['set-cookie'];
+              if (cookies) {
+                // proxyRes.headers is an object where set-cookie might be an array
+                const cookieArray = Array.isArray(cookies) ? cookies : [cookies];
+                res.setHeader('set-cookie', cookieArray);
+              }
+            });
+          },
+        },
       },
     },
   },

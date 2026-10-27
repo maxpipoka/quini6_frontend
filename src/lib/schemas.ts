@@ -240,6 +240,152 @@ export const CommitImportSchema = z.object({
 
 export type CommitImportInput = z.infer<typeof CommitImportSchema>;
 
+// ============================================================================
+// Import Schemas (Phase 3 Bulk Import)
+// ============================================================================
+
+// Draw row input for import preview
+export const DrawRowInputSchema = z.object({
+  officialNumber: z.number().int().positive(),
+  drawDate: z.string().datetime(),
+  results: z
+    .array(
+      z.object({
+        modality: ModalityEnum,
+        numbers: SixUniqueNumbersSchema,
+      })
+    )
+    .length(4),
+});
+
+export type DrawRowInput = z.infer<typeof DrawRowInputSchema>;
+
+// Import Policy enum
+export const ImportPolicySchema = z.enum(['skip', 'replace', 'merge'] as const);
+
+export type ImportPolicy = z.infer<typeof ImportPolicySchema>;
+
+// Import Preview Request/Response
+export const ImportPreviewRequestSchema = z.object({
+  rows: z.array(DrawRowInputSchema),
+});
+
+export type ImportPreviewRequest = z.infer<typeof ImportPreviewRequestSchema>;
+
+export const ImportPreviewResponseSchema = z.object({
+  importId: z.string().uuid(),
+  validCount: z.number().int().nonnegative(),
+  invalidCount: z.number().int().nonnegative(),
+});
+
+export type ImportPreviewResponse = z.infer<typeof ImportPreviewResponseSchema>;
+
+// Import Commit Request/Response
+export const ImportCommitRequestSchema = z.object({
+  importId: z.string().uuid(),
+  policy: ImportPolicySchema,
+});
+
+export type ImportCommitRequest = z.infer<typeof ImportCommitRequestSchema>;
+
+export const ImportErrorSchema = z.object({
+  row: z.number().int().positive(),
+  field: z.string(),
+  message: z.string(),
+});
+
+export type ImportError = z.infer<typeof ImportErrorSchema>;
+
+export const ImportCommitResponseSchema = z.object({
+  created: z.number().int().nonnegative(),
+  updated: z.number().int().nonnegative(),
+  skipped: z.number().int().nonnegative(),
+  failed: z.number().int().nonnegative(),
+  errors: z.array(ImportErrorSchema),
+});
+
+export type ImportCommitResponse = z.infer<typeof ImportCommitResponseSchema>;
+
+// Import History
+export const ImportHistoryParamsSchema = z.object({
+  page: z.number().int().positive().default(1),
+  limit: z.number().int().positive().max(100).default(20),
+  sort: z.enum(['date', 'fileName', 'processed', 'succeeded', 'failed']).optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  policy: ImportPolicySchema.optional(),
+});
+
+export type ImportHistoryParams = z.infer<typeof ImportHistoryParamsSchema>;
+
+export const ImportSummarySchema = z.object({
+  importId: z.string().uuid(),
+  fileName: z.string(),
+  date: z.string().datetime(),
+  rowsProcessed: z.number().int().nonnegative(),
+  succeeded: z.number().int().nonnegative(),
+  failed: z.number().int().nonnegative(),
+  policy: ImportPolicySchema,
+});
+
+export type ImportSummary = z.infer<typeof ImportSummarySchema>;
+
+export const ImportHistoryResponseSchema = z.object({
+  data: z.array(ImportSummarySchema),
+  page: z.number().int().positive(),
+  limit: z.number().int().positive(),
+  total: z.number().int().nonnegative(),
+  totalPages: z.number().int().nonnegative(),
+});
+
+export type ImportHistoryResponse = z.infer<typeof ImportHistoryResponseSchema>;
+
+// Import Errors Detail
+export const ImportErrorDetailSchema = z.object({
+  rowNumber: z.number().int().positive(),
+  field: z.string(),
+  message: z.string(),
+  rawValue: z.unknown(),
+});
+
+export type ImportErrorDetail = z.infer<typeof ImportErrorDetailSchema>;
+
+export const ImportErrorsResponseSchema = z.object({
+  errors: z.array(ImportErrorDetailSchema),
+});
+
+export type ImportErrorsResponse = z.infer<typeof ImportErrorsResponseSchema>;
+
+// Import Progress
+export const ImportProgressStageSchema = z.enum(['processing', 'committing', 'completed'] as const);
+
+export type ImportProgressStage = z.infer<typeof ImportProgressStageSchema>;
+
+export const ImportProgressSchema = z.object({
+  stage: ImportProgressStageSchema,
+  progress: z.number().min(0).max(100),
+});
+
+export type ImportProgress = z.infer<typeof ImportProgressSchema>;
+
+// Import Preview Row (for table display)
+export interface ImportPreviewRow {
+  rowNumber: number;
+  date: string;
+  modality: string;
+  tradicional: number[] | null;
+  laSegunda: number[] | null;
+  revancha: number[] | null;
+  siempreSale: number[] | null;
+  reintegro: number | null;
+  isValid: boolean;
+  errors: ImportErrorDetail[];
+}
+
+export type ImportPreviewRows = ImportPreviewRow[];
+
+// Existing ImportListParamsSchema (updated to use ImportPolicySchema)
 export const ImportListParamsSchema = z.object({
   page: z.number().int().positive().default(1),
   limit: z.number().int().positive().max(100).default(20),

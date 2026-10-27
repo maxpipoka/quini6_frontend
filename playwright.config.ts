@@ -31,6 +31,29 @@ export default defineConfig({
       name: 'mobile-chrome',
       use: { ...devices['iPhone 14'] },
     },
+    // Visual regression projects (Chromium only for consistent baselines)
+    {
+      name: 'visual',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+      },
+      testMatch: '**/visual.spec.ts',
+    },
+    {
+      name: 'visual-mobile',
+      use: {
+        ...devices['iPhone 14'],
+        viewport: { width: 375, height: 667 },
+      },
+      testMatch: '**/visual.spec.ts',
+    },
+    // A11y project (Chromium only for consistent results)
+    {
+      name: 'a11y',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/a11y-admin-import*.spec.ts',
+    },
   ],
   webServer: [
     {
@@ -46,6 +69,6 @@ export default defineConfig({
       timeout: 120000,
     },
   ],
-  snapshotDir: './tests/visual/baseline',
-  snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{arg}{ext}',
+  snapshotDir: './tests/e2e/visual-snapshots',
+  snapshotPathTemplate: '{snapshotDir}/{arg}{ext}',
 });

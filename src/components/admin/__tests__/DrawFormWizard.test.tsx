@@ -10,12 +10,7 @@ const user = userEvent.setup();
 
 const renderWizard = (props = {}) => {
   return render(
-    <DrawFormWizard
-      onSubmit={mockOnSubmit}
-      onCancel={mockOnCancel}
-      isLoading={false}
-      {...props}
-    />
+    <DrawFormWizard onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} {...props} />
   );
 };
 
@@ -36,11 +31,12 @@ async function waitForStep(expectedStep: number) {
 
 async function fillCurrentStepNumbers(startNumber: number, isLastStep = false) {
   const inputs = screen.getAllByRole('spinbutton');
-  console.log('fillCurrentStepNumbers: found', inputs.length, 'spinbuttons');
+  const inputElements = inputs as HTMLInputElement[];
+  console.log('fillCurrentStepNumbers: found', inputElements.length, 'spinbuttons');
   for (let i = 0; i < 6; i++) {
     const value = String(startNumber + i);
     await act(async () => {
-      fireEvent.change(inputs[i + 1], { target: { value } });
+      fireEvent.change(inputElements[i + 1]!, { target: { value } });
     });
   }
   if (!isLastStep) {
@@ -103,7 +99,9 @@ describe('DrawFormWizard', () => {
 
       // Fill official number and date
       fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
-      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), { target: { value: '2024-01-15T20:00' } });
+      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), {
+        target: { value: '2024-01-15T20:00' },
+      });
 
       const submitBtn = getSubmitButton();
       expect(submitBtn).not.toBeDisabled();
@@ -114,15 +112,16 @@ describe('DrawFormWizard', () => {
 
       // Fill only 5 numbers in step 1
       const inputs = screen.getAllByRole('spinbutton');
+      const inputElements = inputs as HTMLInputElement[];
       for (let i = 0; i < 5; i++) {
-        await user.type(inputs[i + 1], String(i + 1));
+        await user.type(inputElements[i + 1]!, String(i + 1));
       }
 
       const nextBtn = screen.getByRole('button', { name: 'Siguiente' });
       expect(nextBtn).toBeDisabled();
 
-      // Fill 6th number
-      await user.type(inputs[6], '6');
+      // Fill 6th number (inputs[6] since inputs[0] is official number, inputs[1-6] are the 6 number fields)
+      await user.type(inputElements[6]!, '6');
       expect(nextBtn).not.toBeDisabled();
     });
 
@@ -130,13 +129,14 @@ describe('DrawFormWizard', () => {
       renderWizard();
 
       const inputs = screen.getAllByRole('spinbutton');
+      const inputElements = inputs as HTMLInputElement[];
       // Fill all 6 fields first, then create a duplicate
       // Type 1-5 in first 5 fields
       for (let i = 0; i < 5; i++) {
-        await user.type(inputs[i + 1], String(i + 1));
+        await user.type(inputElements[i + 1]!, String(i + 1));
       }
       // Fill 6th field with '5' (duplicate of first field)
-      await user.type(inputs[6], '5');
+      await user.type(inputElements[6]!, '5');
 
       // Error should appear in the step error container (by role alert)
       await waitFor(() => {
@@ -151,12 +151,13 @@ describe('DrawFormWizard', () => {
       renderWizard();
 
       const inputs = screen.getAllByRole('spinbutton');
+      const inputElements = inputs as HTMLInputElement[];
       // Fill 5 valid numbers (inputs[1-6] are the step's number fields)
       for (let i = 0; i < 5; i++) {
-        await user.type(inputs[i + 1], String(i + 1));
+        await user.type(inputElements[i + 1]!, String(i + 1));
       }
       // Fill 6th with an invalid number using fireEvent
-      fireEvent.change(inputs[6], { target: { value: '99' } });
+      fireEvent.change(inputElements[6]!, { target: { value: '99' } });
 
       // The input should have aria-invalid="true" due to validation error
       await waitFor(() => {
@@ -171,8 +172,9 @@ describe('DrawFormWizard', () => {
       renderWizard();
 
       const inputs = screen.getAllByRole('spinbutton');
+      const inputElements = inputs as HTMLInputElement[];
       for (let i = 0; i < 6; i++) {
-        await user.type(inputs[i + 1], String(i + 1));
+        await user.type(inputElements[i + 1]!, String(i + 1));
       }
 
       await clickNextAndWaitForStep(2);
@@ -184,8 +186,9 @@ describe('DrawFormWizard', () => {
       renderWizard();
 
       const inputs = screen.getAllByRole('spinbutton');
+      const inputElements = inputs as HTMLInputElement[];
       for (let i = 0; i < 6; i++) {
-        await user.type(inputs[i + 1], String(i + 1));
+        await user.type(inputElements[i + 1]!, String(i + 1));
       }
 
       await clickNextAndWaitForStep(2);
@@ -233,7 +236,10 @@ describe('DrawFormWizard', () => {
       // Use a value that passes schema validation (valid ISO format) but fails Date.parse (NaN)
       // Month 13 is invalid - Date.parse returns NaN
       await act(async () => {
-        Object.defineProperty(drawDateInput, 'value', { value: '2024-13-45T99:99:99', writable: true });
+        Object.defineProperty(drawDateInput, 'value', {
+          value: '2024-13-45T99:99:99',
+          writable: true,
+        });
         drawDateInput.dispatchEvent(new Event('input', { bubbles: true }));
         drawDateInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
@@ -277,11 +283,14 @@ describe('DrawFormWizard', () => {
       await clickNextAndWaitForStep(4);
       await fillCurrentStepNumbers(19, true);
 
-fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
+      fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
       // Set draw date directly on input element using native event
       await act(async () => {
-        const dateInput = screen.getByLabelText('Fecha del Sorteo *') as HTMLInputElement;
-        Object.defineProperty(dateInput, 'value', { value: '2024-01-15T20:00:00Z', writable: true });
+        const dateInput = screen.getByLabelText('Fecha del Sorteo *');
+        Object.defineProperty(dateInput, 'value', {
+          value: '2024-01-15T20:00:00Z',
+          writable: true,
+        });
         dateInput.dispatchEvent(new Event('input', { bubbles: true }));
         dateInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
@@ -320,7 +329,9 @@ fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: 
       await fillCurrentStepNumbers(19, true);
 
       fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
-      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), { target: { value: '2024-01-15T20:00' } });
+      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), {
+        target: { value: '2024-01-15T20:00' },
+      });
 
       // Check that submit button has "Actualizar" text
       const submitBtn = getSubmitButton();

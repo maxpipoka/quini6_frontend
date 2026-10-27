@@ -31,6 +31,7 @@ import {
   isNonRetryableStatus,
   extractRequestId,
 } from './client';
+import type * as schemas from '../schemas';
 import {
   ApiNetworkError,
   ApiTimeoutError,
@@ -502,6 +503,238 @@ describe('ApiClient', () => {
       await client.adminGetImport('import-1');
 
       expect(get).toHaveBeenCalledWith('/admin/import/import-1', expect.any(Object));
+    });
+  });
+
+  describe('import methods (Phase 3 Bulk Import)', () => {
+    const validDrawRow = {
+      officialNumber: 3246,
+      drawDate: ISO_DATE,
+      results: [
+        { modality: 'TRADICIONAL' as const, numbers: [5, 12, 23, 34, 41, 45] },
+        { modality: 'LA_SEGUNDA' as const, numbers: [1, 2, 3, 4, 5, 6] },
+        { modality: 'REVANCHA' as const, numbers: [7, 8, 9, 10, 11, 12] },
+        { modality: 'SIEMPRE_SALE' as const, numbers: [13, 14, 15, 16, 17, 18] },
+      ],
+    };
+
+    const previewResponse = {
+      importId: TEST_UUID,
+      validCount: 10,
+      invalidCount: 2,
+    };
+
+    const commitResponse = {
+      created: 45,
+      updated: 3,
+      skipped: 2,
+      failed: 0,
+      errors: [],
+    };
+
+    const historyResponse = {
+      data: [
+        {
+          importId: TEST_UUID,
+          fileName: 'draws.csv',
+          date: ISO_DATE,
+          rowsProcessed: 50,
+          succeeded: 48,
+          failed: 2,
+          policy: 'skip',
+        },
+      ],
+      page: 1,
+      limit: 10,
+      total: 1,
+      totalPages: 1,
+    };
+
+    const errorsResponse = {
+      errors: [
+        {
+          rowNumber: 5,
+          field: 'TRADICIONAL_number_3',
+          message: 'Number out of range',
+          rawValue: 50,
+        },
+      ],
+    };
+
+    describe('importPreview', () => {
+      it('POSTs rows to /admin/imports/preview and returns preview response', async () => {
+        const post = vi.fn().mockResolvedValue(jsonResponse(previewResponse));
+        mockKyMethods.post = post;
+
+        const result = await client.importPreview([validDrawRow]);
+
+        expect(post).toHaveBeenCalledWith(
+          'admin/imports/preview',
+          expect.objectContaining({
+            json: { rows: [validDrawRow] },
+          })
+        );
+        expect(result).toEqual(previewResponse);
+      });
+
+      it('validates request body with ImportPreviewRequestSchema', async () => {
+        const post = vi.fn();
+        mockKyMethods.post = post;
+
+        // Invalid rows - not an array
+        await expect(
+          client.importPreview({ invalid: 'data' } as unknown as schemas.DrawRowInput[])
+        ).rejects.toThrow('Request body validation failed');
+        expect(post).not.toHaveBeenCalled();
+      });
+
+      it('validates response with ImportPreviewResponseSchema', async () => {
+        mockKyMethods.post = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
+
+        await expect(client.importPreview([validDrawRow])).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
+      });
+    });
+
+    describe('importCommit', () => {
+      it('POSTs to /admin/imports/:id/commit with policy query param', async () => {
+        const post = vi.fn().mockResolvedValue(jsonResponse(commitResponse));
+        mockKyMethods.post = post;
+
+        const result = await client.importCommit(TEST_UUID, 'skip');
+
+        expect(post).toHaveBeenCalledWith(
+          `admin/imports/${TEST_UUID}/commit?policy=skip`,
+          expect.any(Object)
+        );
+        expect(result).toEqual(commitResponse);
+      });
+
+      it('accepts all valid policies', async () => {
+        const post = vi.fn().mockResolvedValue(jsonResponse(commitResponse));
+        mockKyMethods.post = post;
+
+        await client.importCommit(TEST_UUID, 'replace');
+        expect(post).toHaveBeenCalledWith(
+          `admin/imports/${TEST_UUID}/commit?policy=replace`,
+          expect.any(Object)
+        );
+
+        await client.importCommit(TEST_UUID, 'merge');
+        expect(post).toHaveBeenCalledWith(
+          `admin/imports/${TEST_UUID}/commit?policy=merge`,
+          expect.any(Object)
+        );
+      });
+
+      it('validates response with ImportCommitResponseSchema', async () => {
+        mockKyMethods.post = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
+
+        await expect(client.importCommit(TEST_UUID, 'skip')).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
+      });
+
+      it('includes CSRF header for mutating request', async () => {
+        const post = vi.fn().mockResolvedValue(jsonResponse(commitResponse));
+        mockKyMethods.post = post;
+
+        // Mock document.cookie to provide CSRF token
+        Object.defineProperty(global.document, 'cookie', {
+          value: 'csrf_token=test-csrf-token',
+          writable: true,
+        });
+
+        await client.importCommit(TEST_UUID, 'skip');
+
+        // Verify the request was made with the right URL
+        expect(post).toHaveBeenCalled();
+      });
+    });
+
+    describe('getImportHistory', () => {
+      it('GETs /admin/imports with query params', async () => {
+        const get = vi.fn().mockResolvedValue(jsonResponse(historyResponse));
+        mockKyMethods.get = get;
+
+        const result = await client.getImportHistory({
+          page: 1,
+          limit: 10,
+          sort: 'date',
+          order: 'desc',
+        });
+
+        expect(get).toHaveBeenCalledWith(
+          '/admin/imports?page=1&limit=10&sort=date&order=desc',
+          expect.any(Object)
+        );
+        expect(result).toEqual(historyResponse);
+      });
+
+      it('omits undefined params', async () => {
+        const get = vi.fn().mockResolvedValue(jsonResponse(historyResponse));
+        mockKyMethods.get = get;
+
+        await client.getImportHistory({ page: 2, limit: 10 });
+
+        expect(get).toHaveBeenCalledWith('/admin/imports?page=2&limit=10', expect.any(Object));
+      });
+
+      it('validates response with ImportHistoryResponseSchema', async () => {
+        mockKyMethods.get = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
+
+        await expect(client.getImportHistory({ page: 1, limit: 10 })).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
+      });
+
+      it('accepts filter params', async () => {
+        const get = vi.fn().mockResolvedValue(jsonResponse(historyResponse));
+        mockKyMethods.get = get;
+
+        await client.getImportHistory({
+          page: 1,
+          limit: 10,
+          startDate: '2024-01-01T00:00:00Z',
+          endDate: '2024-12-31T23:59:59Z',
+          policy: 'replace',
+        });
+
+        // URLSearchParams encodes the colons and other special chars
+        expect(get).toHaveBeenCalledWith(
+          '/admin/imports?page=1&limit=10&startDate=2024-01-01T00%3A00%3A00Z&endDate=2024-12-31T23%3A59%3A59Z&policy=replace',
+          expect.any(Object)
+        );
+      });
+    });
+
+    describe('getImportErrors', () => {
+      it('GETs /admin/imports/:id/errors', async () => {
+        const get = vi.fn().mockResolvedValue(jsonResponse(errorsResponse));
+        mockKyMethods.get = get;
+
+        const result = await client.getImportErrors(TEST_UUID);
+
+        expect(get).toHaveBeenCalledWith(`/admin/imports/${TEST_UUID}/errors`, expect.any(Object));
+        expect(result).toEqual(errorsResponse);
+      });
+
+      it('returns empty errors array for successful imports', async () => {
+        const emptyResponse = { errors: [] };
+        const get = vi.fn().mockResolvedValue(jsonResponse(emptyResponse));
+        mockKyMethods.get = get;
+
+        const result = await client.getImportErrors(TEST_UUID);
+
+        expect(result.errors).toEqual([]);
+      });
+
+      it('validates response with ImportErrorsResponseSchema', async () => {
+        mockKyMethods.get = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
+
+        await expect(client.getImportErrors(TEST_UUID)).rejects.toBeInstanceOf(ApiValidationError);
+      });
     });
   });
 

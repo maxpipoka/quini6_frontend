@@ -1,0 +1,178 @@
+---
+/**
+ * Progress - Accessible progress bar with stage labels
+ * Features: ARIA live region for screen readers, indeterminate mode
+ * Uses design tokens from global.css (CSS custom properties)
+ */
+
+type ProgressStage = 'processing' | 'committing' | 'completed' | 'error';
+
+interface Props {
+  value?: number; // 0-100, undefined = indeterminate
+  stage?: ProgressStage;
+  label?: string;
+  showPercentage?: boolean;
+  'aria-live'?: 'polite' | 'assertive';
+}
+
+const {
+  value,
+  stage = 'processing',
+  label,
+  showPercentage = true,
+  'aria-live': ariaLive = 'polite',
+  ...rest
+} = Astro.props;
+
+const progressId = `progress-${Math.random().toString(36).slice(2, 9)}`;
+
+const stageLabels: Record<ProgressStage, string> = {
+  processing: 'Procesando archivo...',
+  committing: 'Guardando sorteos...',
+  completed: 'Completado',
+  error: 'Error',
+};
+
+const stageColors: Record<ProgressStage, string> = {
+  processing: 'bg-primary-600',
+  committing: 'bg-blue-600',
+  completed: 'bg-success-600',
+  error: 'bg-error-600',
+};
+
+const currentLabel = label || stageLabels[stage];
+const currentColor = stageColors[stage];
+const isIndeterminate = value === undefined;
+const percentage = isIndeterminate ? '' : `${Math.round(Math.max(0, Math.min(100, value)))}%`;
+---
+
+<div
+  id={progressId}
+  class="w-full"
+  role="progressbar"
+  aria-valuenow={isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value || 0)))}
+  aria-valuemin={0}
+  aria-valuemax={100}
+  aria-live={ariaLive}
+  aria-label={currentLabel}
+  {...rest}
+>
+  <div class="mb-2 flex items-center justify-between gap-2">
+    <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300" id={`${progressId}-label`}>
+      {currentLabel}
+    </span>
+    {showPercentage && !isIndeterminate && (
+      <span class="font-mono text-sm text-neutral-500 dark:text-neutral-400" id={`${progressId}-percentage`}>
+        {percentage}
+      </span>
+    )}
+  </div>
+
+  <div class="relative h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+    {isIndeterminate ? (
+      <div
+        class={`${currentColor} h-full w-1/4 animate-pulse`}
+        style="animation: indeterminate 1.5s infinite ease-in-out;"
+        aria-hidden="true"
+      />
+    ) : (
+      <div
+        id={`${progressId}-bar`}
+        class={`${currentColor} h-full transition-all duration-300 ease-out`}
+        style={`width: ${percentage}`}
+        role="presentation"
+      />
+    )}
+  </div>
+
+  {label && (
+    <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400" id={`${progressId}-detail`}>
+      {label}
+    </p>
+  )}
+</div>
+
+<script>
+  // Provide a way to update progress from parent components
+  if (typeof window !== 'undefined') {
+    const progressEl = document.getElementById(progressId);
+    const barEl = document.getElementById(`${progressId}-bar`);
+    const labelEl = document.getElementById(`${progressId}-label`);
+    const percentageEl = document.getElementById(`${progressId}-percentage`);
+
+    // Expose update function globally for this instance
+    (window as any)[`updateProgress_${progressId}`] = (newValue: number, newStage?: ProgressStage, newLabel?: string) => {
+      if (progressEl) {
+        progressEl.setAttribute('aria-valuenow', String(Math.round(Math.max(0, Math.min(100, newValue)))));
+      }
+      if (barEl && newValue !== undefined) {
+        barEl.style.width = `${Math.round(Math.max(0, Math.min(100, newValue)))}%`;
+      }
+      if (percentageEl && newValue !== undefined) {
+        percentageEl.textContent = `${Math.round(Math.max(0, Math.min(100, newValue)))}%`;
+      }
+      if (labelEl && newStage) {
+        const labels = {
+          processing: 'Procesando archivo...',
+          committing: 'Guardando sorteos...',
+          completed: 'Completado',
+          error: 'Error',
+        };
+        labelEl.textContent = labels[newStage] || newStage;
+      }
+      if (labelEl && newLabel) {
+        labelEl.textContent = newLabel;
+      }
+      if (barEl && newStage) {
+        const colors = {
+          processing: 'bg-primary-600',
+          committing: 'bg-blue-600',
+          completed: 'bg-success-600',
+          error: 'bg-error-600',
+        };
+        barEl.className = `${colors[newStage] || colors.processing} h-full transition-all duration-300 ease-out`;
+      }
+    };
+  }
+</script>
+
+<style>
+  /* Indeterminate animation */
+  @keyframes indeterminate {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(400%);
+    }
+  }
+
+  .animate-pulse {
+    animation: indeterminate 1.5s infinite ease-in-out;
+  }
+
+  /* High contrast mode */
+  @media (forced-colors: active) {
+    #${progressId} > div:last-child {
+      forced-color-adjust: none;
+      background-color: Canvas;
+      border: 1px solid CanvasText;
+    }
+    #${progressId}-bar,
+    #${progressId} .animate-pulse {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    #${progressId}-bar {
+      transition: none;
+    }
+    .animate-pulse {
+      animation: none;
+      width: 50%;
+    }
+  }
+</style>

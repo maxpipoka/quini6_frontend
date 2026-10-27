@@ -237,7 +237,7 @@ export function DrawFormWizard({
             };
             const results = typedData.results.map((r) => ({
               modality: r.modality as Modality,
-              numbers: r.numbers.map((n) => n ?? null),
+              numbers: r.numbers.filter((n): n is number => n !== null),
             }));
             dispatch({
               type: 'RESET',
@@ -287,7 +287,7 @@ export function DrawFormWizard({
 
     const results = state.steps.map((step) => ({
       modality: step.modality,
-      numbers: step.numbers as number[],
+      numbers: step.numbers.filter((n): n is number => n !== null),
     }));
 
     const payload = {

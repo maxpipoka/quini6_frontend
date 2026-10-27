@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Debug Cookies - Quini 6">
+  <div class="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
+    <div class="w-full max-w-2xl">
+      <div class="rounded-xl border border-border bg-surface-elevated p-8">
+        <h1 class="font-display mb-6 text-center text-2xl font-bold text-text-primary">
+          Debug Cookies
+        </h1>
+
+        <div
+          id="output"
+          class="max-h-96 overflow-auto whitespace-pre-wrap rounded-lg bg-black/20 p-4 font-mono text-sm text-text-primary"
+        >
+          Loading...
+        </div>
+
+        <div class="mt-6 space-y-3">
+          <button
+            id="check-draws"
+            class="bg-primary hover:bg-primary/90 focus:ring-primary w-full rounded-lg py-3 font-medium text-white transition-colors"
+          >
+            Check /api/admin/draws
+          </button>
+          <button
+            id="check-middleware"
+            class="bg-secondary hover:bg-secondary/90 focus:ring-secondary w-full rounded-lg py-3 font-medium text-white transition-colors"
+          >
+            Check Middleware (via /admin/draws)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function log(msg) {
+      const timestamp = new Date().toLocaleTimeString();
+      output.textContent += `\n[${timestamp}] ${msg}`;
+      output.scrollTop = output.scrollHeight;
+    }
+
+    async function checkDraws() {
+      log('Fetching /api/admin/draws...');
+      try {
+        const res = await fetch('/api/admin/draws', { credentials: 'include' });
+        const data = await res.json();
+        log(`Status: ${res.status}`);
+        log(`Data: ${JSON.stringify(data, null, 2)}`);
+      } catch (err) {
+        log(`Error: ${err.message}`);
+      }
+    }
+
+    async function checkMiddleware() {
+      log('Navigating to /admin/draws...');
+      try {
+        const res = await fetch('/admin/draws', {
+          credentials: 'include',
+          redirect: 'manual', // Don't follow redirects automatically
+        });
+        log(`Status: ${res.status}`);
+        log(`Redirected: ${res.redirected}`);
+        if (res.redirected) {
+          log(`Redirect URL: ${res.url}`);
+        }
+        const text = await res.text();
+        log(`Body (first 500 chars): ${text.substring(0, 500)}`);
+      } catch (err) {
+        log(`Error: ${err.message}`);
+      }
+    }
+
+    document.getElementById('check-draws').addEventListener('click', checkDraws);
+    document.getElementById('check-middleware').addEventListener('click', checkMiddleware);
+
+    // Auto-run on load
+    checkDraws();
+  </script>
+</Layout>
