@@ -68,7 +68,7 @@ Chain strategy: stacked-to-main
 - [ ] 3.7 Add `draws:refresh` custom event dispatch in ImportWizard on commit success; add listener in draws list page to refetch on event or visibilitychange
 - [ ] 3.8 Update routing: ensure `/admin/imports` and `/admin/imports/upload` are protected by admin auth middleware (reuse existing)
 - [ ] 3.9 Integration test: upload CSV → preview → commit → verify draws list refresh in `tests/integration/bulk-import-flow.test.ts`
-- [ ] 3.10 Integration test: history page pagination, sorting, expand errors in `tests/integration/import-history.test.ts`
+- [x] 3.10 Integration test: history page pagination, sorting, expand errors in `src/components/admin/__tests__/import-history.integration.test.tsx`
 - [ ] 3.11 E2E test: full user journey (login → draws list → import draws → upload → commit → history) in `tests/e2e/bulk-import.spec.ts`
 
 ---
