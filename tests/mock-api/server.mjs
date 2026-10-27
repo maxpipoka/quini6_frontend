@@ -302,6 +302,9 @@ const server = http.createServer(async (req, res) => {
     const importId = commitMatch[1];
     const policy = url.searchParams.get('policy') ?? 'skip';
     console.log('[Mock API] Import commit request:', { importId, policy, path });
+    // Add delay to simulate real import processing time
+    // This gives the ImportProgress component time to render in the 'progress' step
+    await new Promise(resolve => setTimeout(resolve, 1500));
     const response = {
       created: 2,
       updated: 0,

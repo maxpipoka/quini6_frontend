@@ -96,7 +96,7 @@ export const ImportPreviewTable: React.FC<Props> = ({
   ];
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-700">
+    <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-700" data-testid="import-preview">
       <table className="w-full text-sm" role="grid">
         <thead className="dark:bg-neutral-800/50 bg-neutral-50">
           <tr>
@@ -117,6 +117,7 @@ export const ImportPreviewTable: React.FC<Props> = ({
                       ? 'ascending'
                       : 'none'
                 }
+                scope="col"
               >
                 <div className="flex items-center gap-1">
                   {col.header}

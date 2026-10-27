@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { runA11yCheck, assertNoA11yViolations } from './a11y-setup';
 
 const componentFixtures = [
   { path: '/test-fixtures/FileDropzone-visual?state=default', name: 'FileDropzone - default' },
@@ -28,9 +28,7 @@ test.describe('Accessibility Audit - Admin Import Components', () => {
       await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
 
-      const accessibilityScanResults = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
-        .analyze();
+      const accessibilityScanResults = await runA11yCheck(page);
 
       expect(accessibilityScanResults.violations).toEqual([]);
     });

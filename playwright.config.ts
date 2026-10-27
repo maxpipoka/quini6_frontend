@@ -52,7 +52,7 @@ export default defineConfig({
     {
       name: 'a11y',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: '**/a11y-admin-import.spec.ts',
+      testMatch: '**/a11y-admin-import*.spec.ts',
     },
   ],
   webServer: [
