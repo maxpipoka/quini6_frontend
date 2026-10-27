@@ -229,8 +229,8 @@ export const handlers = [
   // Import Endpoints (Phase 3 Bulk Import)
   // ============================================================================
 
-  // POST /admin/imports/preview - Submit rows for preview
-  http.post('/admin/imports/preview', async ({ request }) => {
+  // POST admin/imports/preview - Submit rows for preview
+  http.post('admin/imports/preview', async ({ request }) => {
     const body = await request.json();
     const { rows } = body as { rows: unknown[] };
 
@@ -265,8 +265,8 @@ export const handlers = [
     });
   }),
 
-  // POST /admin/imports/:id/commit - Commit previewed import with policy
-  http.post('/admin/imports/:id/commit', async ({ request }) => {
+  // POST admin/imports/:id/commit - Commit previewed import with policy
+  http.post('admin/imports/:id/commit', async ({ request }) => {
     const url = new URL(request.url);
     const policy = url.searchParams.get('policy') as 'skip' | 'replace' | 'merge' | null;
 
@@ -287,8 +287,8 @@ export const handlers = [
     });
   }),
 
-  // GET /admin/imports - Paginated import history
-  http.get('/admin/imports', ({ request }) => {
+  // GET admin/imports - Paginated import history
+  http.get('admin/imports', ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') ?? '1');
     const limit = parseInt(url.searchParams.get('limit') ?? '10');
@@ -333,8 +333,8 @@ export const handlers = [
     });
   }),
 
-  // GET /admin/imports/:id/errors - Get error details for an import
-  http.get('/admin/imports/:id/errors', ({ params }) => {
+  // GET admin/imports/:id/errors - Get error details for an import
+  http.get('admin/imports/:id/errors', ({ params }) => {
     const importId = params.id as string;
     const errors = mockImportErrors[importId as keyof typeof mockImportErrors] ?? [];
 

@@ -533,7 +533,7 @@ export class ApiClient {
         searchParams.set(key, String(value));
       }
     });
-    const url = `/admin/imports${searchParams.toString() ? `?${searchParams}` : ''}`;
+    const url = `admin/imports${searchParams.toString() ? `?${searchParams}` : ''}`;
     return this.request('get', url, {
       validateWith: schemas.ImportHistoryResponseSchema,
     });
