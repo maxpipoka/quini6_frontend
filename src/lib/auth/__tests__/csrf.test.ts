@@ -19,7 +19,8 @@ describe('csrf utilities', () => {
             // Find end of this cookie
             const end = originalCookie.indexOf(';', existingIndex);
             if (end >= 0) {
-              originalCookie = originalCookie.slice(0, existingIndex) + value + originalCookie.slice(end);
+              originalCookie =
+                originalCookie.slice(0, existingIndex) + value + originalCookie.slice(end);
             } else {
               originalCookie = originalCookie.slice(0, existingIndex) + value;
             }

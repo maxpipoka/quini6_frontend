@@ -24,8 +24,18 @@ const mockImports = [
 
 const mockImportErrors = {
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890': [
-    { rowNumber: 12, field: 'TRADICIONAL_number_3', message: 'Number must be between 0 and 45', rawValue: 50 },
-    { rowNumber: 34, field: 'REVANCHA_number_1', message: 'Numbers cannot repeat within a modality', rawValue: '1,2,3,4,5,1' },
+    {
+      rowNumber: 12,
+      field: 'TRADICIONAL_number_3',
+      message: 'Number must be between 0 and 45',
+      rawValue: 50,
+    },
+    {
+      rowNumber: 34,
+      field: 'REVANCHA_number_1',
+      message: 'Numbers cannot repeat within a modality',
+      rawValue: '1,2,3,4,5,1',
+    },
   ],
   'b2c3d4e5-f6a7-8901-bcde-f23456789012': [],
 };
@@ -44,7 +54,7 @@ export const handlers = [
   }),
 
   http.post('/api/admin/auth/login', async ({ request }) => {
-    const body = await request.json();
+    const body = (await request.json()) as { email?: string; password?: string };
     if (body.email === 'test@test.com' && body.password === 'pass') {
       return HttpResponse.json({
         user: {
@@ -223,21 +233,24 @@ export const handlers = [
   http.post('/admin/imports/preview', async ({ request }) => {
     const body = await request.json();
     const { rows } = body as { rows: unknown[] };
-    
+
     // Validate rows structure
     if (!Array.isArray(rows)) {
-      return HttpResponse.json(
-        { message: 'rows must be an array' },
-        { status: 400 }
-      );
+      return HttpResponse.json({ message: 'rows must be an array' }, { status: 400 });
     }
 
     // Count valid vs invalid (simplified: check if row has required fields)
     let validCount = 0;
     let invalidCount = 0;
-    
+
     for (const row of rows) {
-      if (row && typeof row === 'object' && 'officialNumber' in row && 'drawDate' in row && 'results' in row) {
+      if (
+        row &&
+        typeof row === 'object' &&
+        'officialNumber' in row &&
+        'drawDate' in row &&
+        'results' in row
+      ) {
         validCount++;
       } else {
         invalidCount++;
@@ -253,8 +266,7 @@ export const handlers = [
   }),
 
   // POST /admin/imports/:id/commit - Commit previewed import with policy
-  http.post('/admin/imports/:id/commit', async ({ params }) => {
-    const importId = params.id as string;
+  http.post('/admin/imports/:id/commit', async ({ request }) => {
     const url = new URL(request.url);
     const policy = url.searchParams.get('policy') as 'skip' | 'replace' | 'merge' | null;
 

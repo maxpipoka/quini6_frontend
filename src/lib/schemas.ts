@@ -248,10 +248,14 @@ export type CommitImportInput = z.infer<typeof CommitImportSchema>;
 export const DrawRowInputSchema = z.object({
   officialNumber: z.number().int().positive(),
   drawDate: z.string().datetime(),
-  results: z.array(z.object({
-    modality: ModalityEnum,
-    numbers: SixUniqueNumbersSchema,
-  })).length(4),
+  results: z
+    .array(
+      z.object({
+        modality: ModalityEnum,
+        numbers: SixUniqueNumbersSchema,
+      })
+    )
+    .length(4),
 });
 
 export type DrawRowInput = z.infer<typeof DrawRowInputSchema>;

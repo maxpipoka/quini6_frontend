@@ -60,12 +60,30 @@ import Layout from '../../layouts/Layout.astro';
     const form = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
     const errorMessage = document.getElementById('error-message');
+    let csrfToken = null;
+
+    async function loadCsrfToken() {
+      try {
+        const response = await fetch('/api/admin/auth/csrf', {
+          credentials: 'include',
+        });
+        const data = await response.json();
+        csrfToken = data.csrfToken ?? null;
+      } catch {
+        csrfToken = null;
+      }
+    }
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorMessage.classList.add('hidden');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Iniciando sesión...';
+
+      // Ensure CSRF token is loaded
+      if (!csrfToken) {
+        await loadCsrfToken();
+      }
 
       const formData = new FormData(form);
       const data = {
@@ -79,12 +97,14 @@ import Layout from '../../layouts/Layout.astro';
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-Token': getCsrfToken() ?? '',
+            'X-CSRF-Token': csrfToken ?? '',
           },
           body: JSON.stringify(data),
         });
 
+        console.log('LOGIN RESPONSE STATUS:', response.status);
         const result = await response.json();
+        console.log('LOGIN RESPONSE BODY:', result);
 
         if (!response.ok) {
           throw new Error(result.message || 'Credenciales inválidas');
@@ -93,8 +113,12 @@ import Layout from '../../layouts/Layout.astro';
         // Redirect to admin draws or the redirect param
         const urlParams = new URLSearchParams(window.location.search);
         const redirect = urlParams.get('redirect') || '/admin/draws';
+        console.log('REDIRECTING TO:', redirect);
+        console.log('CURRENT HREF BEFORE:', window.location.href);
         window.location.href = redirect;
+        console.log('CURRENT HREF AFTER:', window.location.href);
       } catch (error) {
+        console.log('LOGIN ERROR:', error);
         errorMessage.textContent =
           error instanceof Error ? error.message : 'Error al iniciar sesión';
         errorMessage.classList.remove('hidden');
@@ -104,9 +128,7 @@ import Layout from '../../layouts/Layout.astro';
       }
     });
 
-    function getCsrfToken(): string | null {
-      const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
-      return match ? decodeURIComponent(match[1]) : null;
-    }
+    // Load CSRF token on page load
+    loadCsrfToken();
   </script>
 </Layout>

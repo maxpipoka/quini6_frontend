@@ -57,18 +57,18 @@ const percentage = isIndeterminate ? '' : `${Math.round(Math.max(0, Math.min(100
   aria-label={currentLabel}
   {...rest}
 >
-  <div class="flex items-center justify-between gap-2 mb-2">
+  <div class="mb-2 flex items-center justify-between gap-2">
     <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300" id={`${progressId}-label`}>
       {currentLabel}
     </span>
     {showPercentage && !isIndeterminate && (
-      <span class="text-sm font-mono text-neutral-500 dark:text-neutral-400" id={`${progressId}-percentage`}>
+      <span class="font-mono text-sm text-neutral-500 dark:text-neutral-400" id={`${progressId}-percentage`}>
         {percentage}
       </span>
     )}
   </div>
 
-  <div class="relative h-2 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+  <div class="relative h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
     {isIndeterminate ? (
       <div
         class={`${currentColor} h-full w-1/4 animate-pulse`}

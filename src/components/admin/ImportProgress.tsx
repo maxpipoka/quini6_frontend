@@ -41,21 +41,11 @@ export const ImportProgress: React.FC<Props> = ({
     completed: 'Completado',
   };
 
-  const pollStatus = async () => {
-    if (!isPolling) return;
-
+  const pollStatus = () => {
     try {
-      const client = (await import('../../lib/api/client')).getApiClient();
-      // Note: This would need a new API endpoint for polling import status
-      // For now, we'll just simulate progress
-      const newProgress = Math.min(100, currentProgress + 10);
-      setCurrentProgress(newProgress);
-
-      if (newProgress >= 100) {
-        setCurrentStage('completed');
-        stopPolling();
-        onCompleteRef.current?.(true);
-      }
+      // Progress advances optimistically: there is no status endpoint yet.
+      // Functional update avoids the stale-closure freeze of the old counter.
+      setCurrentProgress((previous) => Math.min(100, previous + 10));
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Error al consultar progreso');
       setError(error);
@@ -76,6 +66,14 @@ export const ImportProgress: React.FC<Props> = ({
       pollTimerRef.current = null;
     }
   };
+
+  useEffect(() => {
+    if (currentProgress < 100) return;
+
+    setCurrentStage('completed');
+    stopPolling();
+    onCompleteRef.current?.(true);
+  }, [currentProgress]);
 
   useEffect(() => {
     if (stage === 'completed') {
@@ -101,11 +99,18 @@ export const ImportProgress: React.FC<Props> = ({
         ) : isError ? (
           <ErrorIcon className="size-6 text-error-600 dark:text-error-400" aria-hidden={true} />
         ) : (
-          <SpinnerIcon className="size-6 text-primary-600 dark:text-primary-400" aria-hidden={true} />
+          <SpinnerIcon
+            className="size-6 text-primary-600 dark:text-primary-400"
+            aria-hidden={true}
+          />
         )}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="font-medium text-neutral-900 dark:text-neutral-100">
-            {isCompleted ? 'Importación completada' : isError ? 'Error en la importación' : stageLabels[currentStage]}
+            {isCompleted
+              ? 'Importación completada'
+              : isError
+                ? 'Error en la importación'
+                : stageLabels[currentStage]}
           </p>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             ID: <code className="font-mono">{importId.slice(0, 8)}...</code>

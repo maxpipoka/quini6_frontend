@@ -13,12 +13,14 @@ const NAV_ITEMS = [
 
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(isCollapsed);
+  const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
     const saved = localStorage.getItem('admin-sidebar-collapsed');
     if (saved !== null) {
       setCollapsed(saved === 'true');
     }
+    setCurrentPath(window.location.pathname);
   }, []);
 
   const toggle = () => {
@@ -66,7 +68,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
               <a
                 href={href}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
-                  window.location.pathname === href ? 'bg-primary/10 text-primary' : ''
+                  currentPath === href ? 'bg-primary/10 text-primary' : ''
                 }`}
                 title={collapsed ? label : undefined}
               >

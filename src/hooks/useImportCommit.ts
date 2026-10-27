@@ -1,10 +1,19 @@
 import { useCallback, useState } from 'react';
 import { getApiClient } from '../lib/api/client';
-import type { ImportPreviewResponse, ImportCommitResponse, ImportProgress, ImportPolicy } from '../lib/schemas';
+import type {
+  ImportPreviewResponse,
+  ImportCommitResponse,
+  ImportProgress,
+  ImportPolicy,
+} from '../lib/schemas';
 
 interface UseImportCommitReturn {
   preview: (rows: any[]) => Promise<ImportPreviewResponse | null>;
-  commit: (importId: string, policy: ImportPolicy, onProgress?: ImportProgressCallback) => Promise<ImportCommitResponse | null>;
+  commit: (
+    importId: string,
+    policy: ImportPolicy,
+    onProgress?: ImportProgressCallback
+  ) => Promise<ImportCommitResponse | null>;
   isLoading: boolean;
   error: Error | null;
   clearError: () => void;
@@ -16,27 +25,27 @@ export const useImportCommit = (): UseImportCommitReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const client = getApiClient();
-
   const clearError = useCallback(() => setError(null), []);
 
-  const preview = useCallback(
-    async (rows: any[]): Promise<ImportPreviewResponse | null> => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await client.importPreview(rows);
-        return result;
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
-        setError(error);
-        return null;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [client]
-  );
+  const preview = useCallback(async (rows: any[]): Promise<ImportPreviewResponse | null> => {
+    console.log('[useImportCommit] preview called with rows:', rows.length);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const client = getApiClient();
+      console.log('[useImportCommit] calling client.importPreview');
+      const result = await client.importPreview(rows);
+      console.log('[useImportCommit] preview result:', result);
+      return result;
+    } catch (err) {
+      console.error('[useImportCommit] preview error:', err);
+      const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
+      setError(error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const commit = useCallback(
     async (
@@ -44,23 +53,34 @@ export const useImportCommit = (): UseImportCommitReturn => {
       policy: ImportPolicy,
       onProgress?: ImportProgressCallback
     ): Promise<ImportCommitResponse | null> => {
+      console.log('[useImportCommit] commit called with:', { importId, policy });
       setIsLoading(true);
       setError(null);
       try {
+        const client = getApiClient();
         // Note: The actual progress polling would be handled at a higher level
         // This hook just calls the commit endpoint
         const options = onProgress ? { onProgress } : undefined;
         const result = await client.importCommit(importId, policy, options);
+        console.log('[useImportCommit] commit result:', result);
         return result;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('Error desconocido al confirmar importación');
+        console.error('[useImportCommit] commit error:', err);
+        if (err instanceof Error && 'response' in err) {
+          console.error('[useImportCommit] error response:', (err as any).response);
+        }
+        if (err instanceof Error && 'body' in err) {
+          console.error('[useImportCommit] error body:', (err as any).body);
+        }
+        const error =
+          err instanceof Error ? err : new Error('Error desconocido al confirmar importación');
         setError(error);
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [client]
+    []
   );
 
   return {

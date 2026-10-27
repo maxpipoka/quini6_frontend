@@ -1,11 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { ImportParserInput, ImportParserOutput } from '../lib/types/import-worker';
 
 // Mock Worker for testing
 class MockWorker {
   onmessage: ((event: MessageEvent) => void) | null = null;
   onerror: ((event: ErrorEvent) => void) | null = null;
-  private messageHandlers: Map<string, (data: unknown) => void> = new Map();
-  
+  private messageHandlers = new Map<string, (data: unknown) => void>();
+
   postMessage(data: unknown): void {
     // Simulate async worker processing
     setTimeout(() => {
@@ -14,7 +15,7 @@ class MockWorker {
       }
     }, 0);
   }
-  
+
   terminate(): void {
     // No-op for mock
   }
@@ -24,38 +25,28 @@ class MockWorker {
 const originalWorker = global.Worker;
 global.Worker = MockWorker as unknown as typeof Worker;
 
-import { createImportParserWorker, postToWorker, type ImportParserInput, type ImportParserOutput } from '../lib/types/import-worker';
-
-// Import the worker code to test (we'll import the actual implementation)
-import workerCode from '../workers/importParser.ts?raw';
-
-// Helper to simulate worker execution
-function createTestWorker() {
-  const worker = new MockWorker();
-  
-  // We'll manually trigger the worker's onmessage handler
-  return worker;
-}
-
 // Helper to parse CSV text (mimicking worker logic)
-function parseCSVText(text: string): { rows: string[][]; errors: Array<{ row: number; message: string }> } {
+function parseCSVText(text: string): {
+  rows: string[][];
+  errors: { row: number; message: string }[];
+} {
   const rows: string[][] = [];
-  const errors: Array<{ row: number; message: string }> = [];
-  
+  const errors: { row: number; message: string }[] = [];
+
   const lines = text.split(/\r?\n/);
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
     if (!line) continue;
 
     const fields: string[] = [];
     let field = '';
     let inQuotes = false;
-    
+
     for (let j = 0; j < line.length; j++) {
       const char = line[j];
       const nextChar = line[j + 1];
-      
+
       if (char === '"') {
         if (inQuotes && nextChar === '"') {
           field += '"';
@@ -71,7 +62,7 @@ function parseCSVText(text: string): { rows: string[][]; errors: Array<{ row: nu
       }
     }
     fields.push(field.trim());
-    
+
     rows.push(fields);
   }
 
@@ -82,10 +73,13 @@ function parseCSVText(text: string): { rows: string[][]; errors: Array<{ row: nu
 function validateAndTransformRow(
   row: string[],
   rowIndex: number,
-  headers: string[]
-): { row: unknown | null; errors: Array<{ row: number; field?: string; message: string; rawValue?: unknown }> } {
-  const errors: Array<{ row: number; field?: string; message: string; rawValue?: unknown }> = [];
-  
+  _headers: string[]
+): {
+  row: unknown;
+  errors: { row: number; field?: string; message: string; rawValue?: unknown }[];
+} {
+  const errors: { row: number; field?: string; message: string; rawValue?: unknown }[] = [];
+
   if (row.length < 2) {
     errors.push({
       row: rowIndex,
@@ -94,7 +88,7 @@ function validateAndTransformRow(
     return { row: null, errors };
   }
 
-  const officialNumber = parseInt(row[0], 10);
+  const officialNumber = parseInt(row[0] ?? '', 10);
   if (isNaN(officialNumber) || officialNumber <= 0) {
     errors.push({
       row: rowIndex,
@@ -106,7 +100,7 @@ function validateAndTransformRow(
 
   let drawDate: string;
   try {
-    const date = new Date(row[1]);
+    const date = new Date(row[1] ?? '');
     if (isNaN(date.getTime())) throw new Error('Invalid date');
     drawDate = date.toISOString();
   } catch {
@@ -121,12 +115,12 @@ function validateAndTransformRow(
 
   const modalities = ['TRADICIONAL', 'LA_SEGUNDA', 'REVANCHA', 'SIEMPRE_SALE'] as const;
   const results = [];
-  
+
   for (let m = 0; m < 4; m++) {
-    const modality = modalities[m];
+    const modality = modalities[m]!;
     const startIdx = 2 + m * 6;
     const numbers: number[] = [];
-    
+
     for (let n = 0; n < 6; n++) {
       const cellIndex = startIdx + n;
       if (cellIndex >= row.length) {
@@ -137,8 +131,8 @@ function validateAndTransformRow(
         });
         break;
       }
-      
-      const num = parseInt(row[cellIndex], 10);
+
+      const num = parseInt(row[cellIndex] ?? '', 10);
       if (isNaN(num) || num < 0 || num > 45) {
         errors.push({
           row: rowIndex,
@@ -149,7 +143,7 @@ function validateAndTransformRow(
       }
       numbers.push(num);
     }
-    
+
     if (numbers.length === 6 && new Set(numbers).size !== 6) {
       errors.push({
         row: rowIndex,
@@ -157,7 +151,7 @@ function validateAndTransformRow(
         message: 'Numbers cannot repeat within a modality',
       });
     }
-    
+
     results.push({ modality, numbers });
   }
 
@@ -181,11 +175,11 @@ describe('Import Parser Worker', () => {
 3246,2024-01-20,5,12,23,34,41,45,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18`;
 
       const { rows } = parseCSVText(csv);
-      
+
       expect(rows).toHaveLength(2); // header + 1 data row
       expect(rows[0]).toHaveLength(26); // 26 columns
-      expect(rows[1][0]).toBe('3246');
-      expect(rows[1][1]).toBe('2024-01-20');
+      expect(rows[1]![0]).toBe('3246');
+      expect(rows[1]![1]).toBe('2024-01-20');
     });
 
     it('handles quoted fields with commas', () => {
@@ -193,10 +187,10 @@ describe('Import Parser Worker', () => {
 "value, with comma",simple`;
 
       const { rows } = parseCSVText(csv);
-      
+
       expect(rows).toHaveLength(2);
-      expect(rows[1][0]).toBe('value, with comma');
-      expect(rows[1][1]).toBe('simple');
+      expect(rows[1]![0]).toBe('value, with comma');
+      expect(rows[1]![1]).toBe('simple');
     });
 
     it('handles escaped quotes', () => {
@@ -204,9 +198,9 @@ describe('Import Parser Worker', () => {
 "value ""quoted""",simple`;
 
       const { rows } = parseCSVText(csv);
-      
+
       expect(rows).toHaveLength(2);
-      expect(rows[1][0]).toBe('value "quoted"');
+      expect(rows[1]?.[0]).toBe('value "quoted"');
     });
 
     it('handles empty lines', () => {
@@ -215,115 +209,268 @@ describe('Import Parser Worker', () => {
 value1,value2`;
 
       const { rows } = parseCSVText(csv);
-      
+
       expect(rows).toHaveLength(2); // Empty line skipped
     });
   });
 
   describe('Row Validation', () => {
     const headers = [
-      'officialNumber', 'drawDate',
-      'TRADICIONAL_1', 'TRADICIONAL_2', 'TRADICIONAL_3', 'TRADICIONAL_4', 'TRADICIONAL_5', 'TRADICIONAL_6',
-      'LA_SEGUNDA_1', 'LA_SEGUNDA_2', 'LA_SEGUNDA_3', 'LA_SEGUNDA_4', 'LA_SEGUNDA_5', 'LA_SEGUNDA_6',
-      'REVANCHA_1', 'REVANCHA_2', 'REVANCHA_3', 'REVANCHA_4', 'REVANCHA_5', 'REVANCHA_6',
-      'SIEMPRE_SALE_1', 'SIEMPRE_SALE_2', 'SIEMPRE_SALE_3', 'SIEMPRE_SALE_4', 'SIEMPRE_SALE_5', 'SIEMPRE_SALE_6',
+      'officialNumber',
+      'drawDate',
+      'TRADICIONAL_1',
+      'TRADICIONAL_2',
+      'TRADICIONAL_3',
+      'TRADICIONAL_4',
+      'TRADICIONAL_5',
+      'TRADICIONAL_6',
+      'LA_SEGUNDA_1',
+      'LA_SEGUNDA_2',
+      'LA_SEGUNDA_3',
+      'LA_SEGUNDA_4',
+      'LA_SEGUNDA_5',
+      'LA_SEGUNDA_6',
+      'REVANCHA_1',
+      'REVANCHA_2',
+      'REVANCHA_3',
+      'REVANCHA_4',
+      'REVANCHA_5',
+      'REVANCHA_6',
+      'SIEMPRE_SALE_1',
+      'SIEMPRE_SALE_2',
+      'SIEMPRE_SALE_3',
+      'SIEMPRE_SALE_4',
+      'SIEMPRE_SALE_5',
+      'SIEMPRE_SALE_6',
     ];
 
     it('validates a correct row', () => {
       const row = [
-        '3246', '2024-01-20',
-        '5', '12', '23', '34', '41', '45',
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '3246',
+        '2024-01-20',
+        '5',
+        '12',
+        '23',
+        '34',
+        '41',
+        '45',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { row: parsed, errors } = validateAndTransformRow(row, 1, headers);
-      
+
       expect(errors).toHaveLength(0);
       expect(parsed).not.toBeNull();
-      expect((parsed as any).officialNumber).toBe(3246);
-      expect((parsed as any).results).toHaveLength(4);
-      expect((parsed as any).results[0].numbers).toEqual([5, 12, 23, 34, 41, 45]);
+      const parsedRow = parsed as {
+        officialNumber: number;
+        results: { modality: string; numbers: number[] }[];
+      };
+      expect(parsedRow.officialNumber).toBe(3246);
+      expect(parsedRow.results).toHaveLength(4);
+      expect(parsedRow.results[0]?.numbers).toEqual([5, 12, 23, 34, 41, 45]);
     });
 
     it('rejects invalid official number', () => {
       const row = [
-        '0', '2024-01-20',
-        '5', '12', '23', '34', '41', '45',
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '0',
+        '2024-01-20',
+        '5',
+        '12',
+        '23',
+        '34',
+        '41',
+        '45',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
-      expect(errors.some(e => e.field === 'officialNumber')).toBe(true);
+
+      expect(errors.some((e) => e.field === 'officialNumber')).toBe(true);
     });
 
     it('rejects invalid date', () => {
       const row = [
-        '3246', 'invalid-date',
-        '5', '12', '23', '34', '41', '45',
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '3246',
+        'invalid-date',
+        '5',
+        '12',
+        '23',
+        '34',
+        '41',
+        '45',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
-      expect(errors.some(e => e.field === 'drawDate')).toBe(true);
+
+      expect(errors.some((e) => e.field === 'drawDate')).toBe(true);
     });
 
     it('rejects numbers out of range', () => {
       const row = [
-        '3246', '2024-01-20',
-        '50', '12', '23', '34', '41', '45', // 50 is out of range
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '3246',
+        '2024-01-20',
+        '50',
+        '12',
+        '23',
+        '34',
+        '41',
+        '45', // 50 is out of range
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
-      expect(errors.some(e => e.message === 'Number must be between 0 and 45')).toBe(true);
+
+      expect(errors.some((e) => e.message === 'Number must be between 0 and 45')).toBe(true);
     });
 
     it('rejects duplicate numbers in modality', () => {
       const row = [
-        '3246', '2024-01-20',
-        '5', '12', '23', '34', '41', '5', // duplicate 5
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '3246',
+        '2024-01-20',
+        '5',
+        '12',
+        '23',
+        '34',
+        '41',
+        '5', // duplicate 5
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
-      expect(errors.some(e => e.message === 'Numbers cannot repeat within a modality')).toBe(true);
+
+      expect(errors.some((e) => e.message === 'Numbers cannot repeat within a modality')).toBe(
+        true
+      );
     });
 
     it('handles missing columns gracefully', () => {
       const row = ['3246', '2024-01-20']; // Only 2 columns
-      
+
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
+
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some(e => e.message.includes('Missing number'))).toBe(true);
+      expect(errors.some((e) => e.message.includes('Missing number'))).toBe(true);
     });
 
     it('handles non-numeric values', () => {
       const row = [
-        '3246', '2024-01-20',
-        'abc', '12', '23', '34', '41', '45', // abc is not a number
-        '1', '2', '3', '4', '5', '6',
-        '7', '8', '9', '10', '11', '12',
-        '13', '14', '15', '16', '17', '18',
+        '3246',
+        '2024-01-20',
+        'abc',
+        '12',
+        '23',
+        '34',
+        '41',
+        '45', // abc is not a number
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
       ];
 
       const { errors } = validateAndTransformRow(row, 1, headers);
-      
-      expect(errors.some(e => e.message === 'Number must be between 0 and 45')).toBe(true);
+
+      expect(errors.some((e) => e.message === 'Number must be between 0 and 45')).toBe(true);
     });
   });
 
@@ -334,7 +481,7 @@ value1,value2`;
         fileName: 'test.csv',
         mimeType: 'text/csv',
       };
-      
+
       expect(input.fileName).toBe('test.csv');
       expect(input.mimeType).toBe('text/csv');
     });
@@ -345,7 +492,7 @@ value1,value2`;
         parsed: 500,
         total: 1000,
       };
-      
+
       expect(progress.type).toBe('PROGRESS');
       expect(progress.parsed).toBe(500);
     });
@@ -356,7 +503,7 @@ value1,value2`;
         rows: [],
         parseErrors: [],
       };
-      
+
       expect(result.type).toBe('RESULT');
       expect(Array.isArray(result.rows)).toBe(true);
     });
@@ -366,7 +513,7 @@ value1,value2`;
         type: 'ERROR',
         message: 'Failed to parse',
       };
-      
+
       expect(error.type).toBe('ERROR');
       expect(error.message).toBe('Failed to parse');
     });
@@ -377,14 +524,14 @@ value1,value2`;
       const CHUNK_SIZE = 1000;
       const totalRows = 5000;
       let chunksProcessed = 0;
-      
+
       for (let i = 0; i < totalRows; i += CHUNK_SIZE) {
         const chunkEnd = Math.min(i + CHUNK_SIZE, totalRows);
         const chunkSize = chunkEnd - i;
         chunksProcessed++;
         expect(chunkSize).toBeLessThanOrEqual(CHUNK_SIZE);
       }
-      
+
       expect(chunksProcessed).toBe(5); // 5000 / 1000 = 5 chunks
     });
   });

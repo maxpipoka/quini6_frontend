@@ -58,7 +58,7 @@ function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
 
   // Simple CSV parser - handles quoted fields, commas in quotes
   const lines = text.split(/\r?\n/);
-  
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]?.trim() ?? '';
     if (!line) continue;
@@ -66,11 +66,11 @@ function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
     const fields: string[] = [];
     let field = '';
     let inQuotes = false;
-    
+
     for (let j = 0; j < line.length; j++) {
       const char = line[j];
       const nextChar = line[j + 1] ?? '';
-      
+
       if (char === '"') {
         if (inQuotes && nextChar === '"') {
           // Escaped quote
@@ -87,7 +87,7 @@ function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
       }
     }
     fields.push(field.trim()); // Last field
-    
+
     rows.push(fields);
     currentRow++;
   }
@@ -98,7 +98,7 @@ function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
 // Parse XLSX using SheetJS (dynamically imported)
 async function parseXLSX(buffer: ArrayBuffer): Promise<{ rows: string[][]; errors: ParseError[] }> {
   const errors: ParseError[] = [];
-  
+
   try {
     // Dynamic import for XLSX - only loaded when needed
     const XLSXModule = await import('xlsx');
@@ -106,7 +106,7 @@ async function parseXLSX(buffer: ArrayBuffer): Promise<{ rows: string[][]; error
     const workbook = XLSX.read(buffer, { type: 'array' });
     const sheetName = workbook.SheetNames[0] ?? '';
     const worksheet = workbook.Sheets[sheetName];
-    
+
     if (!worksheet) {
       errors.push({
         row: 0,
@@ -114,10 +114,10 @@ async function parseXLSX(buffer: ArrayBuffer): Promise<{ rows: string[][]; error
       });
       return { rows: [], errors };
     }
-    
+
     // Convert to array of arrays
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false }) as string[][];
-    
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
+
     return { rows: jsonData, errors };
   } catch (error) {
     errors.push({
@@ -135,12 +135,12 @@ function validateAndTransformRow(
   headers: string[]
 ): { row: DrawRowInput | null; errors: ParseError[] } {
   const errors: ParseError[] = [];
-  
+
   // Expected columns: officialNumber, drawDate, and 4 modalities with 6 numbers each
   // Format: officialNumber, drawDate, modality1_num1, modality1_num2, ..., modality4_num6
   // Or: officialNumber, drawDate, modality1_nums, modality2_nums, modality3_nums, modality4_nums
   // where modality_nums is "1,2,3,4,5,6"
-  
+
   if (row.length < 2) {
     errors.push({
       row: rowIndex,
@@ -180,14 +180,19 @@ function validateAndTransformRow(
   }
 
   // Parse modalities - expect 4 modalities with 6 numbers each
-  const modalities: ('TRADICIONAL' | 'LA_SEGUNDA' | 'REVANCHA' | 'SIEMPRE_SALE')[] = ['TRADICIONAL', 'LA_SEGUNDA', 'REVANCHA', 'SIEMPRE_SALE'];
+  const modalities: ('TRADICIONAL' | 'LA_SEGUNDA' | 'REVANCHA' | 'SIEMPRE_SALE')[] = [
+    'TRADICIONAL',
+    'LA_SEGUNDA',
+    'REVANCHA',
+    'SIEMPRE_SALE',
+  ];
   const results: DrawRowInput['results'] = [];
-  
+
   for (let m = 0; m < 4; m++) {
     const modality = modalities[m]!;
     const startIdx = 2 + m * 6;
     const numbers: number[] = [];
-    
+
     // Check if we have 6 numbers for this modality
     for (let n = 0; n < 6; n++) {
       const cellIndex = startIdx + n;
@@ -199,7 +204,7 @@ function validateAndTransformRow(
         });
         break;
       }
-      
+
       const cellValue = row[cellIndex] ?? '';
       const num = parseInt(cellValue, 10);
       if (isNaN(num) || num < 0 || num > 45) {
@@ -212,7 +217,7 @@ function validateAndTransformRow(
       }
       numbers.push(num);
     }
-    
+
     // Check for duplicates within modality
     if (numbers.length === 6 && new Set(numbers).size !== 6) {
       errors.push({
@@ -221,8 +226,8 @@ function validateAndTransformRow(
         message: 'Numbers cannot repeat within a modality',
       });
     }
-    
-    results.push({ modality: modality!, numbers });
+
+    results.push({ modality: modality, numbers });
   }
 
   // If we have errors, still return the row but mark it as invalid
@@ -240,7 +245,7 @@ self.onmessage = async (event: MessageEvent<ParseInput>) => {
   const data = event.data;
   if (!data) return;
   const { file, fileName, mimeType } = data;
-  
+
   try {
     let text = '';
     let rows: string[][] = [];
@@ -281,7 +286,7 @@ self.onmessage = async (event: MessageEvent<ParseInput>) => {
     // First row is headers
     const headers = rows[0] ?? [];
     const dataRows = rows.slice(1);
-    
+
     const validRows: DrawRowInput[] = [];
     const parseErrors: ParseError[] = [...allErrors];
 
@@ -289,7 +294,7 @@ self.onmessage = async (event: MessageEvent<ParseInput>) => {
     const CHUNK_SIZE = 1000;
     for (let i = 0; i < dataRows.length; i += CHUNK_SIZE) {
       const chunk = dataRows.slice(i, i + CHUNK_SIZE);
-      
+
       for (let j = 0; j < chunk.length; j++) {
         const rowIndex = i + j + 1; // +1 for header row
         const currentRow = chunk[j] ?? [];

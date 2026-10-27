@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { CreateDrawSchema, type DrawRowInput } from '../lib/schemas';
 
 interface RowValidationResult {
@@ -22,26 +22,25 @@ export const useImportValidation = (): UseImportValidationReturn => {
   const [rowErrors, setRowErrors] = useState<Map<number, z.ZodIssue[]>>(new Map());
 
   const validateRows = useMemo(
-    () =>
-      (rows: DrawRowInput[]) => {
-        const valid: DrawRowInput[] = [];
-        const invalid: RowValidationResult[] = [];
-        const errors = new Map<number, z.ZodIssue[]>();
+    () => (rows: DrawRowInput[]) => {
+      const valid: DrawRowInput[] = [];
+      const invalid: RowValidationResult[] = [];
+      const errors = new Map<number, z.ZodIssue[]>();
 
-        rows.forEach((row, index) => {
-          const result = CreateDrawSchema.safeParse(row);
-          if (result.success) {
-            valid.push(row);
-          } else {
-            invalid.push({ row, isValid: false, errors: result.error.issues });
-            errors.set(index, result.error.issues);
-          }
-        });
+      rows.forEach((row, index) => {
+        const result = CreateDrawSchema.safeParse(row);
+        if (result.success) {
+          valid.push(row);
+        } else {
+          invalid.push({ row, isValid: false, errors: result.error.issues });
+          errors.set(index, result.error.issues);
+        }
+      });
 
-        setValidRows(valid);
-        setInvalidRows(invalid);
-        setRowErrors(errors);
-      },
+      setValidRows(valid);
+      setInvalidRows(invalid);
+      setRowErrors(errors);
+    },
     []
   );
 

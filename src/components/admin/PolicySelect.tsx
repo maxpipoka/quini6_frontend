@@ -12,7 +12,8 @@ const POLICY_OPTIONS: PolicyOption[] = [
   {
     value: 'skip',
     label: 'Omitir duplicados',
-    description: 'Mantiene los sorteos existentes, ignora los nuevos que coincidan en fecha y modalidad',
+    description:
+      'Mantiene los sorteos existentes, ignora los nuevos que coincidan en fecha y modalidad',
   },
   {
     value: 'replace',
@@ -46,22 +47,26 @@ export const PolicySelect: React.FC<Props> = ({
   const isDisabled = disabled || validCount === 0;
 
   return (
-    <fieldset
-      className="space-y-3"
-      aria-describedby={ariaDescribedBy}
-    >
+    <fieldset className="space-y-3" aria-describedby={ariaDescribedBy}>
       <legend className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
         Política de conflicto
       </legend>
-      <div className="space-y-2" role="radiogroup" aria-labelledby={`${radioGroupId}-legend`} id={radioGroupId}>
+      <div
+        className="space-y-2"
+        role="radiogroup"
+        aria-labelledby={`${radioGroupId}-legend`}
+        id={radioGroupId}
+      >
         {POLICY_OPTIONS.map((option) => (
           <label
             key={option.value}
-            className={`flex items-start gap-3 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer
-              ${value === option.value
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'}
-              ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex cursor-pointer items-start gap-3 rounded-lg border-2 p-3 transition-all duration-200
+              ${
+                value === option.value
+                  ? 'dark:bg-primary-900/20 border-primary-500 bg-primary-50'
+                  : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700 dark:hover:border-neutral-600'
+              }
+              ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
           >
             <input
               type="radio"
@@ -70,17 +75,14 @@ export const PolicySelect: React.FC<Props> = ({
               checked={value === option.value}
               onChange={() => !isDisabled && onChange(option.value)}
               disabled={isDisabled}
-              className="mt-1 h-4 w-4 text-primary-600 border-neutral-300 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                disabled:opacity-50"
+              className="mt-1 size-4 border-neutral-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
               aria-describedby={`${option.value}-description`}
             />
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-neutral-900 dark:text-neutral-100">
-                {option.label}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-neutral-900 dark:text-neutral-100">{option.label}</p>
               <p
                 id={`${option.value}-description`}
-                className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5"
+                className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400"
               >
                 {option.description}
               </p>
@@ -89,7 +91,7 @@ export const PolicySelect: React.FC<Props> = ({
         ))}
       </div>
       {isDisabled && validCount === 0 && (
-        <p className="text-xs text-neutral-500 dark:text-neutral-400 italic">
+        <p className="text-xs italic text-neutral-500 dark:text-neutral-400">
           Seleccione una política después de validar el archivo (mínimo 1 fila válida)
         </p>
       )}

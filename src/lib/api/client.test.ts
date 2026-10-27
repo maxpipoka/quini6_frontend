@@ -31,7 +31,7 @@ import {
   isNonRetryableStatus,
   extractRequestId,
 } from './client';
-import * as schemas from '../schemas';
+import type * as schemas from '../schemas';
 import {
   ApiNetworkError,
   ApiTimeoutError,
@@ -552,7 +552,12 @@ describe('ApiClient', () => {
 
     const errorsResponse = {
       errors: [
-        { rowNumber: 5, field: 'TRADICIONAL_number_3', message: 'Number out of range', rawValue: 50 },
+        {
+          rowNumber: 5,
+          field: 'TRADICIONAL_number_3',
+          message: 'Number out of range',
+          rawValue: 50,
+        },
       ],
     };
 
@@ -564,7 +569,7 @@ describe('ApiClient', () => {
         const result = await client.importPreview([validDrawRow]);
 
         expect(post).toHaveBeenCalledWith(
-          '/admin/imports/preview',
+          'admin/imports/preview',
           expect.objectContaining({
             json: { rows: [validDrawRow] },
           })
@@ -577,16 +582,18 @@ describe('ApiClient', () => {
         mockKyMethods.post = post;
 
         // Invalid rows - not an array
-        await expect(client.importPreview({ invalid: 'data' } as unknown as schemas.DrawRowInput[])).rejects.toThrow(
-          'Request body validation failed'
-        );
+        await expect(
+          client.importPreview({ invalid: 'data' } as unknown as schemas.DrawRowInput[])
+        ).rejects.toThrow('Request body validation failed');
         expect(post).not.toHaveBeenCalled();
       });
 
       it('validates response with ImportPreviewResponseSchema', async () => {
         mockKyMethods.post = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
 
-        await expect(client.importPreview([validDrawRow])).rejects.toBeInstanceOf(ApiValidationError);
+        await expect(client.importPreview([validDrawRow])).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
       });
     });
 
@@ -598,7 +605,7 @@ describe('ApiClient', () => {
         const result = await client.importCommit(TEST_UUID, 'skip');
 
         expect(post).toHaveBeenCalledWith(
-          `/admin/imports/${TEST_UUID}/commit?policy=skip`,
+          `admin/imports/${TEST_UUID}/commit?policy=skip`,
           expect.any(Object)
         );
         expect(result).toEqual(commitResponse);
@@ -610,13 +617,13 @@ describe('ApiClient', () => {
 
         await client.importCommit(TEST_UUID, 'replace');
         expect(post).toHaveBeenCalledWith(
-          `/admin/imports/${TEST_UUID}/commit?policy=replace`,
+          `admin/imports/${TEST_UUID}/commit?policy=replace`,
           expect.any(Object)
         );
 
         await client.importCommit(TEST_UUID, 'merge');
         expect(post).toHaveBeenCalledWith(
-          `/admin/imports/${TEST_UUID}/commit?policy=merge`,
+          `admin/imports/${TEST_UUID}/commit?policy=merge`,
           expect.any(Object)
         );
       });
@@ -624,7 +631,9 @@ describe('ApiClient', () => {
       it('validates response with ImportCommitResponseSchema', async () => {
         mockKyMethods.post = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
 
-        await expect(client.importCommit(TEST_UUID, 'skip')).rejects.toBeInstanceOf(ApiValidationError);
+        await expect(client.importCommit(TEST_UUID, 'skip')).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
       });
 
       it('includes CSRF header for mutating request', async () => {
@@ -649,7 +658,12 @@ describe('ApiClient', () => {
         const get = vi.fn().mockResolvedValue(jsonResponse(historyResponse));
         mockKyMethods.get = get;
 
-        const result = await client.getImportHistory({ page: 1, limit: 10, sort: 'date', order: 'desc' });
+        const result = await client.getImportHistory({
+          page: 1,
+          limit: 10,
+          sort: 'date',
+          order: 'desc',
+        });
 
         expect(get).toHaveBeenCalledWith(
           '/admin/imports?page=1&limit=10&sort=date&order=desc',
@@ -664,16 +678,15 @@ describe('ApiClient', () => {
 
         await client.getImportHistory({ page: 2, limit: 10 });
 
-        expect(get).toHaveBeenCalledWith(
-          '/admin/imports?page=2&limit=10',
-          expect.any(Object)
-        );
+        expect(get).toHaveBeenCalledWith('/admin/imports?page=2&limit=10', expect.any(Object));
       });
 
       it('validates response with ImportHistoryResponseSchema', async () => {
         mockKyMethods.get = vi.fn().mockResolvedValue(jsonResponse({ invalid: 'response' }));
 
-        await expect(client.getImportHistory({ page: 1, limit: 10 })).rejects.toBeInstanceOf(ApiValidationError);
+        await expect(client.getImportHistory({ page: 1, limit: 10 })).rejects.toBeInstanceOf(
+          ApiValidationError
+        );
       });
 
       it('accepts filter params', async () => {

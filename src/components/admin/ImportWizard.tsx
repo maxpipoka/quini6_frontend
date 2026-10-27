@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+﻿import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { FileDropzone } from '../ui/FileDropzone';
 import { PolicySelect } from './PolicySelect';
 import { ImportPreviewTable } from './ImportPreviewTable';
@@ -6,11 +6,16 @@ import { ImportProgress } from './ImportProgress';
 import { Modal } from '../ui/Modal';
 import Button from '../ui/Button';
 import Toast from '../ui/Toast';
-import { UploadIcon, FileIcon, XIcon, CheckIcon, ErrorIcon } from './icons';
+import { UploadIcon, CheckIcon, ErrorIcon } from './icons';
 import { useImportValidation } from '../../hooks/useImportValidation';
 import { useImportCommit } from '../../hooks/useImportCommit';
-import { getApiClient } from '../../lib/api/client';
-import type { DrawRowInput, ImportPolicy, ImportPreviewResponse, ImportPreviewRow, ImportProgressStage } from '../../lib/schemas';
+import type { ImportParserInput, ImportParserOutput } from '../../lib/types/import-worker';
+import type {
+  DrawRowInput,
+  ImportPolicy,
+  ImportPreviewRow,
+  ImportProgressStage,
+} from '../../lib/schemas';
 
 interface Props {
   onImportSuccess?: () => void;
@@ -20,19 +25,11 @@ type WizardStep = 'upload' | 'preview' | 'confirm' | 'progress' | 'result';
 
 interface ParsedFileResult {
   rows: DrawRowInput[];
-  parseErrors: { row: number; field: string; message: string }[];
+  parseErrors: { row: number; field?: string; message: string }[];
   file: File;
 }
 
-interface ImportResult {
-  success: boolean;
-  created?: number;
-  updated?: number;
-  skipped?: number;
-  failed?: number;
-  errors?: { row: number; field: string; message: string }[];
-  message?: string;
-}
+const XLSX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
   const [step, setStep] = useState<WizardStep>('upload');
@@ -40,58 +37,117 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
   const [importId, setImportId] = useState<string | null>(null);
   const [policy, setPolicy] = useState<ImportPolicy>('skip');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; title: string; message: string } | null>(null);
+  const [toast, setToast] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+  } | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
-  const { validRows, invalidRows, rowErrors, validateRows, clearValidation } = useImportValidation();
-  const { preview, commit, isLoading, error: commitError, clearError: clearCommitError } = useImportCommit();
+  const { validRows, invalidRows, rowErrors, validateRows, clearValidation } =
+    useImportValidation();
+  const { preview, commit, isLoading, clearError: clearCommitError } = useImportCommit();
 
   const workerRef = useRef<Worker | null>(null);
   const progressStageRef = useRef<ImportProgressStage>('processing');
   const progressValueRef = useRef(0);
+  const currentFileRef = useRef<File | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const [renderKey, setRenderKey] = useState(0);
 
-  // Initialize worker
   useEffect(() => {
-    workerRef.current = new Worker(new URL('../../workers/importParser.ts', import.meta.url), { type: 'module' });
+    console.log('[ImportWizard] step changed:', step);
+    setRenderKey((k) => k + 1);
+  }, [step]);
 
-    workerRef.current.onmessage = (e) => {
-      const { type, payload } = e.data;
-      if (type === 'PARSE_COMPLETE') {
-        const { rows, parseErrors } = payload;
-        setParsedFile({ rows, parseErrors, file: parsedFile!.file });
-        validateRows(rows);
-        setStep('preview');
-      } else if (type === 'PARSE_ERROR') {
-        setToast({ type: 'error', title: 'Error al procesar', message: payload.message });
-        setStep('upload');
-      } else if (type === 'PROGRESS') {
-        progressValueRef.current = payload.progress;
-      }
-    };
+  // Initialize worker (client-side only)
+  useEffect(() => {
+    setIsClient(true);
+    console.log('[ImportWizard] Initializing worker');
+    if (typeof Worker !== 'undefined') {
+      console.log('[ImportWizard] Worker API available, creating worker');
+      workerRef.current = new Worker(new URL('../../workers/importParser.ts', import.meta.url), {
+        type: 'module',
+      });
+
+      workerRef.current.onmessage = (e: MessageEvent<ImportParserOutput>) => {
+        const message = e.data;
+        console.log('[ImportWizard] worker message received:', message);
+        if (message.type === 'RESULT') {
+          const { rows, parseErrors } = message;
+          if (!currentFileRef.current) return;
+          setParsedFile({ rows, parseErrors, file: currentFileRef.current });
+          // Pre-select rows so the continue action is available immediately;
+          // the preview effect narrows this down to schema-valid rows.
+          setSelectedRows(new Set(rows.map((_, index) => index)));
+          validateRows(rows);
+          setStep('preview');
+        } else if (message.type === 'ERROR') {
+          console.log('[ImportWizard] worker ERROR message:', message.message);
+          setToast({ type: 'error', title: 'Error al procesar', message: message.message });
+          setStep('upload');
+        } else if (message.type === 'PROGRESS') {
+          progressValueRef.current = message.total > 0 ? message.parsed / message.total : 0;
+        }
+      };
+    } else {
+      console.log('[ImportWizard] Worker API NOT available');
+    }
 
     return () => {
       workerRef.current?.terminate();
     };
   }, [validateRows]);
 
-  const handleFileSelected = useCallback((file: File | null) => {
-    if (!file) {
-      setParsedFile(null);
-      clearValidation();
-      return;
-    }
+  // Select every valid row by default when entering the preview step
+  useEffect(() => {
+    if (step !== 'preview' || !parsedFile) return;
 
-    setStep('upload');
-    setToast(null);
-    clearCommitError();
+    const validIndices = parsedFile.rows
+      .map((_, index) => index)
+      .filter((index) => (rowErrors.get(index)?.length ?? 0) === 0);
 
-    if (workerRef.current) {
-      workerRef.current.postMessage({ file, type: file.name.endsWith('.xlsx') ? 'xlsx' : 'csv' });
-    }
-  }, [clearValidation, clearCommitError]);
+    setSelectedRows(new Set(validIndices));
+  }, [step, parsedFile, rowErrors]);
+
+  const handleFileSelected = useCallback(
+    (file: File | null) => {
+      if (!file) {
+        setParsedFile(null);
+        currentFileRef.current = null;
+        clearValidation();
+        return;
+      }
+
+      currentFileRef.current = file;
+      setStep('upload');
+      setToast(null);
+      clearCommitError();
+
+      const worker = workerRef.current;
+      if (!worker) {
+        console.log('[ImportWizard] No worker available');
+        return;
+      }
+
+      const mimeType = file.type || (file.name.endsWith('.xlsx') ? XLSX_MIME_TYPE : 'text/csv');
+      console.log('[ImportWizard] Sending file to worker:', { fileName: file.name, mimeType });
+
+      void file.arrayBuffer().then((buffer) => {
+        const input: ImportParserInput = { file: buffer, fileName: file.name, mimeType };
+        console.log('[ImportWizard] Posting message to worker:', input);
+        worker.postMessage(input);
+      });
+    },
+    [clearValidation, clearCommitError]
+  );
 
   const handlePreview = useCallback(async () => {
-    if (!parsedFile || validRows.length === 0) return;
+    console.log('[ImportWizard] handlePreview called', { parsedFile, validRows, step });
+    if (!parsedFile || validRows.length === 0) {
+      console.log('[ImportWizard] handlePreview returning early - no parsedFile or no validRows');
+      return;
+    }
 
     setStep('progress');
     progressStageRef.current = 'processing';
@@ -100,34 +156,21 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
     const result = await preview(validRows);
 
     if (result) {
+      console.log('[ImportWizard] preview success', result);
       setImportId(result.importId);
-      // Convert to preview table format
-      const previewRows: ImportPreviewRow[] = parsedFile.rows.map((row, index) => {
-        const errors = rowErrors.get(index) || [];
-        return {
-          rowNumber: index + 1,
-          date: row.drawDate,
-          modality: row.results[0]?.modality || '',
-          tradicional: row.results.find(r => r.modality === 'TRADICIONAL')?.numbers || null,
-          laSegunda: row.results.find(r => r.modality === 'LA_SEGUNDA')?.numbers || null,
-          revancha: row.results.find(r => r.modality === 'REVANCHA')?.numbers || null,
-          siempreSale: row.results.find(r => r.modality === 'SIEMPRE_SALE')?.numbers || null,
-          reintegro: null,
-          isValid: errors.length === 0,
-          errors: errors.map(e => ({ rowNumber: index + 1, field: e.path.join('.'), message: e.message, rawValue: undefined })),
-        };
+      console.log('[ImportWizard] calling setStep confirm');
+      setStep('confirm');
+      console.log('[ImportWizard] after setStep confirm');
+    } else {
+      console.log('[ImportWizard] preview failed - no result');
+      setToast({
+        type: 'error',
+        title: 'Error en vista previa',
+        message: 'No se pudo generar la vista previa',
       });
-
-      // Select all valid rows by default
-      const initialSelection = new Set(previewRows.filter(r => r.isValid).map((_, i) => i));
-      setSelectedRows(initialSelection);
-
-      setStep('preview');
-    } else if (commitError) {
-      setToast({ type: 'error', title: 'Error en vista previa', message: commitError.message });
-      setStep('preview');
+      setStep('upload');
     }
-  }, [parsedFile, validRows, rowErrors, preview, commitError]);
+  }, [parsedFile, validRows, preview]);
 
   const handleConfirm = useCallback(() => {
     setShowConfirmModal(true);
@@ -136,6 +179,7 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
   const handleCommit = useCallback(async () => {
     if (!importId) return;
 
+    console.log('[ImportWizard] handleCommit called', { importId, policy });
     setShowConfirmModal(false);
     setStep('progress');
     progressStageRef.current = 'committing';
@@ -146,26 +190,33 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       progressStageRef.current = progress.stage;
     });
 
-if (result) {
-        setToast({
-          type: 'success',
-          title: 'Importación completada',
-          message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
-        });
-        setStep('result');
-        // Dispatch custom event for cross-tab refresh
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('draws:refresh'));
-        }
-        onImportSuccess?.();
-      } else if (commitError) {
-      setToast({ type: 'error', title: 'Error en importación', message: commitError.message });
+    console.log('[ImportWizard] commit result:', result);
+
+    if (result) {
+      setToast({
+        type: 'success',
+        title: 'Importación completada',
+        message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
+      });
+      setStep('result');
+      // Dispatch custom event for cross-tab refresh
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('draws:refresh'));
+      }
+      onImportSuccess?.();
+    } else {
+      console.log('[ImportWizard] commit returned null/undefined');
+      setToast({
+        type: 'error',
+        title: 'Error en importación',
+        message: 'No se pudo completar la importación',
+      });
       setStep('result');
     }
-  }, [importId, policy, commit, commitError, onImportSuccess]);
+  }, [importId, policy, commit, onImportSuccess]);
 
   const handleRowSelect = useCallback((rowIndex: number, selected: boolean) => {
-    setSelectedRows(prev => {
+    setSelectedRows((prev) => {
       const next = new Set(prev);
       if (selected) next.add(rowIndex);
       else next.delete(rowIndex);
@@ -193,7 +244,10 @@ if (result) {
   const renderUploadStep = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <UploadIcon className="size-16 mx-auto text-neutral-400 dark:text-neutral-500" aria-hidden={true} />
+        <UploadIcon
+          className="mx-auto size-16 text-neutral-400 dark:text-neutral-500"
+          aria-hidden={true}
+        />
         <h2 className="mt-4 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
           Importar sorteos masivamente
         </h2>
@@ -207,9 +261,10 @@ if (result) {
         maxSize={10 * 1024 * 1024}
         onFileSelected={handleFileSelected}
         onError={(msg) => setToast({ type: 'error', title: 'Error', message: msg })}
+        data-testid="file-dropzone"
       />
 
-      <div className="text-sm text-neutral-500 dark:text-neutral-400 space-y-1">
+      <div className="space-y-1 text-sm text-neutral-500 dark:text-neutral-400">
         <p>• Formato: CSV (UTF-8) o Excel (.xlsx)</p>
         <p>• Columnas requeridas: officialNumber, drawDate, modality, numbers</p>
         <p>• Máximo 10 MB / 10,000 filas</p>
@@ -227,21 +282,27 @@ if (result) {
   );
 
   const renderPreviewStep = () => {
-    const previewRows: ImportPreviewRow[] = parsedFile?.rows.map((row, index) => {
-      const errors = rowErrors.get(index) || [];
-      return {
-        rowNumber: index + 1,
-        date: row.drawDate,
-        modality: row.results[0]?.modality || '',
-        tradicional: row.results.find(r => r.modality === 'TRADICIONAL')?.numbers || null,
-        laSegunda: row.results.find(r => r.modality === 'LA_SEGUNDA')?.numbers || null,
-        revancha: row.results.find(r => r.modality === 'REVANCHA')?.numbers || null,
-        siempreSale: row.results.find(r => r.modality === 'SIEMPRE_SALE')?.numbers || null,
-        reintegro: null,
-        isValid: errors.length === 0,
-        errors: errors.map(e => ({ rowNumber: index + 1, field: e.path.join('.'), message: e.message, rawValue: undefined })),
-      };
-    }) || [];
+    const previewRows: ImportPreviewRow[] =
+      parsedFile?.rows.map((row, index) => {
+        const errors = rowErrors.get(index) ?? [];
+        return {
+          rowNumber: index + 1,
+          date: row.drawDate,
+          modality: row.results[0]?.modality ?? '',
+          tradicional: row.results.find((r) => r.modality === 'TRADICIONAL')?.numbers ?? null,
+          laSegunda: row.results.find((r) => r.modality === 'LA_SEGUNDA')?.numbers ?? null,
+          revancha: row.results.find((r) => r.modality === 'REVANCHA')?.numbers ?? null,
+          siempreSale: row.results.find((r) => r.modality === 'SIEMPRE_SALE')?.numbers ?? null,
+          reintegro: null,
+          isValid: errors.length === 0,
+          errors: errors.map((e) => ({
+            rowNumber: index + 1,
+            field: e.path.join('.'),
+            message: e.message,
+            rawValue: undefined,
+          })),
+        };
+      }) ?? [];
 
     return (
       <div className="space-y-6">
@@ -260,7 +321,7 @@ if (result) {
           selectedRows={selectedRows}
         />
 
-        <div className="flex items-center justify-between pt-4 border-t border-neutral-200 dark:border-neutral-700">
+        <div className="flex items-center justify-between border-t border-neutral-200 pt-4 dark:border-neutral-700">
           <div className="text-sm text-neutral-500 dark:text-neutral-400">
             {selectedRows.size} de {validRows.length} filas válidas seleccionadas
           </div>
@@ -270,7 +331,7 @@ if (result) {
             </Button>
             <Button
               variant="primary"
-              onClick={handleConfirm}
+              onClick={handlePreview}
               disabled={validRows.length === 0 || selectedRows.size === 0}
             >
               Continuar
@@ -296,31 +357,31 @@ if (result) {
         Confirmar importación
       </h2>
 
-      <PolicySelect
-        value={policy}
-        onChange={setPolicy}
-        validCount={selectedRows.size}
-      />
+      <PolicySelect value={policy} onChange={setPolicy} validCount={selectedRows.size} />
 
-      <div className="p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg border border-neutral-200 dark:border-neutral-700">
-        <h3 className="font-medium text-neutral-900 dark:text-neutral-100 mb-2">Resumen</h3>
+      <div className="dark:bg-neutral-800/50 rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700">
+        <h3 className="mb-2 font-medium text-neutral-900 dark:text-neutral-100">Resumen</h3>
         <dl className="space-y-1 text-sm">
           <div className="flex justify-between">
             <dt className="text-neutral-500 dark:text-neutral-400">Filas seleccionadas:</dt>
-            <dd className="font-medium text-neutral-900 dark:text-neutral-100">{selectedRows.size}</dd>
+            <dd className="font-medium text-neutral-900 dark:text-neutral-100">
+              {selectedRows.size}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-neutral-500 dark:text-neutral-400">Política de conflicto:</dt>
-            <dd className="font-medium text-neutral-900 dark:text-neutral-100 capitalize">{policy}</dd>
+            <dd className="font-medium capitalize text-neutral-900 dark:text-neutral-100">
+              {policy}
+            </dd>
           </div>
         </dl>
       </div>
 
-      <div className="flex gap-3 justify-end">
+      <div className="flex justify-end gap-3">
         <Button variant="secondary" onClick={handleBack}>
           Atrás
         </Button>
-        <Button variant="primary" onClick={handleCommit} disabled={isLoading}>
+        <Button variant="primary" onClick={handleConfirm} disabled={isLoading}>
           {isLoading ? 'Procesando...' : 'Confirmar e importar'}
         </Button>
       </div>
@@ -330,11 +391,13 @@ if (result) {
   const renderProgressStep = () => (
     <div className="space-y-6 text-center">
       <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-        {progressStageRef.current === 'processing' ? 'Procesando archivo...' : 'Guardando sorteos...'}
+        {progressStageRef.current === 'processing'
+          ? 'Procesando archivo...'
+          : 'Guardando sorteos...'}
       </h2>
 
       <ImportProgress
-        importId={importId || ''}
+        importId={importId ?? ''}
         stage={progressStageRef.current}
         progress={progressValueRef.current}
         onComplete={(success) => {
@@ -356,36 +419,64 @@ if (result) {
     </div>
   );
 
-  const renderResultStep = () => (
-    <div className="space-y-6 text-center">
-      <div className="mx-auto size-16 rounded-full flex items-center justify-center bg-success-100 dark:bg-success-900/30">
-        <CheckIcon className="size-8 text-success-600 dark:text-success-400" aria-hidden={true} />
-      </div>
-      <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-        Importación completada
-      </h2>
-      {toast?.message && (
-        <p className="text-neutral-500 dark:text-neutral-400">{toast.message}</p>
-      )}
+  const renderResultStep = () => {
+    const isError = toast?.type === 'error';
 
-      <div className="flex gap-3 justify-center">
-        <Button variant="secondary" onClick={handleReset}>
-          Nueva importación
-        </Button>
-        <Button variant="primary" onClick={handleReset}>
-          Volver a sorteos
-        </Button>
+    return (
+      <div className="space-y-6 text-center">
+        <div
+          className={`mx-auto flex size-16 items-center justify-center rounded-full ${
+            isError ? 'dark:bg-error-900/30 bg-error-100' : 'dark:bg-success-900/30 bg-success-100'
+          }`}
+        >
+          {isError ? (
+            <ErrorIcon className="size-8 text-error-600 dark:text-error-400" aria-hidden={true} />
+          ) : (
+            <CheckIcon
+              className="size-8 text-success-600 dark:text-success-400"
+              aria-hidden={true}
+            />
+          )}
+        </div>
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+          {toast?.title ?? 'Importación completada'}
+        </h2>
+        {toast?.message && (
+          <p className="text-neutral-500 dark:text-neutral-400">{toast.message}</p>
+        )}
+
+        <div className="flex justify-center gap-3">
+          <Button variant="secondary" onClick={handleReset}>
+            Nueva importación
+          </Button>
+          <Button variant="primary" onClick={handleReset}>
+            Volver a sorteos
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 'upload':
+        return <div key="upload-step">{renderUploadStep()}</div>;
+      case 'preview':
+        return <div key="preview-step">{renderPreviewStep()}</div>;
+      case 'confirm':
+        return <div key="confirm-step">{renderConfirmStep()}</div>;
+      case 'progress':
+        return <div key="progress-step">{renderProgressStep()}</div>;
+      case 'result':
+        return <div key="result-step">{renderResultStep()}</div>;
+      default:
+        return <div key="upload-step">{renderUploadStep()}</div>;
+    }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
-      {step === 'upload' && renderUploadStep()}
-      {step === 'preview' && renderPreviewStep()}
-      {step === 'confirm' && renderConfirmStep()}
-      {step === 'progress' && renderProgressStep()}
-      {step === 'result' && renderResultStep()}
+    <div className="mx-auto w-full max-w-4xl space-y-6" data-step={step}>
+      <div key={renderKey}>{renderStep()}</div>
 
       {showConfirmModal && (
         <Modal
@@ -394,11 +485,11 @@ if (result) {
           title="Confirmar importación"
           size="md"
         >
-          <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-            Se importarán <strong>{selectedRows.size}</strong> sorteos con la política <strong>{policy}</strong>.
-            Esta acción no se puede deshacer.
+          <p className="mb-4 text-neutral-600 dark:text-neutral-400">
+            Se importarán <strong>{selectedRows.size}</strong> sorteos con la política{' '}
+            <strong>{policy}</strong>. Esta acción no se puede deshacer.
           </p>
-          <div className="flex gap-3 justify-end">
+          <div className="flex justify-end gap-3">
             <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
               Cancelar
             </Button>

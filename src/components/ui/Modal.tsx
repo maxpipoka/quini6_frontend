@@ -82,8 +82,10 @@ export const Modal: React.FC<Props> = ({
       if (panel) {
         focusableElementsRef.current = getFocusableElements(panel as HTMLElement);
         const firstFocusable = focusableElementsRef.current[0];
-        const closeBtn = modalRef.current?.querySelector('[data-modal-close]') as HTMLElement;
-        (firstFocusable || closeBtn)?.focus();
+        const closeBtn = modalRef.current?.querySelector(
+          '[data-modal-close]'
+        ) as HTMLElement | null;
+        ((firstFocusable as HTMLElement | null) || closeBtn)?.focus();
       }
 
       document.addEventListener('keydown', handleKeyDown);
@@ -119,12 +121,15 @@ export const Modal: React.FC<Props> = ({
       />
       <div
         ref={modalRef}
-        className={`relative w-full ${sizeClasses[size]} fade-in zoom-in-95 max-h-[90vh] transform animate-in overflow-hidden rounded-xl bg-white dark:bg-neutral-900 shadow-xl transition-all duration-200 ease-out focus:outline-none`}
+        className={`relative w-full ${sizeClasses[size]} fade-in zoom-in-95 max-h-[90vh] transform animate-in overflow-hidden rounded-xl bg-white shadow-xl transition-all duration-200 ease-out focus:outline-none dark:bg-neutral-900`}
         data-modal-panel
       >
         {title && (
-          <header className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-700 px-6 py-4">
-            <h2 id="modal-title" className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          <header className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
+            <h2
+              id="modal-title"
+              className="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
+            >
               {title}
             </h2>
             <button

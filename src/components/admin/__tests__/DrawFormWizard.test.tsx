@@ -10,12 +10,7 @@ const user = userEvent.setup();
 
 const renderWizard = (props = {}) => {
   return render(
-    <DrawFormWizard
-      onSubmit={mockOnSubmit}
-      onCancel={mockOnCancel}
-      isLoading={false}
-      {...props}
-    />
+    <DrawFormWizard onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} {...props} />
   );
 };
 
@@ -104,7 +99,9 @@ describe('DrawFormWizard', () => {
 
       // Fill official number and date
       fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
-      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), { target: { value: '2024-01-15T20:00' } });
+      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), {
+        target: { value: '2024-01-15T20:00' },
+      });
 
       const submitBtn = getSubmitButton();
       expect(submitBtn).not.toBeDisabled();
@@ -239,7 +236,10 @@ describe('DrawFormWizard', () => {
       // Use a value that passes schema validation (valid ISO format) but fails Date.parse (NaN)
       // Month 13 is invalid - Date.parse returns NaN
       await act(async () => {
-        Object.defineProperty(drawDateInput, 'value', { value: '2024-13-45T99:99:99', writable: true });
+        Object.defineProperty(drawDateInput, 'value', {
+          value: '2024-13-45T99:99:99',
+          writable: true,
+        });
         drawDateInput.dispatchEvent(new Event('input', { bubbles: true }));
         drawDateInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
@@ -283,18 +283,21 @@ describe('DrawFormWizard', () => {
       await clickNextAndWaitForStep(4);
       await fillCurrentStepNumbers(19, true);
 
-fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
+      fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
       // Set draw date directly on input element using native event
       await act(async () => {
-        const dateInput = screen.getByLabelText('Fecha del Sorteo *') as HTMLInputElement;
-        Object.defineProperty(dateInput, 'value', { value: '2024-01-15T20:00:00Z', writable: true });
+        const dateInput = screen.getByLabelText('Fecha del Sorteo *');
+        Object.defineProperty(dateInput, 'value', {
+          value: '2024-01-15T20:00:00Z',
+          writable: true,
+        });
         dateInput.dispatchEvent(new Event('input', { bubbles: true }));
         dateInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
       // Debug: check form state
-      console.log('Official number input value:', (screen.getByLabelText('Número Oficial *') as HTMLInputElement).value);
-      console.log('Draw date input value:', (screen.getByLabelText('Fecha del Sorteo *') as HTMLInputElement).value);
+      console.log('Official number input value:', screen.getByLabelText('Número Oficial *').value);
+      console.log('Draw date input value:', screen.getByLabelText('Fecha del Sorteo *').value);
 
       // Debug: check submit button state
       const submitBtn = getSubmitButton();
@@ -326,7 +329,9 @@ fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: 
       await fillCurrentStepNumbers(19, true);
 
       fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
-      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), { target: { value: '2024-01-15T20:00' } });
+      fireEvent.change(screen.getByLabelText('Fecha del Sorteo *'), {
+        target: { value: '2024-01-15T20:00' },
+      });
 
       // Check that submit button has "Actualizar" text
       const submitBtn = getSubmitButton();

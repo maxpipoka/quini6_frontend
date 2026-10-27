@@ -496,7 +496,7 @@ export class ApiClient {
    * POST /admin/imports/preview
    */
   async importPreview(rows: schemas.DrawRowInput[]): Promise<schemas.ImportPreviewResponse> {
-    return this.request('post', '/admin/imports/preview', {
+    return this.request('post', 'admin/imports/preview', {
       json: { rows },
       validateBodyWith: schemas.ImportPreviewRequestSchema,
       validateWith: schemas.ImportPreviewResponseSchema,
@@ -514,7 +514,7 @@ export class ApiClient {
   ): Promise<schemas.ImportCommitResponse> {
     // Note: import commit is non-retryable (POST with side effects)
     // The polling for progress is handled at a higher level if needed
-    const url = `/admin/imports/${importId}/commit?policy=${policy}`;
+    const url = `admin/imports/${importId}/commit?policy=${policy}`;
     return this.request('post', url, {
       validateWith: schemas.ImportCommitResponseSchema,
     });

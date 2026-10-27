@@ -12,7 +12,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/lib/**/*.ts', 'src/lib/**/*.tsx'],
+      include: [
+        'src/lib/**/*.ts',
+        'src/lib/**/*.tsx',
+        'src/components/admin/**/*.tsx',
+        'src/hooks/useImport*.ts',
+        'src/workers/**/*.ts',
+      ],
       exclude: [
         'src/**/*.stories.tsx',
         'src/**/*.test.ts',
@@ -21,7 +27,6 @@ export default defineConfig({
         'src/mock/**',
         'src/env.d.ts',
         'src/pages/**',
-        'src/components/**',
         'src/layouts/**',
         'src/styles/**',
       ],

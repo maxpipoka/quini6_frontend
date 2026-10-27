@@ -1,19 +1,35 @@
 import React from 'react';
 
-export const ChevronDownIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
-  className = '',
-  'aria-hidden': ariaHidden = true,
-}) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+export const ChevronDownIcon: React.FC<{
+  className?: string;
+  'aria-hidden'?: boolean;
+  'data-testid'?: string;
+}> = ({ className = '', 'aria-hidden': ariaHidden = true, 'data-testid': testId }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+    data-testid={testId}
+  >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
   </svg>
 );
 
-export const ChevronUpIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = ({
-  className = '',
-  'aria-hidden': ariaHidden = true,
-}) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+export const ChevronUpIcon: React.FC<{
+  className?: string;
+  'aria-hidden'?: boolean;
+  'data-testid'?: string;
+}> = ({ className = '', 'aria-hidden': ariaHidden = true, 'data-testid': testId }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+    data-testid={testId}
+  >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
   </svg>
 );
@@ -48,8 +64,19 @@ export const UploadIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean 
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+    />
   </svg>
 );
 
@@ -57,8 +84,19 @@ export const FileIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }>
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+    />
   </svg>
 );
 
@@ -66,7 +104,13 @@ export const XIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> = 
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
   </svg>
 );
@@ -75,15 +119,13 @@ export const SpinnerIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={`${className} animate-spin`} fill="none" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    />
+  <svg
+    className={`${className} animate-spin`}
+    fill="none"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
     <path
       className="opacity-75"
       fill="currentColor"
@@ -96,7 +138,13 @@ export const CheckIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
   </svg>
 );
@@ -131,8 +179,19 @@ export const CalendarIcon: React.FC<{ className?: string; 'aria-hidden'?: boolea
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+    />
   </svg>
 );
 
@@ -140,8 +199,24 @@ export const EyeIcon: React.FC<{ className?: string; 'aria-hidden'?: boolean }> 
   className = '',
   'aria-hidden': ariaHidden = true,
 }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden={ariaHidden}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    aria-hidden={ariaHidden}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+    />
   </svg>
 );

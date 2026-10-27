@@ -42,7 +42,9 @@ export const Progress: React.FC<ProgressProps> = ({
 
   const currentLabel = label || stageLabels[stage];
   const currentColor = stageColors[stage];
-  const percentage = isIndeterminate ? '' : `${Math.round(Math.max(0, Math.min(100, value || 0)))}%`;
+  const percentage = isIndeterminate
+    ? ''
+    : `${Math.round(Math.max(0, Math.min(100, value || 0)))}%`;
 
   const indeterminateStyle: React.CSSProperties = {
     animation: 'indeterminate 1.5s infinite ease-in-out',
@@ -53,24 +55,32 @@ export const Progress: React.FC<ProgressProps> = ({
       id={progressIdRef.current}
       className={`w-full ${className}`}
       role="progressbar"
-      aria-valuenow={isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value || 0)))}
+      aria-valuenow={
+        isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value || 0)))
+      }
       aria-valuemin={0}
       aria-valuemax={100}
       aria-live={ariaLive}
       aria-label={currentLabel}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300" id={`${progressIdRef.current}-label`}>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span
+          className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          id={`${progressIdRef.current}-label`}
+        >
           {currentLabel}
         </span>
         {showPercentage && !isIndeterminate && (
-          <span className="text-sm font-mono text-neutral-500 dark:text-neutral-400" id={`${progressIdRef.current}-percentage`}>
+          <span
+            className="font-mono text-sm text-neutral-500 dark:text-neutral-400"
+            id={`${progressIdRef.current}-percentage`}
+          >
             {percentage}
           </span>
         )}
       </div>
 
-      <div className="relative h-2 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+      <div className="relative h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
         {isIndeterminate ? (
           <div
             className={`${currentColor} h-full w-1/4`}
@@ -88,7 +98,10 @@ export const Progress: React.FC<ProgressProps> = ({
       </div>
 
       {label && (
-        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400" id={`${progressIdRef.current}-detail`}>
+        <p
+          className="mt-1 text-xs text-neutral-500 dark:text-neutral-400"
+          id={`${progressIdRef.current}-detail`}
+        >
           {label}
         </p>
       )}

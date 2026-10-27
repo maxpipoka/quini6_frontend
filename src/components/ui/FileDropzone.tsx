@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useId } from 'react';
 
 interface FileDropzoneProps {
   accept?: string;
@@ -7,6 +7,7 @@ interface FileDropzoneProps {
   onError?: (error: string) => void;
   disabled?: boolean;
   className?: string;
+  'data-testid'?: string;
 }
 
 export const FileDropzone: React.FC<FileDropzoneProps> = ({
@@ -16,6 +17,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   onError,
   disabled = false,
   className = '',
+  'data-testid': testId,
 }) => {
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +25,8 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
+  const generatedId = useId();
+  const dropzoneId = `dropzone-${generatedId}`;
 
   const formatSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
@@ -31,36 +34,42 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const validateFile = useCallback((file: File): boolean => {
-    setError(null);
+  const validateFile = useCallback(
+    (file: File): boolean => {
+      setError(null);
 
-    const allowedTypes = accept.split(',').map(t => t.trim().toLowerCase());
-    const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
-    const isValidType = allowedTypes.some(t => t === fileExt || t === file.type);
+      const allowedTypes = accept.split(',').map((t) => t.trim().toLowerCase());
+      const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
+      const isValidType = allowedTypes.some((t) => t === fileExt || t === file.type);
 
-    if (!isValidType) {
-      const msg = `Tipo de archivo no permitido. Use: ${accept}`;
-      setError(msg);
-      onError?.(msg);
-      return false;
-    }
+      if (!isValidType) {
+        const msg = `Tipo de archivo no permitido. Use: ${accept}`;
+        setError(msg);
+        onError?.(msg);
+        return false;
+      }
 
-    if (file.size > maxSize) {
-      const msg = `Archivo demasiado grande. Máximo: ${formatSize(maxSize)}`;
-      setError(msg);
-      onError?.(msg);
-      return false;
-    }
+      if (file.size > maxSize) {
+        const msg = `Archivo demasiado grande. Máximo: ${formatSize(maxSize)}`;
+        setError(msg);
+        onError?.(msg);
+        return false;
+      }
 
-    return true;
-  }, [accept, maxSize, onError]);
+      return true;
+    },
+    [accept, maxSize, onError]
+  );
 
-  const handleFile = useCallback((file: File) => {
-    if (!validateFile(file)) return;
+  const handleFile = useCallback(
+    (file: File) => {
+      if (!validateFile(file)) return;
 
-    setCurrentFile(file);
-    onFileSelected?.(file);
-  }, [validateFile, onFileSelected]);
+      setCurrentFile(file);
+      onFileSelected?.(file);
+    },
+    [validateFile, onFileSelected]
+  );
 
   const clearFile = useCallback(() => {
     setCurrentFile(null);
@@ -68,61 +77,80 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
     onFileSelected?.(null);
   }, [onFileSelected]);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!disabled) {
-      setDragActive(true);
-    }
-  }, [disabled]);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!currentFile && !disabled) {
-      setDragActive(false);
-    }
-  }, [currentFile, disabled]);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (disabled) return;
-
-    const file = e.dataTransfer?.files[0];
-    if (file) handleFile(file);
-  }, [disabled, handleFile]);
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
-  }, [handleFile]);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+  const handleDragOver = useCallback(
+    (e: React.DragEvent) => {
       e.preventDefault();
-      inputRef.current?.click();
-    }
-  }, [disabled]);
+      e.stopPropagation();
+      if (!disabled) {
+        setDragActive(true);
+      }
+    },
+    [disabled]
+  );
 
-  const handleRemoveClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    clearFile();
-  }, [clearFile]);
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!currentFile && !disabled) {
+        setDragActive(false);
+      }
+    },
+    [currentFile, disabled]
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+
+      if (disabled) return;
+
+      const file = e.dataTransfer?.files[0];
+      if (file) handleFile(file);
+    },
+    [disabled, handleFile]
+  );
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) handleFile(file);
+    },
+    [handleFile]
+  );
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+        e.preventDefault();
+        inputRef.current?.click();
+      }
+    },
+    [disabled]
+  );
+
+  const handleRemoveClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      clearFile();
+    },
+    [clearFile]
+  );
 
   return (
     <div
       ref={dropzoneRef}
       id={dropzoneId}
+      data-testid={testId}
       className={`
-        border-2 border-dashed rounded-lg p-8 text-center
+        rounded-lg border-2 border-dashed p-8 text-center
         transition-all duration-200
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        ${dragActive ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20' : 'border-neutral-300 dark:border-neutral-600'}
-        ${currentFile ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20' : ''}
-        bg-neutral-50 dark:bg-neutral-800/50
+        ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+        ${dragActive ? 'dark:bg-primary-900/20 border-primary-400 bg-primary-50' : 'border-neutral-300 dark:border-neutral-600'}
+        ${currentFile ? 'dark:bg-primary-900/20 border-primary-400 bg-primary-50' : ''}
+        dark:bg-neutral-800/50 bg-neutral-50
         ${className}
       `}
       role="button"
@@ -173,7 +201,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
 
       {currentFile && (
         <div id={`${dropzoneId}-selected`} className="mt-4" aria-live="polite">
-          <div className="flex items-center justify-between p-3 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
+          <div className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="flex items-center gap-3">
               <svg
                 className="size-6 text-primary-600 dark:text-primary-400"
@@ -181,22 +209,41 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
                 viewBox="0 0 20 20"
                 aria-hidden="true"
               >
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               <div>
-                <p className="font-medium text-neutral-900 dark:text-neutral-100">{currentFile.name}</p>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">{formatSize(currentFile.size)}</p>
+                <p className="font-medium text-neutral-900 dark:text-neutral-100">
+                  {currentFile.name}
+                </p>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  {formatSize(currentFile.size)}
+                </p>
               </div>
             </div>
             <button
               type="button"
               id={`${dropzoneId}-remove`}
-              className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-1"
+              className="rounded p-1 text-neutral-400 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:hover:text-neutral-300"
               aria-label="Eliminar archivo seleccionado"
               onClick={handleRemoveClick}
             >
-              <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -204,7 +251,12 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
       )}
 
       {error && (
-        <div id={`${dropzoneId}-error`} className="mt-3 p-3 text-sm text-error-600 dark:text-error-400 bg-error-50 dark:bg-error-900/20 rounded-lg border border-error-200 dark:border-error-800" role="alert" aria-live="assertive">
+        <div
+          id={`${dropzoneId}-error`}
+          className="dark:bg-error-900/20 border-error-200 dark:border-error-800 mt-3 rounded-lg border bg-error-50 p-3 text-sm text-error-600 dark:text-error-400"
+          role="alert"
+          aria-live="assertive"
+        >
           {error}
         </div>
       )}

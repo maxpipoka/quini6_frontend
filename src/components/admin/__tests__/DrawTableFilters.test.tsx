@@ -12,11 +12,7 @@ describe('DrawTableFilters', () => {
 
   const renderFilters = (props = {}) => {
     return render(
-      <DrawTableFilters
-        onFilterChange={mockOnFilterChange}
-        isLoading={false}
-        {...props}
-      />
+      <DrawTableFilters onFilterChange={mockOnFilterChange} isLoading={false} {...props} />
     );
   };
 

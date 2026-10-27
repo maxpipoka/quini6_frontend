@@ -2,15 +2,17 @@ import { useState, useCallback, useEffect } from 'react';
 import { getApiClient } from '@/lib/api/client';
 import * as schemas from '@/lib/schemas';
 
+interface ImportHistoryFilters {
+  startDate?: string;
+  endDate?: string;
+  policy?: schemas.ImportPolicy;
+}
+
 interface UseImportHistoryOptions {
   initialPage?: number;
   initialPageSize?: number;
   initialSort?: { key: string; order: 'asc' | 'desc' };
-  initialFilters?: {
-    startDate?: string;
-    endDate?: string;
-    policy?: schemas.ImportPolicy;
-  };
+  initialFilters?: ImportHistoryFilters;
 }
 
 interface UseImportHistoryReturn {
@@ -23,12 +25,8 @@ interface UseImportHistoryReturn {
   setPageSize: (size: number) => void;
   sort: { key: string; order: 'asc' | 'desc' };
   setSort: (sort: { key: string; order: 'asc' | 'desc' }) => void;
-  filters: {
-    startDate?: string;
-    endDate?: string;
-    policy?: schemas.ImportPolicy;
-  };
-  setFilters: (filters: UseImportHistoryOptions['initialFilters']) => void;
+  filters: ImportHistoryFilters;
+  setFilters: (filters: ImportHistoryFilters) => void;
   refetch: () => Promise<void>;
 }
 

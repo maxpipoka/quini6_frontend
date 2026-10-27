@@ -863,9 +863,7 @@ describe('Zod schemas', () => {
       const result = schemas.ImportCommitResponseSchema.safeParse({
         ...validResponse,
         failed: 1,
-        errors: [
-          { row: 5, field: 'TRADICIONAL_number_3', message: 'Number out of range' },
-        ],
+        errors: [{ row: 5, field: 'TRADICIONAL_number_3', message: 'Number out of range' }],
       });
       expect(result.success).toBe(true);
     });

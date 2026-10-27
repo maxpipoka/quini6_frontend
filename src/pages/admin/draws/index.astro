@@ -504,32 +504,38 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 <AdminLayout title="Gestión de Sorteos - Admin Quini 6">
   <div class="space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-<div>
-      <h1 class="font-display text-2xl font-bold text-text-primary">Gestión de Sorteos</h1>
-      <p class="mt-1 text-text-secondary">Administra los sorteos del Quini 6</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <a
-        href="/admin/imports/upload"
-        class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      >
-        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-          ></path></svg
+      <div>
+        <h1 class="font-display text-2xl font-bold text-text-primary">Gestión de Sorteos</h1>
+        <p class="mt-1 text-text-secondary">Administra los sorteos del Quini 6</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a
+          href="/admin/imports/upload"
+          class="focus:ring-primary inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-offset-2"
         >
-        Importar Sorteos
-      </a>
-      <button
-        id="create-draw-btn"
-        class="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface"
-      >
-        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"
-          ></path></svg
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg
+          >
+          Importar Sorteos
+        </a>
+        <button
+          id="create-draw-btn"
+          class="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface"
         >
-        Crear Sorteo
-      </button>
-    </div>
+          <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"></path></svg
+          >
+          Crear Sorteo
+        </button>
+      </div>
     </div>
 
     <!-- Filters -->

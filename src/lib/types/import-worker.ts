@@ -61,7 +61,7 @@ export type ImportWorker = Worker & {
 export function createImportParserWorker(): ImportWorker {
   // In Astro/Vite, use:
   // return new Worker(new URL('./importParser.ts', import.meta.url), { type: 'module' }) as ImportWorker;
-  
+
   // For testing, we'll use a mock - actual instantiation happens in components
   return new Worker('') as ImportWorker;
 }
