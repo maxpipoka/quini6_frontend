@@ -19,6 +19,10 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:visual": "playwright test --project=visual --project=visual-mobile",
+    "test:a11y": "playwright test --project=a11y --grep a11y",
+    "test:visual:update": "playwright test --project=visual --project=visual-mobile --update-snapshots",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lighthouse": "lhci autorun"
@@ -45,6 +49,7 @@
     "zod": "^3.22.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.8.0",
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.43.0",
     "@storybook-astro/framework": "^1.13.0",
