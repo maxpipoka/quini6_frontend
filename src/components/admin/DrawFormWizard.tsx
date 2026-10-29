@@ -107,13 +107,6 @@ function reducer(state: WizardState, action: WizardAction): WizardState {
       return { ...state, drawDate: action.value, drawDateError };
     }
 
-    case 'SET_OFFICIAL_NUMBER': {
-      const num = parseInt(action.value, 10);
-      const officialNumberError =
-        action.value && (isNaN(num) || num <= 0) ? 'El número oficial debe ser positivo' : '';
-      return { ...state, officialNumber: action.value, officialNumberError };
-    }
-
     case 'NEXT_STEP': {
       const currentStep = state.steps[state.currentStep];
       if (state.currentStep < 3 && currentStep?.isValid) {
@@ -327,21 +320,21 @@ export function DrawFormWizard({
         <div
           className={`flex size-10 items-center justify-center rounded-full text-sm font-semibold transition-all ${
             isComplete
-              ? 'bg-primary text-white'
+              ? 'bg-primary-500 text-white'
               : isCurrent
-                ? 'bg-primary/20 text-primary border-primary border-2'
+                ? 'bg-primary-500/20 border-2 border-primary-500 text-primary-500'
                 : 'border-2 border-border bg-surface text-text-muted'
           }`}
         >
           {isComplete ? <Check className="size-5" aria-hidden="true" /> : index + 1}
         </div>
         <span
-          className={`mt-1 text-center text-xs font-medium ${isCurrent ? 'text-primary' : 'text-text-muted'}`}
+          className={`mt-1 text-center text-xs font-medium ${isCurrent ? 'text-primary-500' : 'text-text-muted'}`}
         >
           {MODALITY_LABELS[modality]}
         </span>
         <div
-          className={`mt-1 h-1 w-20 transition-colors ${index < 3 ? (step?.isValid ? 'bg-primary' : 'bg-border') : ''}`}
+          className={`mt-1 h-1 w-20 transition-colors ${index < 3 ? (step?.isValid ? 'bg-primary-500' : 'bg-border') : ''}`}
         />
       </div>
     );
@@ -379,14 +372,14 @@ export function DrawFormWizard({
             min="1"
             required
             disabled={isLoading}
-            className={`focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              state.officialNumberError ? 'border-error focus:ring-error' : ''
+            className={`w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+              state.officialNumberError ? 'border-error-500 focus:ring-error-500' : ''
             }`}
             aria-invalid={!!state.officialNumberError}
             aria-describedby={state.officialNumberError ? 'official-number-error' : undefined}
           />
           {state.officialNumberError && (
-            <p id="official-number-error" className="text-error mt-1 text-sm" role="alert">
+            <p id="official-number-error" className="mt-1 text-sm text-error-500" role="alert">
               {state.officialNumberError}
             </p>
           )}
@@ -403,14 +396,14 @@ export function DrawFormWizard({
             onChange={handleDrawDateChange}
             required
             disabled={isLoading}
-            className={`focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              state.drawDateError ? 'border-error focus:ring-error' : ''
+            className={`w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+              state.drawDateError ? 'border-error-500 focus:ring-error-500' : ''
             }`}
             aria-invalid={!!state.drawDateError}
             aria-describedby={state.drawDateError ? 'draw-date-error' : undefined}
           />
           {state.drawDateError && (
-            <p id="draw-date-error" className="text-error mt-1 text-sm" role="alert">
+            <p id="draw-date-error" className="mt-1 text-sm text-error-500" role="alert">
               {state.drawDateError}
             </p>
           )}
@@ -444,7 +437,7 @@ export function DrawFormWizard({
             {currentStepData.errors.length > 0 && (
               <p
                 id={`${currentStepData.modality}-errors`}
-                className="text-error text-sm"
+                className="text-sm text-error-500"
                 role="alert"
               >
                 {currentStepData.errors.join('. ')}
@@ -456,7 +449,7 @@ export function DrawFormWizard({
 
       {state.submitError && (
         <div
-          className="bg-error/10 border-error/20 text-error flex items-center gap-2 rounded-lg border p-3"
+          className="bg-error-500/10 border-error-500/20 flex items-center gap-2 rounded-lg border p-3 text-error-500"
           role="alert"
         >
           <AlertCircle className="size-5 flex-shrink-0" aria-hidden="true" />
@@ -492,7 +485,7 @@ export function DrawFormWizard({
             <button
               type="submit"
               disabled={!canSubmit || isLoading}
-              className="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:bg-primary-500/90 flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -511,7 +504,7 @@ export function DrawFormWizard({
               type="button"
               onClick={() => dispatch({ type: 'NEXT_STEP' })}
               disabled={!canGoNext || isLoading}
-              className="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:bg-primary-500/90 flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span>Siguiente</span>
               <ChevronRight className="size-4" aria-hidden="true" />

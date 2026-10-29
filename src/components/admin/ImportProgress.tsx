@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Progress } from '../ui/Progress';
 import { SpinnerIcon, CheckIcon, ErrorIcon } from './icons';
 
-import type { ImportProgress as ImportProgressType, ImportProgressStage } from '../../lib/schemas';
+import type { ImportProgressStage } from '../../lib/schemas';
 
 interface Props {
   importId: string;
@@ -23,7 +23,7 @@ export const ImportProgress: React.FC<Props> = ({
 }) => {
   const [currentStage, setCurrentStage] = useState(stage);
   const [currentProgress, setCurrentProgress] = useState(progress);
-  const [isPolling, setIsPolling] = useState(false);
+  const [_isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const pollTimerRef = useRef<number | null>(null);
   const progressRef = useRef({ currentStage, currentProgress });

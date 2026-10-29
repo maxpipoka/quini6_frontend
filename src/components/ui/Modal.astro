@@ -77,8 +77,8 @@ if (!isOpen) {
         id={modalId}
         class={`
         relative w-full ${sizeClasses[size]}
-        fade-in zoom-in-95 max-h-[90vh]
-        transform animate-in overflow-hidden rounded-xl
+        max-h-[90vh] transform animate-fade-in
+        animate-in animate-zoom-in-95 overflow-hidden rounded-xl
         bg-surface shadow-xl transition-all
         duration-200 ease-out
         focus:outline-none
@@ -252,7 +252,7 @@ if (!isOpen) {
 
 <style>
   /* Animation keyframes */
-  @keyframes fade-in {
+  @keyframes animate-fade-in {
     from {
       opacity: 0;
     }
@@ -261,7 +261,7 @@ if (!isOpen) {
     }
   }
 
-  @keyframes zoom-in-95 {
+  @keyframes animate-zoom-in-95 {
     from {
       opacity: 0;
       transform: scale(0.95);
@@ -274,13 +274,13 @@ if (!isOpen) {
 
   .animate-in {
     animation:
-      fade-in 0.2s ease-out,
-      zoom-in-95 0.2s ease-out;
+      animate-fade-in 0.2s ease-out,
+      animate-zoom-in-95 0.2s ease-out;
   }
 
   /* Backdrop animation */
   [data-modal-backdrop] {
-    animation: fade-in 0.2s ease-out;
+    animation: animate-fade-in 0.2s ease-out;
   }
 
   /* Focus visible for modal elements */

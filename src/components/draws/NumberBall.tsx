@@ -21,8 +21,8 @@ export interface NumberBallProps {
 
 const sizeClasses: Record<NumberBallSize, string> = {
   sm: 'w-6 h-6 text-caption',
-  md: 'w-8 h-8 text-body-sm',
-  lg: 'w-12 h-12 text-body-lg',
+  md: 'w-8 h-8 text-base-sm',
+  lg: 'w-12 h-12 text-lg',
 };
 
 const variantClasses: Record<NumberBallVariant, string> = {

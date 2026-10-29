@@ -43,7 +43,7 @@ export const DrawDetail: React.FC<DrawDetailProps> = ({
           <h1 className="text-heading-xl font-bold text-text-primary">
             Sorteo #{draw.officialNumber}
           </h1>
-          <time className="text-body text-text-secondary" dateTime={draw.date}>
+          <time className="text-base text-text-secondary" dateTime={draw.date}>
             {formatDate(draw.date, 'EEEE, dd MMMM yyyy')}
           </time>
         </div>

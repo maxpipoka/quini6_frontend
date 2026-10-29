@@ -1,3 +1,4 @@
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from '@storybook/react';
 import { Progress } from '../ui/Progress';
 
@@ -14,7 +15,10 @@ const meta: Meta<typeof Progress> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    value: { control: 'number', description: 'Valor del progreso (0-100), undefined para indeterminado' },
+    value: {
+      control: 'number',
+      description: 'Valor del progreso (0-100), undefined para indeterminado',
+    },
     stage: {
       control: 'select',
       options: ['processing', 'committing', 'completed', 'error'],
@@ -58,7 +62,6 @@ export const Complete: Story = {
 export const Indeterminate: Story = {
   args: {
     stage: 'processing',
-    value: undefined,
   },
 };
 

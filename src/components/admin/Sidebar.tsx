@@ -14,9 +14,10 @@ const NAV_ITEMS = [
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(isCollapsed);
   const [currentPath, setCurrentPath] = useState('');
+  const STORAGE_KEY = 'sidebar-collapsed';
 
   useEffect(() => {
-    const saved = localStorage.getItem('admin-sidebar-collapsed');
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (saved !== null) {
       setCollapsed(saved === 'true');
     }
@@ -26,7 +27,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const toggle = () => {
     const newCollapsed = !collapsed;
     setCollapsed(newCollapsed);
-    localStorage.setItem('admin-sidebar-collapsed', String(newCollapsed));
+    localStorage.setItem(STORAGE_KEY, String(newCollapsed));
     onToggle?.();
   };
 
@@ -54,13 +55,13 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}
-      style={{ width: collapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)' }}
+      className={`fixed inset-y-0 left-0 z-40 border-r border-border bg-surface transition-all duration-300 ${collapsed ? 'w-16' : ''}`}
+      style={{ width: collapsed ? 'var(--sidebar-w-16-width)' : 'var(--sidebar-width)' }}
       aria-label="Navegación principal"
     >
       <nav
         className="flex-1 space-y-1 overflow-y-auto p-4"
-        style={{ minWidth: 'var(--sidebar-collapsed-width)' }}
+        style={{ minWidth: 'var(--sidebar-w-16-width)' }}
       >
         <ul className="space-y-1">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
@@ -68,7 +69,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
               <a
                 href={href}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
-                  currentPath === href ? 'bg-primary/10 text-primary' : ''
+                  currentPath === href ? 'bg-primary-500/10 text-primary-500' : ''
                 }`}
                 title={collapsed ? label : undefined}
               >
@@ -84,7 +85,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         {!collapsed && (
           <button
             onClick={handleLogout}
-            className="hover:text-error hover:bg-error/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors"
+            className="bg-error-500/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:text-error-500"
           >
             <LogOut className="size-5 flex-shrink-0" aria-hidden="true" />
             <span className="font-medium">Cerrar sesión</span>

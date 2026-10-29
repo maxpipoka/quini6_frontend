@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../AuthProvider';
 
-const mockOnSubmit = vi.fn();
-
 const TestComponent = () => {
   const auth = useAuth();
   return (
@@ -90,7 +88,7 @@ describe('AuthProvider', () => {
       expect(screen.getByTestId('loading').textContent).toBe('false');
     });
 
-    await act(async () => {
+    act(() => {
       screen.getByTestId('logout-btn').click();
     });
 
@@ -111,7 +109,7 @@ describe('AuthProvider', () => {
       expect(screen.getByTestId('loading').textContent).toBe('false');
     });
 
-    await act(async () => {
+    act(() => {
       screen.getByTestId('refresh-btn').click();
       screen.getByTestId('refresh-btn').click();
     });
@@ -133,7 +131,7 @@ describe('AuthProvider', () => {
       expect(screen.getByTestId('loading').textContent).toBe('false');
     });
 
-    await act(async () => {
+    act(() => {
       screen.getByTestId('change-pass-btn').click();
     });
 

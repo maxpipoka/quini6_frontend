@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { ImportWizard } from '../ImportWizard';
 import { getApiClient } from '@/lib/api/client';

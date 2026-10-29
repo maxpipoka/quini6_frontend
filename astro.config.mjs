@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import { EnumChangefreq } from 'sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,37 +22,37 @@ export default defineConfig({
       serialize: (item) => {
         // Normalize URL for matching (remove trailing slash)
         const normalizedUrl = item.url.replace(/\/$/, '');
-        
+
         // Home page
         if (normalizedUrl === 'https://quini6.com') {
           return {
             ...item,
-            changefreq: 'weekly',
+            changefreq: EnumChangefreq.WEEKLY,
             priority: 1.0,
             lastmod: new Date().toISOString(),
           };
         }
-        
+
         // Search page
         if (normalizedUrl === 'https://quini6.com/buscar') {
           return {
             ...item,
-            changefreq: 'weekly',
+            changefreq: EnumChangefreq.WEEKLY,
             priority: 0.8,
             lastmod: new Date().toISOString(),
           };
         }
-        
+
         // Draws listing page
         if (normalizedUrl === 'https://quini6.com/sorteos') {
           return {
             ...item,
-            changefreq: 'weekly',
+            changefreq: EnumChangefreq.WEEKLY,
             priority: 0.9,
             lastmod: new Date().toISOString(),
           };
         }
-        
+
         // Draw detail pages - match /sorteos/[officialNumber]
         const drawDetailMatch = normalizedUrl.match(/^https:\/\/quini6\.com\/sorteos\/(\d+)$/);
         if (drawDetailMatch) {
@@ -60,20 +61,20 @@ export default defineConfig({
           // In production, this would be enhanced with actual draw dates.
           return {
             ...item,
-            changefreq: 'yearly',
+            changefreq: EnumChangefreq.YEARLY,
             priority: 0.6,
             // Note: lastmod would ideally be the draw date
             // For now using build time as fallback
             lastmod: new Date().toISOString(),
           };
         }
-        
+
         // Default for any other pages
         return {
           ...item,
-          changefreq: 'weekly',
+          changefreq: EnumChangefreq.WEEKLY,
           priority: 0.5,
-          lastmod: new Date(),
+          lastmod: new Date().toISOString(),
         };
       },
     }),
@@ -81,6 +82,9 @@ export default defineConfig({
   vite: {
     envDir: process.cwd(),
     envPrefix: 'VITE_',
+    optimizeDeps: {
+      exclude: ['msw'],
+    },
     resolve: {
       alias: {
         '@': '/src',
@@ -100,7 +104,7 @@ export default defineConfig({
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,
-          cookieDomainRewrite: { 'localhost': '' },
+          cookieDomainRewrite: { localhost: '' },
           configure: (proxy, _options) => {
             proxy.on('proxyRes', (proxyRes, req, res) => {
               // Forward Set-Cookie headers from the target server

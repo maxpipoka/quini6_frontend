@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ImportHistoryTable } from '../ImportHistoryTable';
 import type { ImportSummary } from '@/lib/schemas';
@@ -292,17 +292,19 @@ describe('ImportHistoryTable', () => {
   it('applies correct text colors for succeeded/failed counts', () => {
     render(<ImportHistoryTable />);
 
-    // Find succeeded count (95) which should have text-success
+    // Find succeeded count (95) which should have text-success-500
     const succeededCells = screen.getAllByText('95');
     const succeededCell = succeededCells.find((el) =>
-      el.closest('td')?.classList.contains('text-success')
+      el.closest('td')?.classList.contains('text-success-500')
     );
     expect(succeededCell).toBeInTheDocument();
 
-    // Find failed count (5) which should have text-error - there are two "5" values (processed and failed)
-    // The failed count is in a td with text-error class
+    // Find failed count (5) which should have text-error-500 - there are two "5" values (processed and failed)
+    // The failed count is in a td with text-error-500 class
     const failedCells = screen.getAllByText('5');
-    const failedCell = failedCells.find((el) => el.closest('td')?.classList.contains('text-error'));
+    const failedCell = failedCells.find((el) =>
+      el.closest('td')?.classList.contains('text-error-500')
+    );
     expect(failedCell).toBeInTheDocument();
   });
 });

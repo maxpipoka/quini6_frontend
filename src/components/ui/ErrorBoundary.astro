@@ -11,7 +11,13 @@ interface Props {
 const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.props;
 ---
 
-<div class="error-boundary" data-error-boundary>
+<div
+  class="flex min-h-screen items-center justify-center"
+  data-min-h-screen
+  flex
+  items-center
+  justify-center
+>
   <slot />
 
   <!-- Error fallback UI (shown when island errors) -->
@@ -51,7 +57,9 @@ const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.
     'error',
     (event) => {
       // Check if error is from an island
-      const errorBoundary = document.querySelector('[data-error-boundary]');
+      const errorBoundary = document.querySelector(
+        '[data-min-h-screen flex items-center justify-center]'
+      );
       if (errorBoundary && event.target instanceof HTMLElement) {
         const islandRoot = event.target.closest('[data-astro-island]');
         if (islandRoot) {
@@ -64,7 +72,9 @@ const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.
   );
 
   window.addEventListener('unhandledrejection', (event) => {
-    const errorBoundary = document.querySelector('[data-error-boundary]');
+    const errorBoundary = document.querySelector(
+      '[data-min-h-screen flex items-center justify-center]'
+    );
     if (errorBoundary) {
       const islandRoot = document.querySelector('[data-astro-island]');
       if (islandRoot) {
@@ -92,7 +102,7 @@ const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.
 </script>
 
 <style is:global>
-  .error-boundary {
+  .min-h-screen flex items-center justify-center {
     display: contents;
   }
 </style>

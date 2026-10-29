@@ -52,8 +52,8 @@ describe('ImportErrorDetails', () => {
 
     const button = screen.getByRole('button', { name: 'Sin errores' });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass('bg-success/10');
-    expect(button).toHaveClass('text-success');
+    expect(button).toHaveClass('bg-success-500/10');
+    expect(button).toHaveClass('text-success-500');
   });
 
   it('initially shows "Sin errores" before fetch', () => {
@@ -330,12 +330,12 @@ describe('ImportErrorDetails', () => {
     });
   });
 
-  it('renders ChevronUpIcon when expanded, ChevronDownIcon when collapsed', async () => {
+  it('renders ChevronUpIcon when expanded, ChevronDownIcon when w-16', async () => {
     mockApi.getImportErrors.mockResolvedValue({ errors: mockErrors });
 
     render(<ImportErrorDetails importId="import-1" />);
 
-    // Initially collapsed - should show ChevronDownIcon
+    // Initially w-16 - should show ChevronDownIcon
     expect(screen.getByTestId('chevron-down-icon')).toBeInTheDocument();
     expect(screen.queryByTestId('chevron-up-icon')).not.toBeInTheDocument();
 

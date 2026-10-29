@@ -1,4 +1,4 @@
-﻿import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { FileDropzone } from '../ui/FileDropzone';
 import { PolicySelect } from './PolicySelect';
 import { ImportPreviewTable } from './ImportPreviewTable';
@@ -52,7 +52,6 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
   const progressStageRef = useRef<ImportProgressStage>('processing');
   const progressValueRef = useRef(0);
   const currentFileRef = useRef<File | null>(null);
-  const [isClient, setIsClient] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
 
   useEffect(() => {
@@ -62,7 +61,6 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
 
   // Initialize worker (client-side only)
   useEffect(() => {
-    setIsClient(true);
     console.log('[ImportWizard] Initializing worker');
     if (typeof Worker !== 'undefined') {
       console.log('[ImportWizard] Worker API available, creating worker');
@@ -265,9 +263,9 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       />
 
       <div className="space-y-1 text-sm text-neutral-500 dark:text-neutral-400">
-        <p>• Formato: CSV (UTF-8) o Excel (.xlsx)</p>
-        <p>• Columnas requeridas: officialNumber, drawDate, modality, numbers</p>
-        <p>• Máximo 10 MB / 10,000 filas</p>
+        <p>" Formato: CSV (UTF-8) o Excel (.xlsx)</p>
+        <p>" Columnas requeridas: officialNumber, drawDate, modality, numbers</p>
+        <p>" Máximo 10 MB / 10,000 filas</p>
       </div>
 
       {toast && (
@@ -426,7 +424,7 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       <div className="space-y-6 text-center">
         <div
           className={`mx-auto flex size-16 items-center justify-center rounded-full ${
-            isError ? 'dark:bg-error-900/30 bg-error-100' : 'dark:bg-success-900/30 bg-success-100'
+            isError ? 'dark:bg-error-900/30 bg-error-100' : 'dark:bg-success-700/30 bg-success-100'
           }`}
         >
           {isError ? (

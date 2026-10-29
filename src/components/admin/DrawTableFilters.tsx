@@ -56,7 +56,7 @@ export function DrawTableFilters({
           value={filters.startDate}
           onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('startDate', e.target.value)}
           disabled={isLoading}
-          className="focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -71,7 +71,7 @@ export function DrawTableFilters({
           value={filters.endDate}
           onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('endDate', e.target.value)}
           disabled={isLoading}
-          className="focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -90,7 +90,7 @@ export function DrawTableFilters({
             handleChange('modality', e.target.value as DrawModality)
           }
           disabled={isLoading}
-          className="focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">Todas</option>
           {MODALITY_ORDER.map((modality) => (

@@ -84,10 +84,10 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     >
       <Container maxWidth="lg">
         <div class="mx-auto max-w-3xl text-center">
-          <h1 class="font-display mb-6 text-display-md text-text-primary">
+          <h1 class="mb-6 font-sans text-display-md text-text-primary">
             Resultados y estadísticas del <span class="text-primary-600">Quini 6</span>
           </h1>
-          <p class="mb-8 text-body-lg text-text-secondary">
+          <p class="mb-8 text-lg text-text-secondary">
             Consulte sorteos históricos, busque sus combinaciones favoritas y analice la frecuencia
             de los números. Datos oficiales actualizados.
           </p>
@@ -103,7 +103,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     <section class="py-12 md:py-16" aria-labelledby="latest-draw-heading">
       <Container maxWidth="lg">
         <div class="mb-8 flex items-center justify-between">
-          <h2 id="latest-draw-heading" class="font-heading text-heading-xl text-text-primary">
+          <h2 id="latest-draw-heading" class="font-sans text-heading-xl text-text-primary">
             Último sorteo
           </h2>
           <a
@@ -130,9 +130,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                     <p class="text-sm font-medium text-primary-700 dark:text-primary-300">
                       Sorteo Nº {latestDraw.officialNumber}
                     </p>
-                    <p class="text-body-md text-text-secondary">
-                      {formatDate(latestDraw.drawDate)}
-                    </p>
+                    <p class="text-base text-text-secondary">{formatDate(latestDraw.drawDate)}</p>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-700 dark:bg-primary-900 dark:text-primary-300">
@@ -182,7 +180,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     <section class="bg-surface py-12 md:py-16" aria-labelledby="recent-draws-heading">
       <Container maxWidth="lg">
         <div class="mb-8 flex items-center justify-between">
-          <h2 id="recent-draws-heading" class="font-heading text-heading-xl text-text-primary">
+          <h2 id="recent-draws-heading" class="font-sans text-heading-xl text-text-primary">
             Sorteos recientes
           </h2>
           <a
@@ -261,10 +259,10 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     <section class="bg-primary-600 py-16 md:py-24" aria-labelledby="cta-heading">
       <Container maxWidth="lg">
         <div class="text-center text-white">
-          <h2 id="cta-heading" class="font-display mb-4 text-display-sm">
+          <h2 id="cta-heading" class="mb-4 font-sans text-display-sm">
             ¿Quiere buscar una combinación específica?
           </h2>
-          <p class="mx-auto mb-8 max-w-2xl text-body-lg text-primary-100">
+          <p class="mx-auto mb-8 max-w-2xl text-lg text-primary-100">
             Ingrese sus 6 números y le mostraremos en qué sorteos han salido juntos, con todas las
             modalidades y fechas.
           </p>

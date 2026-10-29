@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { server } from '@/test/setup';
 
 // Mock the API client to avoid env var issues
 vi.mock('@/lib/api/client', () => ({
@@ -23,12 +22,18 @@ vi.mock('@/lib/api/client', () => ({
 }));
 
 // Mock the worker
-const mockWorkerInstance = {
+const mockWorkerInstance: {
+  postMessage: ReturnType<typeof vi.fn>;
+  terminate: ReturnType<typeof vi.fn>;
+  addEventListener: ReturnType<typeof vi.fn>;
+  removeEventListener: ReturnType<typeof vi.fn>;
+  onmessage: ((event: MessageEvent) => void) | null;
+} = {
   postMessage: vi.fn(),
   terminate: vi.fn(),
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
-  onmessage: null as ((event: MessageEvent) => void) | null,
+  onmessage: null,
 };
 
 const createMessageEvent = (data: unknown): MessageEvent => {
@@ -75,20 +80,22 @@ describe('ImportWizard — integration flow (real hooks + MSW, mocked worker)', 
     const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
 
     // Trigger file input - use the hidden input directly
-    const fileInput = screen.getByTestId('file-dropzone').querySelector('input[type="file"]');
+    const dropzoneEl = screen.getByTestId('file-dropzone');
+    const fileInput = dropzoneEl.querySelector<HTMLInputElement>('input[type="file"]');
     if (!fileInput) throw new Error('File input not found');
     await user.upload(fileInput, file);
 
     // Worker should be created and receive the file
     await waitFor(() => {
       expect(WorkerMock).toHaveBeenCalled();
-      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith(
-        expect.objectContaining({
-          file: expect.any(ArrayBuffer),
-          fileName: 'test.csv',
-          mimeType: 'text/csv',
-        })
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const expectedCall = expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        file: expect.any(ArrayBuffer),
+        fileName: 'test.csv',
+        mimeType: 'text/csv',
+      });
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith(expectedCall);
     });
 
     const createMessageEvent = (data: unknown): MessageEvent => {
@@ -156,7 +163,7 @@ describe('ImportWizard — integration flow (real hooks + MSW, mocked worker)', 
     });
 
     // Debug: check if validation is working
-    const continuarBtn = screen.getByRole('button', { name: /continuar/i });
+    const continuarBtn = screen.getByRole<HTMLButtonElement>('button', { name: /continuar/i });
     console.log('In preview step. Button state:', continuarBtn.disabled);
 
     // Check if button is enabled, if not wait for selection to complete
@@ -170,7 +177,7 @@ describe('ImportWizard — integration flow (real hooks + MSW, mocked worker)', 
     );
 
     // Mock console.error to catch any errors
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation((...args) => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
       console.log('[CONSOLE.ERROR]', ...args);
     });
 
@@ -249,7 +256,8 @@ describe('ImportWizard — integration flow (real hooks + MSW, mocked worker)', 
     const csvContent = 'officialNumber,drawDate\n1001,2024-01-15\n';
     const file = new File([csvContent], 'bad.csv', { type: 'text/csv' });
 
-    const fileInput = screen.getByTestId('file-dropzone').querySelector('input[type="file"]');
+    const dropzoneEl2 = screen.getByTestId('file-dropzone');
+    const fileInput = dropzoneEl2.querySelector<HTMLInputElement>('input[type="file"]');
     if (!fileInput) throw new Error('File input not found');
     await user.upload(fileInput, file);
 

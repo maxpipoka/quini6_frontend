@@ -6,7 +6,7 @@ import Layout from '../../layouts/Layout.astro';
   <div class="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
     <div class="w-full max-w-md">
       <div class="rounded-xl border border-border bg-surface-elevated p-8">
-        <h1 class="font-display mb-2 text-center text-2xl font-bold text-text-primary">
+        <h1 class="mb-2 text-center font-sans text-2xl font-bold text-text-primary">
           Panel de Administración
         </h1>
         <p class="mb-8 text-center text-text-secondary">Inicia sesión para gestionar sorteos</p>
@@ -22,7 +22,7 @@ import Layout from '../../layouts/Layout.astro';
               name="email"
               required
               autoComplete="email"
-              class="focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2"
+              class="w-full rounded-lg border border-border bg-surface px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="admin@quini6.com"
             />
           </div>
@@ -37,21 +37,22 @@ import Layout from '../../layouts/Layout.astro';
               name="password"
               required
               autoComplete="current-password"
-              class="focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2"
-              placeholder="••••••••"
+              class="w-full rounded-lg border border-border bg-surface px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="⬢⬢⬢⬢⬢⬢⬢⬢"
             />
           </div>
 
           <button
             type="submit"
-            class="bg-primary hover:bg-primary/90 focus:ring-primary w-full rounded-lg py-3 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
+            class="hover:bg-primary-500/90 w-full rounded-lg bg-primary-500 py-3 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
             id="submit-btn"
           >
             Iniciar sesión
           </button>
         </form>
 
-        <p id="error-message" class="text-error mt-4 hidden text-center text-sm" role="alert"></p>
+        <p id="error-message" class="mt-4 hidden text-center text-sm text-error-500" role="alert">
+        </p>
       </div>
     </div>
   </div>

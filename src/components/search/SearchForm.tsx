@@ -139,7 +139,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
 
         {status === 'error' && (
           <div className="card-elevated p-8 text-center" role="alert" data-testid="search-error">
-            <h3 className="font-heading mb-2 text-heading-md text-text-primary">
+            <h3 className="mb-2 font-sans text-heading-md text-text-primary">
               No pudimos realizar la búsqueda
             </h3>
             <p className="mb-4 text-text-secondary">
@@ -196,7 +196,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
 
         {status === 'success' && result && result.matches.length === 0 && (
           <div className="card-elevated p-8 text-center" role="status" data-testid="no-results">
-            <h3 className="font-heading mb-2 text-heading-md text-text-primary">
+            <h3 className="mb-2 font-sans text-heading-md text-text-primary">
               No encontramos esta combinación
             </h3>
             <p className="mb-4 text-text-secondary">
