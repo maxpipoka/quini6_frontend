@@ -8,7 +8,7 @@ export const sampleImportRows: ImportPreviewRow[] = [
   { rowNumber: 1, date: '2024-01-15', modality: 'Tradicional', tradicional: [5, 12, 23, 34, 41, 45], laSegunda: null, revancha: null, siempreSale: null, reintegro: 7, isValid: true, errors: [] },
   { rowNumber: 2, date: '2024-01-22', modality: 'La Segunda', tradicional: null, laSegunda: [4, 11, 18, 25, 32, 39], revancha: null, siempreSale: null, reintegro: 4, isValid: true, errors: [] },
   { rowNumber: 3, date: '2024-01-29', modality: 'Revancha', tradicional: null, laSegunda: null, revancha: [7, 14, 21, 28, 35, 42], siempreSale: null, reintegro: 2, isValid: true, errors: [] },
-  { rowNumber: 4, date: '2024-02-05', modality: 'Tradicional', tradicional: [8, 14, 27, 30, 36, 43], laSegunda: null, revancha: null, siempreSale: null, reintegro: 6, isValid: false, errors: [{ field: 'date', message: 'Duplicate draw date', rawValue: '2024-02-05' }] },
+  { rowNumber: 4, date: '2024-02-05', modality: 'Tradicional', tradicional: [8, 14, 27, 30, 36, 43], laSegunda: null, revancha: null, siempreSale: null, reintegro: 6, isValid: false, errors: [{ rowNumber: 4, field: 'date', message: 'Duplicate draw date', rawValue: '2024-02-05' }] },
   { rowNumber: 5, date: '2024-02-12', modality: 'Siempre Sale', tradicional: null, laSegunda: null, revancha: null, siempreSale: [6, 13, 20, 27, 34, 41], reintegro: 8, isValid: true, errors: [] },
 ];
 

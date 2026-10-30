@@ -4,10 +4,12 @@ import ImportProgress from '@/components/admin/ImportProgress';
 import { sampleProps } from '@tests/e2e/fixtures/visual-test-data';
 
 const { state = 'default' } = Astro.url.searchParams;
-const props = sampleProps.ImportProgress[state as keyof typeof sampleProps.ImportProgress] ?? sampleProps.ImportProgress.default;
+const props =
+  sampleProps.ImportProgress[state as keyof typeof sampleProps.ImportProgress] ??
+  sampleProps.ImportProgress.default;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -15,10 +17,10 @@ const props = sampleProps.ImportProgress[state as keyof typeof sampleProps.Impor
     <title>Visual Test: ImportProgress - {state}</title>
     <style>
       /* Disable animations for consistent screenshots */
-      [data-test-animate="false"],
-      [data-test-animate="false"] *,
-      [data-test-animate="false"] *::before,
-      [data-test-animate="false"] *::after {
+      [data-test-animate='false'],
+      [data-test-animate='false'] *,
+      [data-test-animate='false'] *::before,
+      [data-test-animate='false'] *::after {
         animation-duration: 0s !important;
         animation-delay: -1ms !important;
         transition-duration: 0s !important;
@@ -26,7 +28,7 @@ const props = sampleProps.ImportProgress[state as keyof typeof sampleProps.Impor
       }
     </style>
   </head>
-  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+  <body data-test-animate="false" class="min-h-screen bg-neutral-50 p-8 dark:bg-neutral-900">
     <main>
       <h1 class="sr-only">ImportProgress Component Test</h1>
       <ImportProgress {...props} client:load />

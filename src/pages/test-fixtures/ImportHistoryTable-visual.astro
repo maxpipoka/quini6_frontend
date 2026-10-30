@@ -2,10 +2,10 @@
 // Test fixture page for ImportHistoryTable visual regression
 import { ImportHistoryTableVisual } from '@/components/admin/ImportHistoryTable.visual';
 
-const { state = 'default' } = Astro.url.searchParams;
+const state = Astro.url.searchParams.get('state') ?? 'default';
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -13,10 +13,10 @@ const { state = 'default' } = Astro.url.searchParams;
     <title>Visual Test: ImportHistoryTable - {state}</title>
     <style>
       /* Disable animations for consistent screenshots */
-      [data-test-animate="false"],
-      [data-test-animate="false"] *,
-      [data-test-animate="false"] *::before,
-      [data-test-animate="false"] *::after {
+      [data-test-animate='false'],
+      [data-test-animate='false'] *,
+      [data-test-animate='false'] *::before,
+      [data-test-animate='false'] *::after {
         animation-duration: 0s !important;
         animation-delay: -1ms !important;
         transition-duration: 0s !important;
@@ -24,7 +24,7 @@ const { state = 'default' } = Astro.url.searchParams;
       }
     </style>
   </head>
-  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+  <body data-test-animate="false" class="min-h-screen bg-neutral-50 p-8 dark:bg-neutral-900">
     <main>
       <h1 class="sr-only">ImportHistoryTable Component Test</h1>
       <ImportHistoryTableVisual state={state} client:load />
