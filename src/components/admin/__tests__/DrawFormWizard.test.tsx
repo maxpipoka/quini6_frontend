@@ -260,7 +260,7 @@ describe('DrawFormWizard', () => {
       expect(mockOnCancel).toHaveBeenCalledTimes(1);
     });
 
-    it('disables buttons when isLoading', async () => {
+    it('disables buttons when isLoading', () => {
       renderWizard({ isLoading: true });
 
       const nextBtn = screen.getByRole('button', { name: 'Siguiente' });
@@ -285,7 +285,7 @@ describe('DrawFormWizard', () => {
 
       fireEvent.change(screen.getByLabelText('Número Oficial *'), { target: { value: '123' } });
       // Set draw date directly on input element using native event
-      await act(async () => {
+      act(() => {
         const dateInput = screen.getByLabelText('Fecha del Sorteo *');
         Object.defineProperty(dateInput, 'value', {
           value: '2024-01-15T20:00:00Z',
@@ -340,7 +340,7 @@ describe('DrawFormWizard', () => {
       expect(submitBtn).toHaveTextContent('Actualizar');
     });
 
-    it('pre-fills data from initialData prop', async () => {
+    it('pre-fills data from initialData prop', () => {
       const initialData = {
         officialNumber: 999,
         drawDate: '2024-06-15T20:00',

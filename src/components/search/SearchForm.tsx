@@ -34,7 +34,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
   const filledNumbers = numbers.filter((n): n is number => n !== null);
   const isComplete = filledNumbers.length === 6;
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!isComplete) {
@@ -54,30 +54,32 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
     setErrorMessage('');
     setErrorRequestId('');
 
-    try {
-      const response = await fetch(`${apiBaseUrl}/search/exact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ numbers: filledNumbers }),
-      });
+    void (async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/search/exact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ numbers: filledNumbers }),
+        });
 
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as {
-          message?: string;
-          requestId?: string;
-        } | null;
-        setErrorMessage(payload?.message ?? `Error ${response.status}`);
-        setErrorRequestId(payload?.requestId ?? '');
+        if (!response.ok) {
+          const payload = (await response.json().catch(() => null)) as {
+            message?: string;
+            requestId?: string;
+          } | null;
+          setErrorMessage(payload?.message ?? `Error ${response.status}`);
+          setErrorRequestId(payload?.requestId ?? '');
+          setStatus('error');
+          return;
+        }
+
+        setResult((await response.json()) as ExactSearchResponse);
+        setStatus('success');
+      } catch (error) {
+        setErrorMessage(error instanceof Error ? error.message : 'Error inesperado');
         setStatus('error');
-        return;
       }
-
-      setResult((await response.json()) as ExactSearchResponse);
-      setStatus('success');
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Error inesperado');
-      setStatus('error');
-    }
+    })();
   };
 
   const handleClear = () => {

@@ -46,7 +46,7 @@ export const WithFileSelected: Story = {
     accept: '.csv,.xlsx',
     maxSize: 10 * 1024 * 1024,
   },
-  play: async ({ canvasElement }) => {
+  play: ({ canvasElement }) => {
     const input = canvasElement.querySelector<HTMLInputElement>('input[type="file"]');
     if (input) {
       const file = new File(['test'], 'test.csv', { type: 'text/csv' });
@@ -64,7 +64,7 @@ export const ErrorState: Story = {
     maxSize: 100,
     onError: (error: string) => console.log('Error:', error),
   },
-  play: async ({ canvasElement }) => {
+  play: ({ canvasElement }) => {
     const input = canvasElement.querySelector<HTMLInputElement>('input[type="file"]');
     if (input) {
       const file = new File(['x'.repeat(200)], 'large.csv', { type: 'text/csv' });

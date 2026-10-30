@@ -151,23 +151,33 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
     progressStageRef.current = 'processing';
     progressValueRef.current = 0;
 
-    preview(validRows).then((result) => {
-      if (result) {
-        console.log('[ImportWizard] preview success', result);
-        setImportId(result.importId);
-        console.log('[ImportWizard] calling setStep confirm');
-        setStep('confirm');
-        console.log('[ImportWizard] after setStep confirm');
-      } else {
-        console.log('[ImportWizard] preview failed - no result');
+    void preview(validRows)
+      .then((result) => {
+        if (result) {
+          console.log('[ImportWizard] preview success', result);
+          setImportId(result.importId);
+          console.log('[ImportWizard] calling setStep confirm');
+          setStep('confirm');
+          console.log('[ImportWizard] after setStep confirm');
+        } else {
+          console.log('[ImportWizard] preview failed - no result');
+          setToast({
+            type: 'error',
+            title: 'Error en vista previa',
+            message: 'No se pudo generar la vista previa',
+          });
+          setStep('upload');
+        }
+      })
+      .catch((error) => {
+        console.error('[ImportWizard] preview error:', error);
         setToast({
           type: 'error',
           title: 'Error en vista previa',
-          message: 'No se pudo generar la vista previa',
+          message: error instanceof Error ? error.message : 'Error inesperado',
         });
         setStep('upload');
-      }
-    });
+      });
   }, [parsedFile, validRows, preview]);
 
   const handleConfirm = useCallback(() => {
@@ -183,34 +193,44 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
     progressStageRef.current = 'committing';
     progressValueRef.current = 0;
 
-    commit(importId, policy, (progress) => {
+    void commit(importId, policy, (progress) => {
       progressValueRef.current = progress.progress;
       progressStageRef.current = progress.stage;
-    }).then((result) => {
-      console.log('[ImportWizard] commit result:', result);
+    })
+      .then((result) => {
+        console.log('[ImportWizard] commit result:', result);
 
-      if (result) {
-        setToast({
-          type: 'success',
-          title: 'Importación completada',
-          message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
-        });
-        setStep('result');
-        // Dispatch custom event for cross-tab refresh
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('draws:refresh'));
+        if (result) {
+          setToast({
+            type: 'success',
+            title: 'Importación completada',
+            message: `Creados: ${result.created}, Actualizados: ${result.updated}, Omitidos: ${result.skipped}, Fallidos: ${result.failed}`,
+          });
+          setStep('result');
+          // Dispatch custom event for cross-tab refresh
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('draws:refresh'));
+          }
+          onImportSuccess?.();
+        } else {
+          console.log('[ImportWizard] commit returned null/undefined');
+          setToast({
+            type: 'error',
+            title: 'Error en importación',
+            message: 'No se pudo completar la importación',
+          });
+          setStep('result');
         }
-        onImportSuccess?.();
-      } else {
-        console.log('[ImportWizard] commit returned null/undefined');
+      })
+      .catch((error) => {
+        console.error('[ImportWizard] commit error:', error);
         setToast({
           type: 'error',
           title: 'Error en importación',
-          message: 'No se pudo completar la importación',
+          message: error instanceof Error ? error.message : 'Error inesperado',
         });
         setStep('result');
-      }
-    });
+      });
   }, [importId, policy, commit, onImportSuccess]);
 
   const handleRowSelect = useCallback((rowIndex: number, selected: boolean) => {

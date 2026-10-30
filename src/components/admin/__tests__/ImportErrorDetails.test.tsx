@@ -45,7 +45,7 @@ describe('ImportErrorDetails', () => {
     vi.useRealTimers();
   });
 
-  it('renders button with "Sin errores" when no errors', async () => {
+  it('renders button with "Sin errores" when no errors', () => {
     mockApi.getImportErrors.mockResolvedValue({ errors: [] });
 
     render(<ImportErrorDetails importId="import-1" />);

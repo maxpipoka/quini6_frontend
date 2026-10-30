@@ -27,7 +27,8 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
 
 <div
   id={dropzoneId}
-  class={`dropzone-root rounded-lg border-2 border-dashed p-8 text-center
+  data-testid="file-dropzone"
+  class={`rounded-lg border-2 border-dashed p-8 text-center
     transition-all duration-200
     ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-primary-400'}
     dark:bg-neutral-800/50 border-neutral-300
@@ -277,26 +278,26 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
 /* prettier-ignore */
 <style is:global>
   /* Focus visible for accessibility */
-  .dropzone-root:focus-visible {
+  [data-testid='file-dropzone']:focus-visible {
     outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
   /* High contrast mode */
   @media (forced-colors: active) {
-    .dropzone-root {
+    [data-testid='file-dropzone'] {
       forced-color-adjust: none;
       border-color: CanvasText;
       background-color: Canvas;
     }
-    .dropzone-root:hover {
+    [data-testid='file-dropzone']:hover {
       border-color: Highlight;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .dropzone-root {
+    [data-testid='file-dropzone'] {
       transition: none;
     }
   }
