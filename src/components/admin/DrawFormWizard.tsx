@@ -272,7 +272,7 @@ export function DrawFormWizard({
     dispatch({ type: 'SET_DRAW_DATE', value: e.target.value });
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!canSubmit || isLoading) return;
 
@@ -300,14 +300,12 @@ export function DrawFormWizard({
       return;
     }
 
-    try {
-      await onSubmit(payload);
-    } catch (error: unknown) {
+    onSubmit(payload).catch((error: unknown) => {
       dispatch({
         type: 'SET_SUBMIT_ERROR',
         error: error instanceof Error ? error.message : 'Error al guardar el sorteo',
       });
-    }
+    });
   };
 
   const stepIndicators = MODALITY_ORDER.map((modality, index) => {

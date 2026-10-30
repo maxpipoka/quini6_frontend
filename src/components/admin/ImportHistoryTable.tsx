@@ -85,7 +85,7 @@ export function ImportHistoryTable() {
           <p className="mt-4 text-text-primary">Error al cargar el historial</p>
           <p className="mt-1 text-sm text-text-secondary">{error.message}</p>
           <button
-            onClick={refetch}
+            onClick={() => void refetch()}
             className="hover:bg-primary-500/90 mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white"
           >
             Reintentar

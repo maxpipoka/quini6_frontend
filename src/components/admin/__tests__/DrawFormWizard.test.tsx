@@ -35,7 +35,7 @@ async function fillCurrentStepNumbers(startNumber: number, isLastStep = false) {
   console.log('fillCurrentStepNumbers: found', inputElements.length, 'spinbuttons');
   for (let i = 0; i < 6; i++) {
     const value = String(startNumber + i);
-    await act(async () => {
+    act(() => {
       fireEvent.change(inputElements[i + 1]!, { target: { value } });
     });
   }
@@ -54,7 +54,7 @@ async function fillCurrentStepNumbers(startNumber: number, isLastStep = false) {
 async function clickNextAndWaitForStep(expectedStep: number) {
   console.log('clickNextAndWaitForStep: clicking next, expecting step', expectedStep);
   const nextBtn = screen.getByRole('button', { name: 'Siguiente' });
-  await act(async () => {
+  act(() => {
     fireEvent.click(nextBtn);
   });
   await waitForStep(expectedStep);
@@ -235,7 +235,7 @@ describe('DrawFormWizard', () => {
       const drawDateInput = screen.getByLabelText('Fecha del Sorteo *');
       // Use a value that passes schema validation (valid ISO format) but fails Date.parse (NaN)
       // Month 13 is invalid - Date.parse returns NaN
-      await act(async () => {
+      act(() => {
         Object.defineProperty(drawDateInput, 'value', {
           value: '2024-13-45T99:99:99',
           writable: true,

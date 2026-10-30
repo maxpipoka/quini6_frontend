@@ -31,21 +31,24 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     onToggle?.();
   };
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/admin/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'X-CSRF-Token': getCsrfToken() ?? '',
-        },
-      });
-      if (response.ok) {
+  const handleLogout = () => {
+    fetch('/api/admin/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'X-CSRF-Token': getCsrfToken() ?? '',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = '/admin/login';
+        } else {
+          window.location.href = '/admin/login';
+        }
+      })
+      .catch(() => {
         window.location.href = '/admin/login';
-      }
-    } catch {
-      window.location.href = '/admin/login';
-    }
+      });
   };
 
   function getCsrfToken(): string | null {

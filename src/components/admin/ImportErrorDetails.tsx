@@ -34,7 +34,7 @@ export function ImportErrorDetails({ importId }: ImportErrorDetailsProps) {
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
     if (!isExpanded) {
-      fetchErrors();
+      void fetchErrors();
     }
   };
 
