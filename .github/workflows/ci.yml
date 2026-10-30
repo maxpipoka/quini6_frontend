@@ -152,7 +152,7 @@ jobs:
         run: npm run test:e2e -- --project=chromium
         env:
           VITE_API_BASE_URL: http://localhost:3001/api
-          VISUAL: "1"
+          VISUAL: '1'
 
       - name: Stop servers
         if: always()

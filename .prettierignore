@@ -1,0 +1,54 @@
+# Build outputs
+dist/
+build/
+*.local
+
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+.nyc_output/
+
+# Astro
+.astro/
+
+# Lighthouse CI
+.lighthouseci/
+
+# Storybook
+storybook-static/
+
+# Openspec
+openspec/
+
+# Config files that are not project source
+.eslintrc.cjs
+.prettierrc
+.prettierignore
+.prettierrc.*
+.prettier.config.*
+tailwind.config.mjs
+astro.config.mjs
+tsconfig.json
+vitest.config.ts
+lighthouserc.json
+vercel.json
+
+# Misc
+*.md
+*.log
+*.local
+*.pid
+*.cjs
+*.mjs
+!.prettierrc
+!README.md
