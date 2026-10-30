@@ -113,11 +113,12 @@ export const Modal: React.FC<Props> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
-      onClick={handleBackdropClick}
+      onKeyDown={(e) => e.key === 'Escape' && closeOnEscape && onClose()}
     >
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200"
         aria-hidden="true"
+        onClick={handleBackdropClick}
       />
       <div
         ref={modalRef}

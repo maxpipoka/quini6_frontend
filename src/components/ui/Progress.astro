@@ -48,7 +48,7 @@ const percentage = isIndeterminate ? '' : `${Math.round(Math.max(0, Math.min(100
 
 <div
   id={progressId}
-  class="progress-root w-full"
+  class="w-full"
   role="progressbar"
   aria-valuenow={isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value ?? 0)))}
   aria-valuemin={0}
@@ -87,7 +87,7 @@ const percentage = isIndeterminate ? '' : `${Math.round(Math.max(0, Math.min(100
       ) : (
         <div
           id={`${progressId}-bar`}
-          class={`${currentColor} progress-bar h-full transition-all duration-300 ease-out`}
+          class={`${currentColor} h-full transition-all duration-300 ease-out`}
           style={`width: ${percentage}`}
           role="presentation"
         />
