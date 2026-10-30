@@ -78,7 +78,7 @@ export function useImportHistory(options: UseImportHistoryOptions = {}): UseImpo
   }, [fetchData]);
 
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, [fetchData]);
 
   useEffect(() => {

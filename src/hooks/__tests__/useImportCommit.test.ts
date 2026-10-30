@@ -105,7 +105,7 @@ describe('useImportCommit', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBe(true));
 
-    await act(async () => {
+    act(() => {
       resolvePreview(previewResponse);
     });
 

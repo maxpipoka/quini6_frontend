@@ -113,6 +113,7 @@ export const Modal: React.FC<Props> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
+      tabIndex={-1}
       onKeyDown={(e) => e.key === 'Escape' && closeOnEscape && onClose()}
     >
       <div

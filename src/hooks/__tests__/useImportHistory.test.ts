@@ -224,7 +224,7 @@ describe('useImportHistory', () => {
     const initialData = result.current.data;
 
     act(() => {
-      result.current.refetch();
+      void result.current.refetch();
     });
 
     await waitFor(() => {

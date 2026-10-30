@@ -266,7 +266,7 @@ export const handlers = [
   }),
 
   // POST admin/imports/:id/commit - Commit previewed import with policy
-  http.post('admin/imports/:id/commit', async ({ request }) => {
+  http.post('admin/imports/:id/commit', ({ request }) => {
     const url = new URL(request.url);
     const policy = url.searchParams.get('policy') as 'skip' | 'replace' | 'merge' | null;
 

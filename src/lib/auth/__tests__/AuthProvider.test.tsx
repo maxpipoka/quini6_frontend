@@ -10,19 +10,19 @@ const TestComponent = () => {
       <span data-testid="loading">{String(auth.isLoading)}</span>
       <span data-testid="authenticated">{String(auth.isAuthenticated)}</span>
       <button
-        onClick={() => auth.login({ email: 'test@test.com', password: 'pass' })}
+        onClick={() => void auth.login({ email: 'test@test.com', password: 'pass' })}
         data-testid="login-btn"
       >
         Login
       </button>
-      <button onClick={() => auth.logout()} data-testid="logout-btn">
+      <button onClick={() => void auth.logout()} data-testid="logout-btn">
         Logout
       </button>
-      <button onClick={() => auth.refresh()} data-testid="refresh-btn">
+      <button onClick={() => void auth.refresh()} data-testid="refresh-btn">
         Refresh
       </button>
       <button
-        onClick={() => auth.changePassword({ currentPassword: 'old', newPassword: 'new' })}
+        onClick={() => void auth.changePassword({ currentPassword: 'old', newPassword: 'new' })}
         data-testid="change-pass-btn"
       >
         Change Password
