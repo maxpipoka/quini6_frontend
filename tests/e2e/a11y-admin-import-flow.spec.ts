@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
 import { runA11yCheck, assertNoA11yViolations, waitForStableContent } from './a11y-setup';
 
 test.describe('Accessibility Audit - Admin Import Flow', () => {
@@ -10,7 +9,9 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
 
   test('Full import flow - axe check at each step', async ({ page }) => {
     // Step 1: Initial upload page - target the h1 in layout (exact match)
-    await expect(page.getByRole('heading', { name: 'Importar Sorteos', exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Importar Sorteos', exact: true })
+    ).toBeVisible();
     const a11yResults1 = await runA11yCheck(page);
     await assertNoA11yViolations(a11yResults1);
 
@@ -109,7 +110,7 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
 
     for (let i = 0; i < 15; i++) {
       await page.keyboard.press('Tab');
-      const focused = await page.evaluate(() => document.activeElement?.outerHTML || 'none');
+      const focused = await page.evaluate(() => document.activeElement?.outerHTML ?? 'none');
       focusableElements.push(focused);
       await page.waitForTimeout(100);
     }
@@ -201,7 +202,6 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
 
     // Run axe with color-contrast rule explicitly
     const a11yResults = await runA11yCheck(page);
-    
     // The color-contrast rule is disabled in runA11yCheck due to false positives
     // Just verify the page loads without critical violations
     await assertNoA11yViolations(a11yResults);

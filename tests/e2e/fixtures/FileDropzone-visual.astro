@@ -4,10 +4,12 @@ import FileDropzone from '@/components/ui/FileDropzone';
 import { sampleProps } from './visual-test-data';
 
 const { state = 'default' } = Astro.props;
-const props = sampleProps.FileDropzone[state as keyof typeof sampleProps.FileDropzone] ?? sampleProps.FileDropzone.default;
+const props =
+  sampleProps.FileDropzone[state as keyof typeof sampleProps.FileDropzone] ??
+  sampleProps.FileDropzone.default;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -15,10 +17,10 @@ const props = sampleProps.FileDropzone[state as keyof typeof sampleProps.FileDro
     <title>Visual Test: FileDropzone - {state}</title>
     <style>
       /* Disable animations for consistent screenshots */
-      [data-test-animate="false"],
-      [data-test-animate="false"] *,
-      [data-test-animate="false"] *::before,
-      [data-test-animate="false"] *::after {
+      [data-test-animate='false'],
+      [data-test-animate='false'] *,
+      [data-test-animate='false'] *::before,
+      [data-test-animate='false'] *::after {
         animation-duration: 0s !important;
         animation-delay: -1ms !important;
         transition-duration: 0s !important;
@@ -26,7 +28,7 @@ const props = sampleProps.FileDropzone[state as keyof typeof sampleProps.FileDro
       }
     </style>
   </head>
-  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+  <body data-test-animate="false" class="min-h-screen bg-neutral-50 p-8 dark:bg-neutral-900">
     <FileDropzone {...props} client:load />
   </body>
 </html>

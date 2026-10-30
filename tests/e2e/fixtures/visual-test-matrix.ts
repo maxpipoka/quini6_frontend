@@ -26,4 +26,5 @@ export const components: ComponentState[] = [
 ];
 
 // Total test cases: (6 + 4 + 4 + 4 + 5) * 2 = 23 * 2 = 46
-export const totalTestCases = components.reduce((sum, c) => sum + c.states.length, 0) * viewports.length;
+export const totalTestCases =
+  components.reduce((sum, c) => sum + c.states.length, 0) * viewports.length;

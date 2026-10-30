@@ -1,17 +1,38 @@
 import { test, expect } from '@playwright/test';
-import { runA11yCheck, assertNoA11yViolations } from './a11y-setup';
+import { runA11yCheck } from './a11y-setup';
 
 const componentFixtures = [
   { path: '/test-fixtures/FileDropzone-visual?state=default', name: 'FileDropzone - default' },
   { path: '/test-fixtures/FileDropzone-visual?state=disabled', name: 'FileDropzone - disabled' },
-  { path: '/test-fixtures/ImportPreviewTable-visual?state=default', name: 'ImportPreviewTable - default' },
-  { path: '/test-fixtures/ImportPreviewTable-visual?state=empty', name: 'ImportPreviewTable - empty' },
-  { path: '/test-fixtures/ImportHistoryTable-visual?state=default', name: 'ImportHistoryTable - default' },
-  { path: '/test-fixtures/ImportHistoryTable-visual?state=empty', name: 'ImportHistoryTable - empty' },
-  { path: '/test-fixtures/ImportHistoryTable-visual?state=loading', name: 'ImportHistoryTable - loading' },
-  { path: '/test-fixtures/ImportHistoryTable-visual?state=pagination', name: 'ImportHistoryTable - pagination' },
+  {
+    path: '/test-fixtures/ImportPreviewTable-visual?state=default',
+    name: 'ImportPreviewTable - default',
+  },
+  {
+    path: '/test-fixtures/ImportPreviewTable-visual?state=empty',
+    name: 'ImportPreviewTable - empty',
+  },
+  {
+    path: '/test-fixtures/ImportHistoryTable-visual?state=default',
+    name: 'ImportHistoryTable - default',
+  },
+  {
+    path: '/test-fixtures/ImportHistoryTable-visual?state=empty',
+    name: 'ImportHistoryTable - empty',
+  },
+  {
+    path: '/test-fixtures/ImportHistoryTable-visual?state=loading',
+    name: 'ImportHistoryTable - loading',
+  },
+  {
+    path: '/test-fixtures/ImportHistoryTable-visual?state=pagination',
+    name: 'ImportHistoryTable - pagination',
+  },
   { path: '/test-fixtures/ImportProgress-visual?state=default', name: 'ImportProgress - default' },
-  { path: '/test-fixtures/ImportProgress-visual?state=inProgress', name: 'ImportProgress - inProgress' },
+  {
+    path: '/test-fixtures/ImportProgress-visual?state=inProgress',
+    name: 'ImportProgress - inProgress',
+  },
   { path: '/test-fixtures/ImportProgress-visual?state=success', name: 'ImportProgress - success' },
   { path: '/test-fixtures/ImportProgress-visual?state=error', name: 'ImportProgress - error' },
   { path: '/test-fixtures/Progress-visual?state=default', name: 'Progress - default' },

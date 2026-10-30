@@ -4,10 +4,12 @@ import ImportHistoryTable from '@/components/admin/ImportHistoryTable';
 import { sampleProps } from './visual-test-data';
 
 const { state = 'default' } = Astro.props;
-const props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.ImportHistoryTable] ?? sampleProps.ImportHistoryTable.default;
+const props =
+  sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.ImportHistoryTable] ??
+  sampleProps.ImportHistoryTable.default;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -15,10 +17,10 @@ const props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.I
     <title>Visual Test: ImportHistoryTable - {state}</title>
     <style>
       /* Disable animations for consistent screenshots */
-      [data-test-animate="false"],
-      [data-test-animate="false"] *,
-      [data-test-animate="false"] *::before,
-      [data-test-animate="false"] *::after {
+      [data-test-animate='false'],
+      [data-test-animate='false'] *,
+      [data-test-animate='false'] *::before,
+      [data-test-animate='false'] *::after {
         animation-duration: 0s !important;
         animation-delay: -1ms !important;
         transition-duration: 0s !important;
@@ -26,7 +28,7 @@ const props = sampleProps.ImportHistoryTable[state as keyof typeof sampleProps.I
       }
     </style>
   </head>
-  <body data-test-animate="false" class="min-h-screen p-8 bg-neutral-50 dark:bg-neutral-900">
+  <body data-test-animate="false" class="min-h-screen bg-neutral-50 p-8 dark:bg-neutral-900">
     <ImportHistoryTable {...props} client:load />
   </body>
 </html>

@@ -34,11 +34,11 @@ test.describe('Visual Regression - Admin Components', () => {
       for (const viewport of viewports) {
         test(`${component.name} - ${state} - ${viewport.name}`, async ({ page }) => {
           await page.setViewportSize({ width: viewport.width, height: viewport.height });
-          
+
           // Navigate to the temporary Astro fixture page
           const fixturePath = `/test-fixtures/${component.name}-visual?state=${state}`;
           await page.goto(fixturePath);
-          
+
           // Wait for component to hydrate - use domcontentloaded only
           await page.waitForLoadState('domcontentloaded');
           // Wait a bit for React hydration
