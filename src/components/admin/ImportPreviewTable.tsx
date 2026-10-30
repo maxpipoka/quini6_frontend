@@ -59,14 +59,18 @@ export const ImportPreviewTable: React.FC<Props> = ({
     if (sorting.length === 0) return rows;
     return [...rows].sort((a, b) => {
       for (const sort of sorting) {
-        let aVal: any = (a as any)[sort.id];
-        let bVal: any = (b as any)[sort.id];
+        const aObj = a as unknown as Record<string, unknown>;
+        const bObj = b as unknown as Record<string, unknown>;
+        let aVal: string | number = '';
+        let bVal: string | number = '';
 
-        if (aVal === undefined || aVal === null) aVal = '';
-        if (bVal === undefined || bVal === null) bVal = '';
+        const rawA = aObj[sort.id];
+        const rawB = bObj[sort.id];
 
-        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
-        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+        if (typeof rawA === 'string') aVal = rawA.toLowerCase();
+        else if (typeof rawA === 'number') aVal = rawA;
+        if (typeof rawB === 'string') bVal = rawB.toLowerCase();
+        else if (typeof rawB === 'number') bVal = rawB;
 
         if (aVal < bVal) return sort.desc ? 1 : -1;
         if (aVal > bVal) return sort.desc ? -1 : 1;
@@ -78,8 +82,6 @@ export const ImportPreviewTable: React.FC<Props> = ({
   const allValidSelected =
     sortedRows.length > 0 &&
     sortedRows.filter((r) => r.isValid).every((_, i) => selectedRows.has(i));
-
-  const someValidSelected = sortedRows.filter((r) => r.isValid).some((_, i) => selectedRows.has(i));
 
   const columns = [
     { id: 'select', header: 'Seleccionar', width: 48, sortable: false },
@@ -96,7 +98,10 @@ export const ImportPreviewTable: React.FC<Props> = ({
   ];
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-700" data-testid="import-preview">
+    <div
+      className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-700"
+      data-testid="import-preview"
+    >
       <table className="w-full text-sm" role="grid">
         <thead className="dark:bg-neutral-800/50 bg-neutral-50">
           <tr>
@@ -178,26 +183,26 @@ export const ImportPreviewTable: React.FC<Props> = ({
                     </span>
                   </td>
                   <td className="px-3 py-2 text-neutral-900 dark:text-neutral-100">
-                    {row.tradicional?.join(' - ') || '-'}
+                    {row.tradicional?.join(' - ') ?? '-'}
                   </td>
                   <td className="px-3 py-2 text-neutral-900 dark:text-neutral-100">
-                    {row.laSegunda?.join(' - ') || '-'}
+                    {row.laSegunda?.join(' - ') ?? '-'}
                   </td>
                   <td className="px-3 py-2 text-neutral-900 dark:text-neutral-100">
-                    {row.revancha?.join(' - ') || '-'}
+                    {row.revancha?.join(' - ') ?? '-'}
                   </td>
                   <td className="px-3 py-2 text-neutral-900 dark:text-neutral-100">
-                    {row.siempreSale?.join(' - ') || '-'}
+                    {row.siempreSale?.join(' - ') ?? '-'}
                   </td>
                   <td className="px-3 py-2 text-neutral-900 dark:text-neutral-100">
-                    {row.reintegro?.toString() || '-'}
+                    {row.reintegro?.toString() ?? '-'}
                   </td>
                   <td className="px-3 py-2">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium ${
                         row.isValid
-                          ? 'dark:bg-success-900/30 text-success-800 dark:text-success-200 bg-success-100'
-                          : 'dark:bg-error-900/30 text-error-800 dark:text-error-200 bg-error-100'
+                          ? 'dark:bg-success-700/30 bg-success-100 text-success-700 dark:text-success-400'
+                          : 'dark:bg-error-900/30 bg-error-100 text-error-700 dark:text-error-400'
                       }`}
                     >
                       {row.isValid ? (

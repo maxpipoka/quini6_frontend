@@ -1,3 +1,4 @@
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from '@storybook/react';
 import { ImportHistoryTable } from './ImportHistoryTable';
 
@@ -35,7 +36,7 @@ export const Empty: Story = {
       </div>
     ),
   ],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement: _canvasElement }) => {
     // The empty state is handled by the component when data is empty
   },
 };

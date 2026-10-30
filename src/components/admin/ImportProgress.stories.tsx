@@ -1,6 +1,7 @@
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from '@storybook/react';
 import { ImportProgress } from './ImportProgress';
-import type { ImportProgressStage } from '@/lib/schemas';
+import type { ImportProgressStage as _ImportProgressStage } from '@/lib/schemas';
 
 const meta: Meta<typeof ImportProgress> = {
   title: 'Admin/Import/ImportProgress',

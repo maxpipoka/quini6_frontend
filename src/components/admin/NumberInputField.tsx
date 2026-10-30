@@ -72,7 +72,7 @@ export function NumberInputField({
         w-full rounded-lg border bg-surface px-4 py-2.5 text-center text-text-primary
         placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2
         disabled:cursor-not-allowed disabled:opacity-50
-        ${error ? 'border-error focus:ring-error' : 'focus:ring-primary border-border'}
+        ${error ? 'border-error-500 focus:ring-error-500' : 'border-border focus:ring-primary-500'}
       `}
     />
   );

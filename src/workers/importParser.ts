@@ -54,13 +54,12 @@ function postMessage(message: WorkerOutput): void {
 function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
   const rows: string[][] = [];
   const errors: ParseError[] = [];
-  let currentRow = 0;
 
   // Simple CSV parser - handles quoted fields, commas in quotes
   const lines = text.split(/\r?\n/);
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]?.trim() ?? '';
+  for (const lineRaw of lines) {
+    const line = lineRaw?.trim() ?? '';
     if (!line) continue;
 
     const fields: string[] = [];
@@ -89,7 +88,6 @@ function parseCSV(text: string): { rows: string[][]; errors: ParseError[] } {
     fields.push(field.trim()); // Last field
 
     rows.push(fields);
-    currentRow++;
   }
 
   return { rows, errors };
@@ -118,7 +116,7 @@ async function parseXLSX(buffer: ArrayBuffer): Promise<{ rows: string[][]; error
     // Convert to array of arrays
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
 
-    return { rows: jsonData, errors };
+    return { rows: jsonData as string[][], errors };
   } catch (error) {
     errors.push({
       row: 0,
@@ -132,7 +130,7 @@ async function parseXLSX(buffer: ArrayBuffer): Promise<{ rows: string[][]; error
 function validateAndTransformRow(
   row: string[],
   rowIndex: number,
-  headers: string[]
+  _headers: string[]
 ): { row: DrawRowInput | null; errors: ParseError[] } {
   const errors: ParseError[] = [];
 

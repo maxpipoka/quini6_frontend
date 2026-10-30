@@ -5,11 +5,11 @@ import { Sidebar } from '../../components/admin/Sidebar.tsx';
 
 <Layout title="Admin - Quini 6">
   <style>
-    .admin-layout {
+    .min-h-screen bg-neutral-50 dark:bg-neutral-900 {
       min-height: 100vh;
       display: flex;
     }
-    .admin-sidebar {
+    .fixed inset-y-0 left-0 z-40 bg-surface border-r border-border transition-all duration-300 {
       width: var(--sidebar-width);
       height: 100vh;
       position: fixed;
@@ -22,20 +22,39 @@ import { Sidebar } from '../../components/admin/Sidebar.tsx';
       display: flex;
       flex-direction: column;
     }
-    .admin-sidebar.collapsed {
-      width: var(--sidebar-collapsed-width);
+    .fixed
+      inset-y-0
+      left-0
+      z-40
+      bg-surface
+      border-r
+      border-border
+      transition-all
+      duration-300.w-16 {
+      width: var(--sidebar-w-16-width);
     }
-    .admin-main {
+    .flex-1 p-6 lg:p-8 {
       flex: 1;
       margin-left: var(--sidebar-width);
       min-height: 100vh;
       transition: margin-left var(--admin-transition);
     }
-    .admin-sidebar.collapsed + .admin-main {
-      margin-left: var(--sidebar-collapsed-width);
+    .fixed
+      inset-y-0
+      left-0
+      z-40
+      bg-surface
+      border-r
+      border-border
+      transition-all
+      duration-300.w-16
+      + .flex-1
+      p-6
+      lg:p-8 {
+      margin-left: var(--sidebar-w-16-width);
     }
-    .admin-header {
-      height: var(--admin-header-height);
+    .mb-6 {
+      height: var(--mb-6-height);
       border-bottom: 1px solid var(--color-border);
       background: var(--color-surface);
       display: flex;
@@ -46,22 +65,22 @@ import { Sidebar } from '../../components/admin/Sidebar.tsx';
       top: 0;
       z-index: 50;
     }
-    .admin-content {
+    . {
       padding: 2rem;
     }
   </style>
 
-  <div class="admin-layout">
+  <div class="min-h-screen bg-neutral-50 dark:bg-neutral-900">
     <Sidebar client:visible />
 
-    <main class="admin-main">
-      <header class="admin-header">
-        <h1 class="font-display text-xl font-semibold text-text-primary">Administración</h1>
+    <main class="flex-1 p-6 lg:p-8">
+      <header class="mb-6">
+        <h1 class="font-sans text-xl font-semibold text-text-primary">Administración</h1>
         <div class="flex items-center gap-4">
           <span class="hidden text-sm text-text-secondary sm:block" id="user-email"></span>
         </div>
       </header>
-      <div class="admin-content">
+      <div class="">
         <slot />
       </div>
     </main>

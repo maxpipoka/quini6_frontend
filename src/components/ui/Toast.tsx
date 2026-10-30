@@ -59,7 +59,7 @@ const Toast: React.FC<ToastProps> = ({
       ),
       bg: 'bg-success-50 dark:bg-success-900/20',
       border: 'border-success-200 dark:border-success-800',
-      text: 'text-success-800 dark:text-success-200',
+      text: 'text-success-700 dark:text-success-400',
       titleText: 'text-success-900 dark:text-success-100',
       ariaLabel: 'Éxito',
     },
@@ -79,8 +79,8 @@ const Toast: React.FC<ToastProps> = ({
         </svg>
       ),
       bg: 'bg-error-50 dark:bg-error-900/20',
-      border: 'border-error-200 dark:border-error-800',
-      text: 'text-error-800 dark:text-error-200',
+      border: 'border-error-400 dark:border-error-700',
+      text: 'text-error-700 dark:text-error-400',
       titleText: 'text-error-900 dark:text-error-100',
       ariaLabel: 'Error',
     },
@@ -135,8 +135,8 @@ const Toast: React.FC<ToastProps> = ({
       className={`
         flex items-start gap-3 rounded-lg border p-4 shadow-lg
         ${config.bg} ${config.border} ${config.text}
-        slide-in-from-top-2 fade-in min-w-[300px] max-w-md
-        animate-in duration-300
+        min-w-[300px] max-w-md animate-fade-in animate-in
+        animate-slide-in-from-top-2 duration-300
         ${duration === 0 ? '' : 'animate-out duration-200'}
       `}
       role="alert"
@@ -201,7 +201,7 @@ const Toast: React.FC<ToastProps> = ({
       </div>
 
       <style>{`
-        @keyframes slide-in-from-top-2 {
+        @keyframes animate-slide-in-from-top-2 {
           from {
             opacity: 0;
             transform: translateY(-8px);
@@ -212,7 +212,7 @@ const Toast: React.FC<ToastProps> = ({
           }
         }
 
-        @keyframes fade-in {
+        @keyframes animate-fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
         }
@@ -222,12 +222,12 @@ const Toast: React.FC<ToastProps> = ({
           to { opacity: 0; }
         }
 
-        .slide-in-from-top-2 { animation: slide-in-from-top-2 300ms ease-out; }
-        .fade-in { animation: fade-in 300ms ease-out; }
+        .animate-slide-in-from-top-2 { animation: animate-slide-in-from-top-2 300ms ease-out; }
+        .animate-fade-in { animation: animate-fade-in 300ms ease-out; }
         .animate-out { animation: fade-out 200ms ease-in forwards; }
 
         @media (prefers-reduced-motion: reduce) {
-          .slide-in-from-top-2, .fade-in, .animate-out { animation: none; }
+          .animate-slide-in-from-top-2, .animate-fade-in, .animate-out { animation: none; }
         }
 
         @media (forced-colors: active) {

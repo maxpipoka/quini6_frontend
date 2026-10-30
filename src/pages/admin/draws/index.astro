@@ -86,7 +86,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 
     if (tableBody) {
       tableBody.innerHTML =
-        '<tr><td colspan="5" class="text-center py-8"><span class="loading loading-spinner loading-lg"></span></td></tr>';
+        '<tr><td colspan="5" class="text-center py-8"><span class="animate-spin size-8 border-4 border-primary-500 border-t-transparent rounded-full"></span></td></tr>';
     }
 
     try {
@@ -96,7 +96,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     } catch (error) {
       console.error('Error loading draws:', error);
       if (tableBody) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-error">Error al cargar sorteos</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-error-500">Error al cargar sorteos</td></tr>`;
       }
     }
   }
@@ -120,7 +120,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
         const resultsHtml = draw.results
           .map(
             (r) => `
-        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-primary/10 text-primary text-xs font-mono">
+        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-primary-500/10 text-primary-500 text-xs font-mono">
           ${r.modality.charAt(0) + r.modality.slice(1).toLowerCase().replace('_', ' ')}: ${r.numbers.map((n) => formatDrawNumber(n)).join(' ')}
         </span>
       `
@@ -137,7 +137,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
               <button
                 data-action="edit"
                 data-id="${draw.id}"
-                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary-500 hover:bg-primary-500/10 rounded-lg transition-colors"
               >
                 <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 Editar
@@ -145,7 +145,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
               <button
                 data-action="delete"
                 data-id="${draw.id}"
-                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-error hover:bg-error/10 rounded-lg transition-colors"
+                class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-error-500 hover:bg-error-500/10 rounded-lg transition-colors"
               >
                 <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 Eliminar
@@ -215,7 +215,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 
     if (start > 1) {
       html += `<button data-page="1" class="px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary hover:bg-surface rounded-lg">1</button>`;
-      if (start > 2) html += `<span class="px-2 text-text-muted">…</span>`;
+      if (start > 2) html += `<span class="px-2 text-text-muted">⬦</span>`;
     }
 
     for (let i = start; i <= end; i++) {
@@ -223,7 +223,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
         <button
           data-page="${i}"
           ${i === page ? 'aria-current="page"' : ''}
-          class="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${i === page ? 'bg-primary text-white' : 'text-text-secondary hover:text-text-primary hover:bg-surface'}"
+          class="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${i === page ? 'bg-primary-500 text-white' : 'text-text-secondary hover:text-text-primary hover:bg-surface'}"
         >
           ${i}
         </button>
@@ -231,7 +231,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     }
 
     if (end < total) {
-      if (end < total - 1) html += `<span class="px-2 text-text-muted">…</span>`;
+      if (end < total - 1) html += `<span class="px-2 text-text-muted">⬦</span>`;
       html += `<button data-page="${total}" class="px-3 py-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary hover:bg-surface rounded-lg">${total}</button>`;
     }
 
@@ -281,7 +281,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     const editModalContent = document.getElementById('edit-modal-content');
     if (editModalContent) {
       editModalContent.innerHTML =
-        '<div class="flex justify-center py-8"><span class="loading loading-spinner loading-lg"></span></div>';
+        '<div class="flex justify-center py-8"><span class="animate-spin size-8 border-4 border-primary-500 border-t-transparent rounded-full"></span></div>';
     }
     if (editModal) {
       (editModal as any).showModal?.();
@@ -302,7 +302,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     } catch (error) {
       console.error('Error loading draw:', error);
       if (editModalContent) {
-        editModalContent.innerHTML = `<p class="text-center text-error py-8">Error al cargar sorteo</p>`;
+        editModalContent.innerHTML = `<p class="text-center text-error-500 py-8">Error al cargar sorteo</p>`;
       }
     }
   }
@@ -505,13 +505,13 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
   <div class="space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="font-display text-2xl font-bold text-text-primary">Gestión de Sorteos</h1>
+        <h1 class="font-sans text-2xl font-bold text-text-primary">Gestión de Sorteos</h1>
         <p class="mt-1 text-text-secondary">Administra los sorteos del Quini 6</p>
       </div>
       <div class="flex items-center gap-3">
         <a
           href="/admin/imports/upload"
-          class="focus:ring-primary inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-offset-2"
+          class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             ><path
@@ -524,7 +524,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
         </a>
         <button
           id="create-draw-btn"
-          class="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface"
+          class="hover:bg-primary-500/90 flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface"
         >
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             ><path

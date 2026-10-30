@@ -1,3 +1,4 @@
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from '@storybook/react';
 import { ImportPreviewTable } from './ImportPreviewTable';
 import type { ImportPreviewRow } from '@/lib/schemas';
@@ -29,7 +30,7 @@ const sampleRows: ImportPreviewRow[] = [
     rowNumber: 1,
     date: '2024-01-15',
     modality: 'Tradicional',
-    tradicional: ['05', '12', '23', '34', '41', '45'],
+    tradicional: [5, 12, 23, 34, 41, 45],
     laSegunda: null,
     revancha: null,
     siempreSale: null,
@@ -42,7 +43,7 @@ const sampleRows: ImportPreviewRow[] = [
     date: '2024-01-22',
     modality: 'La Segunda',
     tradicional: null,
-    laSegunda: ['03', '18', '27', '31', '39', '44'],
+    laSegunda: [3, 18, 27, 31, 39, 44],
     revancha: null,
     siempreSale: null,
     reintegro: 2,
@@ -55,13 +56,13 @@ const sampleRows: ImportPreviewRow[] = [
     modality: 'Revancha',
     tradicional: null,
     laSegunda: null,
-    revancha: ['01', '14', '26', '33', '40', '43'],
+    revancha: [1, 14, 26, 33, 40, 43],
     siempreSale: null,
     reintegro: 9,
     isValid: false,
     errors: [
-      { field: 'date', message: 'Fecha inválida', rawValue: '2024-01-29' },
-      { field: 'reintegro', message: 'Reintegro fuera de rango', rawValue: 9 },
+      { rowNumber: 3, field: 'date', message: 'Fecha inválida', rawValue: '2024-01-29' },
+      { rowNumber: 3, field: 'reintegro', message: 'Reintegro fuera de rango', rawValue: 9 },
     ],
   },
 ];
@@ -85,16 +86,26 @@ export const AllInvalid: Story = {
         rowNumber: 1,
         date: 'invalid',
         modality: 'Tradicional',
-        tradicional: ['05', '12'],
+        tradicional: [5, 12],
         laSegunda: null,
         revancha: null,
         siempreSale: null,
         reintegro: 99,
         isValid: false,
         errors: [
-          { field: 'date', message: 'Formato de fecha inválido', rawValue: 'invalid' },
-          { field: 'tradicional', message: 'Se requieren 6 números', rawValue: '05, 12' },
-          { field: 'reintegro', message: 'Debe ser entre 0-9', rawValue: 99 },
+          {
+            rowNumber: 1,
+            field: 'date',
+            message: 'Formato de fecha inválido',
+            rawValue: 'invalid',
+          },
+          {
+            rowNumber: 1,
+            field: 'tradicional',
+            message: 'Se requieren 6 números',
+            rawValue: '5, 12',
+          },
+          { rowNumber: 1, field: 'reintegro', message: 'Debe ser entre 0-9', rawValue: 99 },
         ],
       },
     ],
@@ -116,8 +127,8 @@ export const Loading: Story = {
     (Story) => (
       <div className="relative">
         <Story />
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-neutral-900/80">
-          <div className="loading loading-spinner loading-lg"></div>
+        <div className="dark:bg-neutral-900/80 absolute inset-0 flex items-center justify-center bg-white/80">
+          <div className="size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
         </div>
       </div>
     ),

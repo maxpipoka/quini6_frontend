@@ -510,7 +510,7 @@ export class ApiClient {
   async importCommit(
     importId: string,
     policy: schemas.ImportPolicy,
-    options?: { onProgress?: (progress: schemas.ImportProgress) => void }
+    _options?: { onProgress?: (progress: schemas.ImportProgress) => void }
   ): Promise<schemas.ImportCommitResponse> {
     // Note: import commit is non-retryable (POST with side effects)
     // The polling for progress is handled at a higher level if needed

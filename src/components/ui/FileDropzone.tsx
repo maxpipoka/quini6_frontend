@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useId } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 
 interface FileDropzoneProps {
   accept?: string;
@@ -13,8 +13,8 @@ interface FileDropzoneProps {
 export const FileDropzone: React.FC<FileDropzoneProps> = ({
   accept = '.csv,.xlsx',
   maxSize = 10 * 1024 * 1024,
-  onFileSelected,
-  onError,
+  onFileSelected: _onFileSelected,
+  onError: _onError,
   disabled = false,
   className = '',
   'data-testid': testId,
@@ -25,8 +25,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const generatedId = useId();
-  const dropzoneId = `dropzone-${generatedId}`;
+  const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
 
   const formatSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
@@ -45,20 +44,20 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
       if (!isValidType) {
         const msg = `Tipo de archivo no permitido. Use: ${accept}`;
         setError(msg);
-        onError?.(msg);
+        _onError?.(msg);
         return false;
       }
 
       if (file.size > maxSize) {
         const msg = `Archivo demasiado grande. Máximo: ${formatSize(maxSize)}`;
         setError(msg);
-        onError?.(msg);
+        _onError?.(msg);
         return false;
       }
 
       return true;
     },
-    [accept, maxSize, onError]
+    [accept, maxSize, _onError]
   );
 
   const handleFile = useCallback(
@@ -66,16 +65,16 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
       if (!validateFile(file)) return;
 
       setCurrentFile(file);
-      onFileSelected?.(file);
+      _onFileSelected?.(file);
     },
-    [validateFile, onFileSelected]
+    [validateFile, _onFileSelected]
   );
 
   const clearFile = useCallback(() => {
     setCurrentFile(null);
     if (inputRef.current) inputRef.current.value = '';
-    onFileSelected?.(null);
-  }, [onFileSelected]);
+    _onFileSelected?.(null);
+  }, [_onFileSelected]);
 
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
@@ -158,7 +157,11 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
         onChange={handleInputChange}
         aria-label="Seleccionar archivo CSV o XLSX"
       />
-      <label htmlFor={`${dropzoneId}-input`} className="cursor-pointer inline-flex flex-col items-center gap-4">
+      <label
+        htmlFor={`${dropzoneId}-input`}
+        className="inline-flex cursor-pointer flex-col items-center gap-4"
+        aria-label="Arrastra y suelta un archivo aquí o haz clic para seleccionar"
+      >
         <svg
           className="size-12 text-neutral-400 dark:text-neutral-500"
           fill="none"
@@ -237,7 +240,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
       {error && (
         <div
           id={`${dropzoneId}-error`}
-          className="dark:bg-error-900/20 border-error-200 dark:border-error-800 mt-3 rounded-lg border bg-error-50 p-3 text-sm text-error-600 dark:text-error-400"
+          className="dark:bg-error-900/20 mt-3 rounded-lg border border-error-400 bg-error-50 p-3 text-sm text-error-600 dark:border-error-700 dark:text-error-400"
           role="alert"
           aria-live="assertive"
         >

@@ -296,8 +296,10 @@ describe('DrawFormWizard', () => {
       });
 
       // Debug: check form state
-      console.log('Official number input value:', screen.getByLabelText('Número Oficial *').value);
-      console.log('Draw date input value:', screen.getByLabelText('Fecha del Sorteo *').value);
+      const officialInput = screen.getByLabelText<HTMLInputElement>('Número Oficial *');
+      const dateInputEl = screen.getByLabelText<HTMLInputElement>('Fecha del Sorteo *');
+      console.log('Official number input value:', officialInput.value);
+      console.log('Draw date input value:', dateInputEl.value);
 
       // Debug: check submit button state
       const submitBtn = getSubmitButton();

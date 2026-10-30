@@ -26,7 +26,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (pathname.startsWith('/admin')) {
     // Check for session cookie (set by backend on login)
     const sessionCookie = cookies.get('session');
-    const cookieHeader = context.request.headers.get('cookie') || 'none';
+    const cookieHeader = context.request.headers.get('cookie') ?? 'none';
     console.log(
       '[Middleware] Path:',
       pathname,

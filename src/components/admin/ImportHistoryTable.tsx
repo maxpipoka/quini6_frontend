@@ -1,4 +1,4 @@
-﻿import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type * as schemas from '@/lib/schemas';
 import { useImportHistory } from '@/hooks/useImportHistory';
 import { ImportErrorDetails } from './ImportErrorDetails';
@@ -69,7 +69,7 @@ export function ImportHistoryTable() {
       <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
         <div className="p-6 text-center">
           <div className="inline-flex items-center gap-3 text-text-secondary">
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></span>
             <span>Cargando historial...</span>
           </div>
         </div>
@@ -81,12 +81,12 @@ export function ImportHistoryTable() {
     return (
       <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
         <div className="p-6 text-center">
-          <AlertCircleIcon className="text-error/50 mx-auto size-12" />
+          <AlertCircleIcon className="text-error-500/50 mx-auto size-12" />
           <p className="mt-4 text-text-primary">Error al cargar el historial</p>
           <p className="mt-1 text-sm text-text-secondary">{error.message}</p>
           <button
             onClick={refetch}
-            className="bg-primary hover:bg-primary/90 mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+            className="hover:bg-primary-500/90 mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white"
           >
             Reintentar
           </button>
@@ -104,7 +104,7 @@ export function ImportHistoryTable() {
           <p className="mt-2 text-text-secondary">No hay importaciones registradas aún</p>
           <a
             href="/admin/imports/upload"
-            className="bg-primary hover:bg-primary/90 mt-6 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white"
+            className="hover:bg-primary-500/90 mt-6 inline-flex items-center gap-2 rounded-lg bg-primary-500 px-5 py-2.5 text-sm font-medium text-white"
           >
             <FileIcon className="size-4" />
             Primera importación
@@ -157,10 +157,10 @@ export function ImportHistoryTable() {
                   <td className="p-4 text-center text-sm text-text-primary">
                     {importItem.rowsProcessed}
                   </td>
-                  <td className="text-success p-4 text-center text-sm font-medium">
+                  <td className="p-4 text-center text-sm font-medium text-success-500">
                     {importItem.succeeded}
                   </td>
-                  <td className="text-error p-4 text-center text-sm font-medium">
+                  <td className="p-4 text-center text-sm font-medium text-error-500">
                     {importItem.failed}
                   </td>
                   <td className="p-4 text-center">
@@ -189,7 +189,7 @@ export function ImportHistoryTable() {
                 id="page-size"
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
-                className="focus:border-primary focus:ring-primary rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-1"
+                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text-primary focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -226,7 +226,7 @@ export function ImportHistoryTable() {
                     onClick={() => setPage(pageNum)}
                     className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                       pageNum === page
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary-500 text-white'
                         : 'text-text-secondary hover:bg-surface-elevated'
                     }`}
                     aria-current={pageNum === page ? 'page' : undefined}

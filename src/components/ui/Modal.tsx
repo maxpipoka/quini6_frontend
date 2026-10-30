@@ -85,7 +85,7 @@ export const Modal: React.FC<Props> = ({
         const closeBtn = modalRef.current?.querySelector(
           '[data-modal-close]'
         ) as HTMLElement | null;
-        ((firstFocusable as HTMLElement | null) || closeBtn)?.focus();
+        ((firstFocusable as HTMLElement | null) ?? closeBtn)?.focus();
       }
 
       document.addEventListener('keydown', handleKeyDown);
@@ -121,7 +121,7 @@ export const Modal: React.FC<Props> = ({
       />
       <div
         ref={modalRef}
-        className={`relative w-full ${sizeClasses[size]} fade-in zoom-in-95 max-h-[90vh] transform animate-in overflow-hidden rounded-xl bg-white shadow-xl transition-all duration-200 ease-out focus:outline-none dark:bg-neutral-900`}
+        className={`relative w-full ${sizeClasses[size]} max-h-[90vh] transform animate-fade-in animate-in animate-zoom-in-95 overflow-hidden rounded-xl bg-white shadow-xl transition-all duration-200 ease-out focus:outline-none dark:bg-neutral-900`}
         data-modal-panel
       >
         {title && (

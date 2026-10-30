@@ -27,14 +27,14 @@ describe('DrawTableFilters', () => {
   it('shows "Todas" as default modality option', () => {
     renderFilters();
 
-    const select = screen.getByLabelText('Modalidad');
-    expect(select).toHaveValue('');
+    const _select = screen.getByLabelText('Modalidad');
+    expect(_select).toHaveValue('');
   });
 
   it('shows all modalities in select', () => {
     renderFilters();
 
-    const select = screen.getByLabelText('Modalidad');
+    screen.getByLabelText('Modalidad');
     expect(screen.getByRole('option', { name: 'Todas' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Tradicional' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'La segunda' })).toBeInTheDocument();

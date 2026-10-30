@@ -15,9 +15,9 @@ interface Props {
 
 const {
   accept = '.csv,.xlsx',
-  maxSize = 10 * 1024 * 1024, // 10MB default
-  onFileSelected,
-  onError,
+  maxSize: _maxSize = 10 * 1024 * 1024, // 10MB default
+  onFileSelected: _onFileSelected,
+  onError: _onError,
   disabled = false,
   ...rest
 } = Astro.props;
@@ -27,8 +27,7 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
 
 <div
   id={dropzoneId}
-  class={`
-    rounded-lg border-2 border-dashed p-8 text-center
+  class={`dropzone-root rounded-lg border-2 border-dashed p-8 text-center
     transition-all duration-200
     ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-primary-400'}
     dark:bg-neutral-800/50 border-neutral-300
@@ -47,8 +46,10 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
     accept={accept}
     disabled={disabled}
     aria-describedby={`${dropzoneId}-hint`}
+    aria-labelledby={`${dropzoneId}-label`}
   />
-  <label for={`${dropzoneId}-input`} class="cursor-pointer" aria-hidden="true">
+  <label id={`${dropzoneId}-label`} htmlFor={`${dropzoneId}-input`} class="cursor-pointer">
+    <span class="sr-only">Área de carga de archivos, arrastra o haz clic para seleccionar</span>
     <div class="inline-flex flex-col items-center gap-4">
       <svg
         class="size-12 text-neutral-400 dark:text-neutral-500"
@@ -62,7 +63,7 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
           stroke-linejoin="round"
           stroke-width="1.5"
           d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-        />
+        ></path>
       </svg>
       <div>
         <p class="text-lg font-medium text-neutral-900 dark:text-neutral-100">
@@ -76,7 +77,9 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
   </label>
 
   <div id={`${dropzoneId}-selected`} class="mt-4 hidden" aria-live="polite">
-    <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800">
+    <div
+      class="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800"
+    >
       <div class="flex items-center gap-3">
         <svg
           class="size-6 text-primary-600 dark:text-primary-400"
@@ -84,11 +87,19 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
           viewBox="0 0 20 20"
           aria-hidden="true"
         >
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd"></path>
         </svg>
         <div>
-          <p class="font-medium text-neutral-900 dark:text-neutral-100" id={`${dropzoneId}-filename`}></p>
-          <p class="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-filesize`}></p>
+          <p
+            class="font-medium text-neutral-900 dark:text-neutral-100"
+            id={`${dropzoneId}-filename`}
+          >
+          </p>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400" id={`${dropzoneId}-filesize`}>
+          </p>
         </div>
       </div>
       <button
@@ -97,14 +108,30 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
         class="rounded p-1 text-neutral-400 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:hover:text-neutral-300"
         aria-label="Eliminar archivo seleccionado"
       >
-        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          class="size-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
   </div>
 
-  <div id={`${dropzoneId}-error`} class="dark:bg-error-900/20 border-error-200 dark:border-error-800 mt-3 hidden rounded-lg border bg-error-50 p-3 text-sm text-error-600 dark:text-error-400" role="alert" aria-live="assertive"></div>
+  <div
+    id={`${dropzoneId}-error`}
+    class="dark:bg-error-900/20 mt-3 hidden rounded-lg border border-error-400 bg-error-50 p-3 text-sm text-error-600 dark:border-error-700 dark:text-error-400"
+    role="alert"
+    aria-live="assertive"
+  >
+  </div>
 </div>
 
 <script>
@@ -139,9 +166,9 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
     const validateFile = (file: File): boolean => {
       clearError();
 
-      const allowedTypes = accept.split(',').map(t => t.trim().toLowerCase());
+      const allowedTypes = accept.split(',').map((t) => t.trim().toLowerCase());
       const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
-      const isValidType = allowedTypes.some(t => t === fileExt || t === file.type);
+      const isValidType = allowedTypes.some((t) => t === fileExt || t === file.type);
 
       if (!isValidType) {
         showError(`Tipo de archivo no permitido. Use: ${accept}`);
@@ -247,28 +274,29 @@ const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
   })();
 </script>
 
-<style>
+/* prettier-ignore */
+<style is:global>
   /* Focus visible for accessibility */
-  #${dropzoneId}:focus-visible {
+  .dropzone-root:focus-visible {
     outline: 2px solid var(--color-primary-500);
     outline-offset: 2px;
   }
 
   /* High contrast mode */
   @media (forced-colors: active) {
-    #${dropzoneId} {
+    .dropzone-root {
       forced-color-adjust: none;
       border-color: CanvasText;
       background-color: Canvas;
     }
-    #${dropzoneId}:hover {
+    .dropzone-root:hover {
       border-color: Highlight;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    #${dropzoneId} {
+    .dropzone-root {
       transition: none;
     }
   }

@@ -40,11 +40,11 @@ export const Progress: React.FC<ProgressProps> = ({
     setIsIndeterminate(value === undefined);
   }, [value]);
 
-  const currentLabel = label || stageLabels[stage];
+  const currentLabel = label ?? stageLabels[stage];
   const currentColor = stageColors[stage];
   const percentage = isIndeterminate
     ? ''
-    : `${Math.round(Math.max(0, Math.min(100, value || 0)))}%`;
+    : `${Math.round(Math.max(0, Math.min(100, value ?? 0)))}%`;
 
   const indeterminateStyle: React.CSSProperties = {
     animation: 'indeterminate 1.5s infinite ease-in-out',
@@ -56,7 +56,7 @@ export const Progress: React.FC<ProgressProps> = ({
       className={`w-full ${className}`}
       role="progressbar"
       aria-valuenow={
-        isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value || 0)))
+        isIndeterminate ? undefined : Math.round(Math.max(0, Math.min(100, value ?? 0)))
       }
       aria-valuemin={0}
       aria-valuemax={100}
@@ -122,7 +122,7 @@ export const Progress: React.FC<ProgressProps> = ({
             background-color: Canvas;
             border: 1px solid CanvasText;
           }
-          .progress-bar,
+          .h-full bg-primary-500 rounded-full transition-all duration-300,
           .animate-pulse {
             forced-color-adjust: none;
             background-color: Highlight;
@@ -130,7 +130,7 @@ export const Progress: React.FC<ProgressProps> = ({
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .progress-bar {
+          .h-full bg-primary-500 rounded-full transition-all duration-300 {
             transition: none;
           }
           .animate-pulse {

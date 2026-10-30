@@ -1,3 +1,4 @@
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from '@storybook/react';
 import { FileDropzone } from './FileDropzone';
 
@@ -46,7 +47,7 @@ export const WithFileSelected: Story = {
     maxSize: 10 * 1024 * 1024,
   },
   play: async ({ canvasElement }) => {
-    const input = canvasElement.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = canvasElement.querySelector<HTMLInputElement>('input[type="file"]');
     if (input) {
       const file = new File(['test'], 'test.csv', { type: 'text/csv' });
       const dataTransfer = new DataTransfer();
@@ -64,7 +65,7 @@ export const ErrorState: Story = {
     onError: (error: string) => console.log('Error:', error),
   },
   play: async ({ canvasElement }) => {
-    const input = canvasElement.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = canvasElement.querySelector<HTMLInputElement>('input[type="file"]');
     if (input) {
       const file = new File(['x'.repeat(200)], 'large.csv', { type: 'text/csv' });
       const dataTransfer = new DataTransfer();

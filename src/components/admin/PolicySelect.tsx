@@ -58,6 +58,7 @@ export const PolicySelect: React.FC<Props> = ({
         id={radioGroupId}
       >
         {POLICY_OPTIONS.map((option) => (
+          // eslint-disable-next-line jsx-a11y/label-has-associated-control -- label wraps input; text is in nested <p>
           <label
             key={option.value}
             className={`flex cursor-pointer items-start gap-3 rounded-lg border-2 p-3 transition-all duration-200

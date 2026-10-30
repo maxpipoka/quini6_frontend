@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { getApiClient } from '@/lib/api/client';
 import * as schemas from '@/lib/schemas';
 import { ChevronDownIcon, ChevronUpIcon, XCircleIcon, AlertCircleIcon } from './icons';
@@ -57,7 +57,7 @@ export function ImportErrorDetails({ importId }: ImportErrorDetailsProps) {
         aria-label="Cargando detalles..."
         disabled
       >
-        <span className="loading loading-spinner loading-sm"></span>
+        <span className="size-4 animate-spin rounded-full border-2 border-primary-500 border-t-transparent"></span>
         <span role="status" className="sr-only">
           Cargando detalles...
         </span>
@@ -73,8 +73,8 @@ export function ImportErrorDetails({ importId }: ImportErrorDetailsProps) {
         onClick={handleToggle}
         className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm transition-colors ${
           hasErrors
-            ? 'bg-error/10 text-error hover:bg-error/20'
-            : 'bg-success/10 text-success hover:bg-success/20'
+            ? 'bg-error-500/10 hover:bg-error-500/20 text-error-500'
+            : 'bg-success-500/10 hover:bg-success-500/20 text-success-500'
         }`}
         aria-expanded={isExpanded}
         aria-label={
@@ -106,7 +106,7 @@ export function ImportErrorDetails({ importId }: ImportErrorDetailsProps) {
       </button>
 
       {error && (
-        <p role="alert" className="text-error mt-1 text-xs">
+        <p role="alert" className="mt-1 text-xs text-error-500">
           {error.message}
         </p>
       )}
@@ -145,16 +145,16 @@ export function ImportErrorDetails({ importId }: ImportErrorDetailsProps) {
                 {errors.map((err, index) => (
                   <div
                     key={`${err.rowNumber}-${err.field}-${index}`}
-                    className="border-error/20 bg-error/5 rounded-lg border p-4"
+                    className="border-error-500/20 bg-error-500/5 rounded-lg border p-4"
                   >
                     <div className="flex items-start gap-3">
-                      <AlertCircleIcon className="text-error mt-0.5 size-5 flex-shrink-0" />
+                      <AlertCircleIcon className="mt-0.5 size-5 flex-shrink-0 text-error-500" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 text-sm">
                           <span className="font-medium text-text-primary">
                             Fila {err.rowNumber}
                           </span>
-                          <span className="bg-error/10 text-error rounded px-2 py-0.5 text-xs font-medium">
+                          <span className="bg-error-500/10 rounded px-2 py-0.5 text-xs font-medium text-error-500">
                             {formatField(err.field)}
                           </span>
                         </div>

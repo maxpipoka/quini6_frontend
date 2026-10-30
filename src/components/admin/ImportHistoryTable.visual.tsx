@@ -1,40 +1,83 @@
 import React from 'react';
-import type { ImportHistory } from '@/hooks/useImportHistory';
+import type { ImportHistoryResponse } from '@/lib/schemas';
+
+interface ImportHistory {
+  data: ImportHistoryResponse | null;
+  isLoading: boolean;
+  error: Error | null;
+  page: number;
+  setPage: (page: number) => void;
+  pageSize: number;
+  setPageSize: (size: number) => void;
+  sort: { key: string; order: 'asc' | 'desc' };
+  setSort: (sort: { key: string; order: 'asc' | 'desc' }) => void;
+  refetch: () => Promise<void>;
+}
 
 const mockData: ImportHistory = {
   data: {
     data: [
-      { importId: '11111111-1111-4111-8111-111111111111', fileName: 'draws-jan.csv', date: '2024-01-20T10:00:00Z', rowsProcessed: 10, succeeded: 10, failed: 0, policy: 'skip' },
-      { importId: '22222222-2222-4222-8222-222222222222', fileName: 'draws-feb.csv', date: '2024-02-15T14:30:00Z', rowsProcessed: 15, succeeded: 12, failed: 3, policy: 'replace' },
-      { importId: '33333333-3333-4333-8333-333333333333', fileName: 'draws-mar.csv', date: '2024-03-10T09:15:00Z', rowsProcessed: 8, succeeded: 8, failed: 0, policy: 'merge' },
+      {
+        importId: '11111111-1111-4111-8111-111111111111',
+        fileName: 'draws-jan.csv',
+        date: '2024-01-20T10:00:00Z',
+        rowsProcessed: 10,
+        succeeded: 10,
+        failed: 0,
+        policy: 'skip',
+      },
+      {
+        importId: '22222222-2222-4222-8222-222222222222',
+        fileName: 'draws-feb.csv',
+        date: '2024-02-15T14:30:00Z',
+        rowsProcessed: 15,
+        succeeded: 12,
+        failed: 3,
+        policy: 'replace',
+      },
+      {
+        importId: '33333333-3333-4333-8333-333333333333',
+        fileName: 'draws-mar.csv',
+        date: '2024-03-10T09:15:00Z',
+        rowsProcessed: 8,
+        succeeded: 8,
+        failed: 0,
+        policy: 'merge',
+      },
     ],
     total: 3,
     totalPages: 1,
     page: 1,
-    pageSize: 10,
+    limit: 10,
   },
   isLoading: false,
   error: null,
   page: 1,
-  setPage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPage: (_page: number) => {},
   pageSize: 10,
-  setPageSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPageSize: (_size: number) => {},
   sort: { key: 'date', order: 'desc' },
-  setSort: () => {},
-  refetch: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSort: (_sort: { key: string; order: 'asc' | 'desc' }) => {},
+  refetch: () => Promise.resolve(),
 };
 
 const mockEmptyData: ImportHistory = {
-  data: { data: [], total: 0, totalPages: 0, page: 1, pageSize: 10 },
+  data: { data: [], total: 0, totalPages: 0, page: 1, limit: 10 },
   isLoading: false,
   error: null,
   page: 1,
-  setPage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPage: (_page: number) => {},
   pageSize: 10,
-  setPageSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPageSize: (_size: number) => {},
   sort: { key: 'date', order: 'desc' },
-  setSort: () => {},
-  refetch: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSort: (_sort: { key: string; order: 'asc' | 'desc' }) => {},
+  refetch: () => Promise.resolve(),
 };
 
 const mockLoadingData: ImportHistory = {
@@ -42,12 +85,15 @@ const mockLoadingData: ImportHistory = {
   isLoading: true,
   error: null,
   page: 1,
-  setPage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPage: (_page: number) => {},
   pageSize: 10,
-  setPageSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPageSize: (_size: number) => {},
   sort: { key: 'date', order: 'desc' },
-  setSort: () => {},
-  refetch: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSort: (_sort: { key: string; order: 'asc' | 'desc' }) => {},
+  refetch: () => Promise.resolve(),
 };
 
 const mockErrorData: ImportHistory = {
@@ -55,12 +101,15 @@ const mockErrorData: ImportHistory = {
   isLoading: false,
   error: new Error('Error de conexión'),
   page: 1,
-  setPage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPage: (_page: number) => {},
   pageSize: 10,
-  setPageSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPageSize: (_size: number) => {},
   sort: { key: 'date', order: 'desc' },
-  setSort: () => {},
-  refetch: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSort: (_sort: { key: string; order: 'asc' | 'desc' }) => {},
+  refetch: () => Promise.resolve(),
 };
 
 const mockPaginationData: ImportHistory = {
@@ -77,17 +126,20 @@ const mockPaginationData: ImportHistory = {
     total: 25,
     totalPages: 3,
     page: 1,
-    pageSize: 10,
+    limit: 10,
   },
   isLoading: false,
   error: null,
   page: 1,
-  setPage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPage: (_page: number) => {},
   pageSize: 10,
-  setPageSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPageSize: (_size: number) => {},
   sort: { key: 'date', order: 'desc' },
-  setSort: () => {},
-  refetch: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSort: (_sort: { key: string; order: 'asc' | 'desc' }) => {},
+  refetch: () => Promise.resolve(),
 };
 
 interface ImportHistoryTableProps {
@@ -131,7 +183,7 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
       replace: 'Reemplazar',
       merge: 'Fusionar',
     };
-    return labels[policy] || policy;
+    return labels[policy] ?? policy;
   };
 
   const formatDate = (dateStr: string): string => {
@@ -162,7 +214,7 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
       <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
         <div className="p-6 text-center">
           <div className="inline-flex items-center gap-3 text-text-secondary">
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></span>
             <span>Cargando historial...</span>
           </div>
         </div>
@@ -174,14 +226,24 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
     return (
       <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
         <div className="p-6 text-center">
-          <svg className="text-error/50 mx-auto size-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <svg
+            className="text-error-500/50 mx-auto size-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
           <p className="mt-4 text-text-primary">Error al cargar el historial</p>
           <p className="mt-1 text-sm text-text-secondary">{error.message}</p>
           <button
             onClick={refetch}
-            className="bg-primary hover:bg-primary/90 mt-4 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+            className="hover:bg-primary-500/90 mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white"
           >
             Reintentar
           </button>
@@ -194,17 +256,32 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
     return (
       <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
         <div className="p-12 text-center">
-          <svg className="mx-auto size-16 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17a4 4 0 11-8 0 4 4 0 018 0z" />
+          <svg
+            className="mx-auto size-16 text-text-muted"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17a4 4 0 11-8 0 4 4 0 018 0z"
+            />
           </svg>
           <h3 className="mt-4 text-lg font-medium text-text-primary">Sin importaciones</h3>
           <p className="mt-2 text-text-secondary">No hay importaciones registradas aún</p>
           <a
             href="/admin/imports/upload"
-            className="bg-primary hover:bg-primary/90 mt-6 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white"
+            className="hover:bg-primary-500/90 mt-6 inline-flex items-center gap-2 rounded-lg bg-primary-500 px-5 py-2.5 text-sm font-medium text-white"
           >
             <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
             Primera importación
           </a>
@@ -226,7 +303,13 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                     scope="col"
                     className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary ${col.align === 'center' ? 'text-center' : ''} cursor-pointer hover:bg-surface-elevated`}
                     style={{ width: col.width }}
-                    onClick={() => col.key !== 'actions' && setSort({ key: col.key, order: sort.key === col.key && sort.order === 'asc' ? 'desc' : 'asc' })}
+                    onClick={() =>
+                      col.key !== 'actions' &&
+                      setSort({
+                        key: col.key,
+                        order: sort.key === col.key && sort.order === 'asc' ? 'desc' : 'asc',
+                      })
+                    }
                   >
                     <div className="flex items-center justify-center gap-1">
                       {col.header}
@@ -234,12 +317,32 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                         <span className="inline-flex">
                           {sort.key === col.key ? (
                             sort.order === 'asc' ? (
-                              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                              <svg
+                                className="size-3.5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 15l7-7 7 7"
+                                />
                               </svg>
                             ) : (
-                              <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              <svg
+                                className="size-3.5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 9l-7 7-7-7"
+                                />
                               </svg>
                             )
                           ) : (
@@ -260,10 +363,10 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                   <td className="p-4 text-center text-sm text-text-primary">
                     {importItem.rowsProcessed}
                   </td>
-                  <td className="text-success p-4 text-center text-sm font-medium">
+                  <td className="p-4 text-center text-sm font-medium text-success-500">
                     {importItem.succeeded}
                   </td>
-                  <td className="text-error p-4 text-center text-sm font-medium">
+                  <td className="p-4 text-center text-sm font-medium text-error-500">
                     {importItem.failed}
                   </td>
                   <td className="p-4 text-center">
@@ -275,11 +378,21 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                   </td>
                   <td className="p-4 text-center">
                     <button
-                      className="text-primary hover:text-primary/80 text-sm font-medium"
+                      className="hover:text-primary-500/80 text-sm font-medium text-primary-500"
                       aria-label={`Ver errores de ${importItem.fileName}`}
                     >
-                      <svg className="inline-block size-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="mx-auto inline-block size-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </button>
                   </td>
@@ -299,7 +412,7 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                 id="page-size"
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
-                className="focus:border-primary focus:ring-primary rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:ring-1"
+                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text-primary focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -336,7 +449,7 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
                     onClick={() => setPage(pageNum)}
                     className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                       pageNum === page
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary-500 text-white'
                         : 'text-text-secondary hover:bg-surface-elevated'
                     }`}
                     aria-current={pageNum === page ? 'page' : undefined}
@@ -363,7 +476,7 @@ const ImportHistoryTableVisualWrapper: React.FC<ImportHistoryTableProps> = ({
 
 export const ImportHistoryTableVisual: React.FC<{ state: string }> = ({ state }) => {
   let data = mockData;
-  
+
   switch (state) {
     case 'empty':
       data = mockEmptyData;
@@ -378,7 +491,7 @@ export const ImportHistoryTableVisual: React.FC<{ state: string }> = ({ state })
       data = mockPaginationData;
       break;
   }
-  
+
   return (
     <ImportHistoryTableVisualWrapper
       data={data.data}

@@ -5,10 +5,11 @@ import type {
   ImportCommitResponse,
   ImportProgress,
   ImportPolicy,
+  DrawRowInput,
 } from '../lib/schemas';
 
 interface UseImportCommitReturn {
-  preview: (rows: any[]) => Promise<ImportPreviewResponse | null>;
+  preview: (rows: DrawRowInput[]) => Promise<ImportPreviewResponse | null>;
   commit: (
     importId: string,
     policy: ImportPolicy,
@@ -27,25 +28,28 @@ export const useImportCommit = (): UseImportCommitReturn => {
 
   const clearError = useCallback(() => setError(null), []);
 
-  const preview = useCallback(async (rows: any[]): Promise<ImportPreviewResponse | null> => {
-    console.log('[useImportCommit] preview called with rows:', rows.length);
-    setIsLoading(true);
-    setError(null);
-    try {
-      const client = getApiClient();
-      console.log('[useImportCommit] calling client.importPreview');
-      const result = await client.importPreview(rows);
-      console.log('[useImportCommit] preview result:', result);
-      return result;
-    } catch (err) {
-      console.error('[useImportCommit] preview error:', err);
-      const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
-      setError(error);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const preview = useCallback(
+    async (rows: DrawRowInput[]): Promise<ImportPreviewResponse | null> => {
+      console.log('[useImportCommit] preview called with rows:', rows.length);
+      setIsLoading(true);
+      setError(null);
+      try {
+        const client = getApiClient();
+        console.log('[useImportCommit] calling client.importPreview');
+        const result = await client.importPreview(rows);
+        console.log('[useImportCommit] preview result:', result);
+        return result;
+      } catch (err) {
+        console.error('[useImportCommit] preview error:', err);
+        const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
+        setError(error);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   const commit = useCallback(
     async (
@@ -66,11 +70,12 @@ export const useImportCommit = (): UseImportCommitReturn => {
         return result;
       } catch (err) {
         console.error('[useImportCommit] commit error:', err);
+        const errWithResponse = err as { response?: unknown; body?: unknown };
         if (err instanceof Error && 'response' in err) {
-          console.error('[useImportCommit] error response:', (err as any).response);
+          console.error('[useImportCommit] error response:', errWithResponse.response);
         }
         if (err instanceof Error && 'body' in err) {
-          console.error('[useImportCommit] error body:', (err as any).body);
+          console.error('[useImportCommit] error body:', errWithResponse.body);
         }
         const error =
           err instanceof Error ? err : new Error('Error desconocido al confirmar importación');
