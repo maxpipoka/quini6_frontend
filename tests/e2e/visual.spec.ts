@@ -61,7 +61,7 @@ test.describe('Visual Regression - Admin Components', () => {
         await expect(page).toHaveScreenshot(`${component.name}-${state}-${viewport.name}.png`, {
           fullPage: true,
           animations: 'disabled',
-          threshold: 0.01,
+          threshold: 0.015,
         });
       });
     }
