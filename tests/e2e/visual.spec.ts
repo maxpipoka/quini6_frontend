@@ -8,13 +8,13 @@ const pages = [
   { path: '/sorteos/3245', name: 'detalle-3245' },
 ];
 
-function getViewportForProject(): typeof viewports[0] {
+function getViewportForProject(): (typeof viewports)[0] {
   const projectName = test.info().project.name;
   if (projectName === 'visual') {
-    return viewports.find(v => v.name === 'desktop')!;
+    return viewports.find((v) => v.name === 'desktop')!;
   }
   if (projectName === 'visual-mobile') {
-    return viewports.find(v => v.name === 'mobile')!;
+    return viewports.find((v) => v.name === 'mobile')!;
   }
   throw new Error(`Unknown visual project: ${projectName}`);
 }

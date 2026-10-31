@@ -28,6 +28,7 @@ export async function runA11yCheck(page: Page, context?: string) {
 /**
  * Assert no accessibility violations, with detailed error message.
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function assertNoA11yViolations(results: Awaited<ReturnType<typeof runA11yCheck>>) {
   if (results.violations.length > 0) {
     const violationDetails = results.violations

@@ -2,6 +2,7 @@
 // It ensures Node's native AbortController/AbortSignal are the globals
 // that will be used when jsdom initializes
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function setup() {
   // Node.js 18+ has native AbortController and AbortSignal
   // We need to make sure these are the ones that get exposed to jsdom

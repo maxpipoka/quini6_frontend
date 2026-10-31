@@ -59,6 +59,7 @@ function setupWindowErrors(win: DOMWindow): () => void {
 // Create custom environment that overrides setupVM and setup
 export default {
   ...builtinJSDOM,
+  // eslint-disable-next-line @typescript-eslint/require-await
   async setupVM(options: { jsdom?: Record<string, unknown> } = {}) {
     const { jsdom = {} } = options;
 
@@ -131,6 +132,7 @@ export default {
       },
     };
   },
+  // eslint-disable-next-line @typescript-eslint/require-await
   async setup(global: Record<string, unknown>, options: { jsdom?: Record<string, unknown> } = {}) {
     const { jsdom = {} } = options;
 

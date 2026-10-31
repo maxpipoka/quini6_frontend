@@ -87,6 +87,7 @@ describe('importParser worker — 10k rows', () => {
     expect(elapsed).toBeLessThan(TIME_BUDGET_MS);
   }, 60_000);
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   it('emits progress before the result for the same run', async () => {
     const resultIndex = posted.findIndex((message) => message.type === 'RESULT');
     const lastProgressIndex = posted.map((message) => message.type).lastIndexOf('PROGRESS');
