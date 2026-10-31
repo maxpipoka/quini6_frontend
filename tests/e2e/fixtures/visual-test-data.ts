@@ -238,21 +238,25 @@ export const sampleProps = {
       importId: '11111111-1111-4111-8111-111111111111',
       stage: 'processing' as ImportProgressStage,
       progress: 0,
+      pollInterval: 0,
     },
     inProgress: {
       importId: '22222222-2222-4222-8222-222222222222',
       stage: 'processing' as ImportProgressStage,
       progress: 45,
+      pollInterval: 0,
     },
     success: {
       importId: '33333333-3333-4333-8333-333333333333',
       stage: 'completed' as ImportProgressStage,
       progress: 100,
+      pollInterval: 0,
     },
     error: {
       importId: '44444444-4444-4444-8444-444444444444',
       stage: 'processing' as ImportProgressStage,
       progress: 67,
+      pollInterval: 0,
     },
   },
   Progress: {

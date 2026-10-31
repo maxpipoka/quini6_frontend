@@ -29,7 +29,7 @@ export default defineConfig({
     },
     {
       name: 'mobile-chrome',
-      use: { ...devices['iPhone 14'] },
+      use: { ...devices['iPhone 14'], colorScheme: 'light' },
     },
     // Visual regression projects (Chromium only for consistent baselines)
     {
@@ -37,6 +37,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
+        colorScheme: 'light',
       },
       testMatch: '**/visual.spec.ts',
     },
@@ -45,6 +46,8 @@ export default defineConfig({
       use: {
         ...devices['iPhone 14'],
         viewport: { width: 375, height: 667 },
+        colorScheme: 'light',
+        hasTouch: true,
       },
       testMatch: '**/visual.spec.ts',
     },
