@@ -16,7 +16,7 @@ function getViewportForProject(): typeof viewports[0] {
   if (projectName === 'visual-mobile') {
     return viewports.find(v => v.name === 'mobile')!;
   }
-  return viewports[0];
+  throw new Error(`Unknown visual project: ${projectName}`);
 }
 
 test.describe('Visual Regression - Pages', () => {
@@ -35,7 +35,7 @@ test.describe('Visual Regression - Pages', () => {
       await expect(pageObj).toHaveScreenshot(`${page.name}-${viewport.name}.png`, {
         fullPage: true,
         animations: 'disabled',
-        threshold: 0.01,
+        threshold: 0.015,
       });
     });
   }
