@@ -59,13 +59,13 @@ export default defineConfig({
     {
       command: 'node tests/mock-api/server.mjs',
       url: 'http://localhost:3001/api/health',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 30000,
     },
     {
       command: 'npm run dev',
       url: 'http://localhost:4321',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 120000,
     },
   ],
