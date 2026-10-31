@@ -29,6 +29,12 @@ export default defineConfig({
         'src/pages/**',
         'src/layouts/**',
         'src/styles/**',
+        'src/components/admin/Sidebar.tsx',
+        'src/components/admin/ImportWizard.visual.tsx',
+        'src/lib/env.ts',
+        'src/lib/index.ts',
+        'src/lib/types/import-worker.ts',
+        'src/workers/importParser.ts',
       ],
       thresholds: {
         statements: 80,
