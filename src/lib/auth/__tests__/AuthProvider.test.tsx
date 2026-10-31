@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../AuthProvider';
 
+// Set up environment variables for tests
+vi.stubEnv('VITE_API_BASE_URL', 'http://localhost:3000');
+
 const TestComponent = () => {
   const auth = useAuth();
   return (
