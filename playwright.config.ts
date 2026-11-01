@@ -71,13 +71,13 @@ export default defineConfig({
     {
       command: 'node tests/mock-api/server.mjs',
       port: 3001,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 30000,
     },
     {
       command: 'npm run dev',
       port: 4321,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 120000,
     },
   ],
