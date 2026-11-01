@@ -10,10 +10,10 @@ const pages = [
 
 function getViewportForProject(): (typeof viewports)[0] {
   const projectName = test.info().project.name;
-  if (projectName === 'visual') {
+  if (projectName === 'visual' || projectName === 'chromium') {
     return viewports.find((v) => v.name === 'desktop')!;
   }
-  if (projectName === 'visual-mobile') {
+  if (projectName === 'visual-mobile' || projectName === 'mobile-chrome') {
     return viewports.find((v) => v.name === 'mobile')!;
   }
   throw new Error(`Unknown visual project: ${projectName}`);
