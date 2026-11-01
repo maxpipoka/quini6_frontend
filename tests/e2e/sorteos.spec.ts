@@ -11,8 +11,12 @@ test.describe('Sorteos Page', () => {
 
   test('shows the draws table with the latest draw', async ({ page }) => {
     // Check if we're on mobile (cards) or desktop (table)
-    const isMobile = await page.locator('article[data-row-index]').first().isVisible().catch(() => false);
-    
+    const isMobile = await page
+      .locator('article[data-row-index]')
+      .first()
+      .isVisible()
+      .catch(() => false);
+
     if (isMobile) {
       // Mobile: cards layout
       const cards = page.locator('article[data-row-index]');
@@ -39,10 +43,14 @@ test.describe('Sorteos Page', () => {
   test('year filter navigates with the year param', async ({ page }) => {
     await page.getByLabel('Seleccionar año').selectOption('2024');
     await expect(page).toHaveURL(/year=2024/);
-    
+
     // Check if we're on mobile (cards) or desktop (table)
-    const isMobile = await page.locator('article[data-row-index]').first().isVisible().catch(() => false);
-    
+    const isMobile = await page
+      .locator('article[data-row-index]')
+      .first()
+      .isVisible()
+      .catch(() => false);
+
     if (isMobile) {
       // Mobile: cards layout
       const cards = page.locator('article[data-row-index]');

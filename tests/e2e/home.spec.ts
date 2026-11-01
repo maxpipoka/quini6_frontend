@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 async function openMobileMenu(page: Page) {
   const menuToggle = page.locator('#mobile-menu-toggle');
   const mobileMenu = page.locator('#mobile-menu');
-  
+
   // Check if mobile menu button is visible (mobile viewport)
   const isMobile = await menuToggle.isVisible();
   if (isMobile) {
@@ -30,9 +30,9 @@ test.describe('Home Page', () => {
 
   test('navigation to sorteos works', async ({ page }) => {
     await page.goto('/');
-    
+
     const isMobile = await openMobileMenu(page);
-    
+
     if (isMobile) {
       // On mobile, click from mobile menu
       await page.locator('#mobile-menu a[href="/sorteos"]').click();
@@ -40,16 +40,16 @@ test.describe('Home Page', () => {
       // On desktop, click from header nav
       await page.locator('header nav a[href="/sorteos"]').first().click();
     }
-    
+
     await expect(page).toHaveURL(/\/sorteos$/);
     await expect(page.locator('main h1')).toContainText('Historial de sorteos');
   });
 
   test('navigation to buscar works', async ({ page }) => {
     await page.goto('/');
-    
+
     const isMobile = await openMobileMenu(page);
-    
+
     if (isMobile) {
       // On mobile, click from mobile menu
       await page.locator('#mobile-menu a[href="/buscar"]').click();
@@ -57,7 +57,7 @@ test.describe('Home Page', () => {
       // On desktop, click from header nav
       await page.locator('header nav a[href="/buscar"]').first().click();
     }
-    
+
     await expect(page).toHaveURL(/\/buscar$/);
     await expect(page.locator('main h1')).toContainText('Buscar combinación');
   });

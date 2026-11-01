@@ -22,11 +22,13 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
     const dropzone = page.locator('[data-testid="file-dropzone"]').first();
     await expect(dropzone).toBeVisible();
 
-// Upload sample CSV (8 rows in fixture)
+    // Upload sample CSV (8 rows in fixture)
     await fileInput.setInputFiles('tests/e2e/fixtures/sample-draws.csv');
     await waitForStableContent(page);
     // Wait for preview step - heading includes count like "Vista previa (8 válidas, 0 inválidas)"
-    await expect(page.getByRole('heading', { name: /Vista previa \(8 válidas, 0 inválidas\)/ })).toBeVisible({ timeout: 60000 });
+    await expect(
+      page.getByRole('heading', { name: /Vista previa \(8 válidas, 0 inválidas\)/ })
+    ).toBeVisible({ timeout: 60000 });
 
     // Check table has proper headers (matches ImportPreviewTable columns)
     await expect(page.locator('th', { hasText: /fecha/i })).toBeVisible();
@@ -41,7 +43,7 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
 
-// Step 4: Select a row to enable Continue button
+    // Step 4: Select a row to enable Continue button
     const firstRowCheckbox = page.locator('tbody input[type="checkbox"]').first();
     await firstRowCheckbox.click({ force: true });
     await waitForStableContent(page);
@@ -136,7 +138,7 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
     await assertNoA11yViolations(a11yResults);
   });
 
-test('Screen reader announcements', async ({ page }) => {
+  test('Screen reader announcements', async ({ page }) => {
     await page.goto('/admin/imports/upload');
     await waitForStableContent(page);
 
@@ -145,7 +147,9 @@ test('Screen reader announcements', async ({ page }) => {
     await fileInput.setInputFiles('tests/e2e/fixtures/sample-draws.csv');
     await waitForStableContent(page);
     // Wait for preview step - heading includes count like "Vista previa (8 válidas, 0 inválidas)"
-    await expect(page.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })).toBeVisible({ timeout: 30000 });
+    await expect(
+      page.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })
+    ).toBeVisible({ timeout: 30000 });
 
     // Select first valid row to enable Continue button
     const firstRowCheckbox = page.locator('tbody input[type="checkbox"]').first();
@@ -201,12 +205,14 @@ test('Screen reader announcements', async ({ page }) => {
     // Container should NOT have role="button" (fixed in PR 2)
     await expect(dropzone).not.toHaveAttribute('role', 'button');
 
-// Upload file to see preview
+    // Upload file to see preview
     await page.locator('input[type="file"]').setInputFiles('tests/e2e/fixtures/sample-draws.csv');
     await waitForStableContent(page);
 
     // Wait for preview step - heading includes count like "Vista previa (8 válidas, 0 inválidas)"
-    await expect(page.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })).toBeVisible({ timeout: 30000 });
+    await expect(
+      page.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })
+    ).toBeVisible({ timeout: 30000 });
     // Should have proper <table>, <thead>, <tbody>, <th scope="col">
     const thCount = await page.locator('th[scope="col"]').count();
     expect(thCount).toBeGreaterThanOrEqual(5);
