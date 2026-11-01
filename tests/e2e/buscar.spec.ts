@@ -11,6 +11,14 @@ async function fillCombination(page: Page, values: string[]) {
     await input.waitFor({ state: 'visible' });
     await input.click({ force: true });
     await input.fill(values[index]!, { force: true });
+    
+    // Verify the value was set, retry if needed
+    const actualValue = await input.inputValue();
+    if (actualValue !== values[index]!) {
+      console.log(`Retry fill for input ${index}: expected ${values[index]!}, got ${actualValue}`);
+      await input.fill(values[index]!, { force: true });
+      await page.waitForTimeout(100);
+    }
     await page.waitForTimeout(100);
   }
   await page.waitForTimeout(1000);

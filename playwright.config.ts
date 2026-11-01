@@ -1,4 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const WORKERS = process.env.CI ? 2 : 4; // Limit workers to reduce resource contention
+const ADMIN_STORAGE_STATE = path.join(__dirname, '.auth', 'admin.json');
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -7,8 +15,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  ...(process.env.CI ? { workers: 1 } : {}),
+  workers: WORKERS,
   reporter: 'html',
+  globalSetup: './tests/e2e/global-setup.ts',
   use: {
     baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
@@ -61,14 +70,14 @@ export default defineConfig({
   webServer: [
     {
       command: 'node tests/mock-api/server.mjs',
-      url: 'http://localhost:3001/api/health',
-      reuseExistingServer: true,
+      port: 3001,
+      reuseExistingServer: !process.env.CI,
       timeout: 30000,
     },
     {
       command: 'npm run dev',
-      url: 'http://localhost:4321',
-      reuseExistingServer: true,
+      port: 4321,
+      reuseExistingServer: !process.env.CI,
       timeout: 120000,
     },
   ],

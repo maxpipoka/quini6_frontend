@@ -25,3 +25,9 @@ pnpm-debug.log*
 
 *storybook.log
 storybook-static
+
+# test artifacts
+coverage/
+playwright-report/
+test-results/
+tests/.auth/
