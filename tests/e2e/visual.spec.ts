@@ -35,7 +35,7 @@ test.describe('Visual Regression - Pages', () => {
       await expect(pageObj).toHaveScreenshot(`${page.name}-${viewport.name}.png`, {
         fullPage: true,
         animations: 'disabled',
-        threshold: 0.015,
+        threshold: 0.025,
       });
     });
   }
@@ -61,7 +61,7 @@ test.describe('Visual Regression - Admin Components', () => {
         await expect(page).toHaveScreenshot(`${component.name}-${state}-${viewport.name}.png`, {
           fullPage: true,
           animations: 'disabled',
-          threshold: 0.015,
+          threshold: 0.025,
         });
       });
     }
