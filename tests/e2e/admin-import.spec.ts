@@ -324,7 +324,9 @@ test.describe('Admin Import', () => {
     await adminPage.waitForTimeout(3000);
 
     // The step has changed to confirm - verify by checking data-step attribute on the island's inner div
-    const importWizardIsland = adminPage.locator('astro-island[component-url*="ImportWizard"]').first();
+    const importWizardIsland = adminPage
+      .locator('astro-island[component-url*="ImportWizard"]')
+      .first();
     await expect(importWizardIsland.locator('[data-step="confirm"]')).toBeVisible({
       timeout: 10000,
     });

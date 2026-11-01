@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const WORKERS = process.env.CI ? 2 : 4; // Limit workers to reduce resource contention
-const ADMIN_STORAGE_STATE = path.join(__dirname, '.auth', 'admin.json');
+const _ADMIN_STORAGE_STATE = path.join(__dirname, '.auth', 'admin.json');
 
 export default defineConfig({
   testDir: './tests/e2e',

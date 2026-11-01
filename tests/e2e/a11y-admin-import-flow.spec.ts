@@ -194,7 +194,9 @@ test.describe('Accessibility Audit - Admin Import Flow', () => {
     await expect(dropzone).not.toHaveAttribute('role', 'button');
 
     // Upload file to see preview
-    await adminPage.locator('input[type="file"]').setInputFiles('tests/e2e/fixtures/sample-draws.csv');
+    await adminPage
+      .locator('input[type="file"]')
+      .setInputFiles('tests/e2e/fixtures/sample-draws.csv');
     await waitForStableContent(adminPage);
 
     // Wait for preview step - heading includes count like "Vista previa (8 válidas, 0 inválidas)"

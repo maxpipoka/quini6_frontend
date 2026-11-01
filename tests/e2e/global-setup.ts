@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 const ADMIN_STORAGE_STATE = path.join(__dirname, '..', '.auth', 'admin.json');
 
 async function globalSetup(config: FullConfig) {
-  const { baseURL = 'http://localhost:4321' } = config.projects[0].use;
+  const baseURL = config.projects[0]?.use?.baseURL ?? 'http://localhost:4321';
 
   // Ensure auth directory exists
   const fs = await import('fs');
