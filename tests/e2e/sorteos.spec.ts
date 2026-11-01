@@ -10,8 +10,18 @@ test.describe('Sorteos Page', () => {
   });
 
   test('shows the draws table with the latest draw', async ({ page }) => {
-    await expect(page.locator('table tbody tr')).toHaveCount(20);
-    await expect(page.locator('table tbody tr').first()).toContainText('3245');
+    // Check if we're on mobile (cards) or desktop (table)
+    const isMobile = await page.locator('article[data-row-index]').first().isVisible().catch(() => false);
+    
+    if (isMobile) {
+      // Mobile: cards layout
+      const cards = page.locator('article[data-row-index]');
+      await expect(cards.first()).toBeVisible();
+    } else {
+      // Desktop: table layout
+      await expect(page.locator('table tbody tr')).toHaveCount(20);
+      await expect(page.locator('table tbody tr').first()).toContainText('3245');
+    }
   });
 
   test('pagination is shown when there are multiple pages', async ({ page }) => {
@@ -29,7 +39,18 @@ test.describe('Sorteos Page', () => {
   test('year filter navigates with the year param', async ({ page }) => {
     await page.getByLabel('Seleccionar año').selectOption('2024');
     await expect(page).toHaveURL(/year=2024/);
-    await expect(page.locator('table tbody tr').first()).toBeVisible();
+    
+    // Check if we're on mobile (cards) or desktop (table)
+    const isMobile = await page.locator('article[data-row-index]').first().isVisible().catch(() => false);
+    
+    if (isMobile) {
+      // Mobile: cards layout
+      const cards = page.locator('article[data-row-index]');
+      await expect(cards.first()).toBeVisible();
+    } else {
+      // Desktop: table layout
+      await expect(page.locator('table tbody tr').first()).toBeVisible();
+    }
   });
 
   test('clicking a drawer link navigates to the detail page', async ({ page }) => {

@@ -253,7 +253,11 @@ const server = http.createServer(async (req, res) => {
   if (path === '/api/search/exact' && req.method === 'POST') {
     const body = await readBody(req);
     const numbers = Array.isArray(body?.numbers) ? body.numbers : [];
-    const isExactMatch = numbers.length === 6 && numbers.join(',') === EXACT_MATCH.join(',');
+    // Normalize numbers: handle both strings with leading zeros ('05') and numbers (5)
+    const normalizedNumbers = numbers.map(n => String(n).padStart(2, '0'));
+    const isExactMatch = numbers.length === 6 && normalizedNumbers.join(',') === EXACT_MATCH.map(n => String(n).padStart(2, '0')).join(',');
+    
+    console.log('[Mock API] Search exact request:', { numbers, normalizedNumbers, isExactMatch, EXACT_MATCH });
 
     sendJson(res, 200, {
       found: isExactMatch,
@@ -264,7 +268,7 @@ const server = http.createServer(async (req, res) => {
               drawDate: draws[0].drawDate,
               officialNumber: draws[0].officialNumber,
               modality: 'TRADICIONAL',
-              numbers: numbers,
+              numbers: normalizedNumbers,
             },
           ]
         : [],

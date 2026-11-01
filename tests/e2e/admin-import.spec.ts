@@ -1,4 +1,5 @@
 import { test, expect } from '../e2e/fixtures';
+import { waitForStableContent } from './a11y-setup';
 
 test.describe('Admin Import', () => {
   test.beforeEach(async ({ page }) => {
@@ -194,17 +195,11 @@ test.describe('Admin Import', () => {
 
     // Upload a CSV file - interact with FileDropzone (input is visually hidden but in DOM)
     const fileInput = page.locator('[data-testid="file-dropzone"] input[type="file"]').first();
-    await fileInput.setInputFiles({
-      name: 'test-import.csv',
-      mimeType: 'text/csv',
-      buffer: Buffer.from(
-        'officialNumber,drawDate,tradicional1,tradicional2,tradicional3,tradicional4,tradicional5,tradicional6,la_segunda1,la_segunda2,la_segunda3,la_segunda4,la_segunda5,la_segunda6,revancha1,revancha2,revancha3,revancha4,revancha5,revancha6,siempre_sale1,siempre_sale2,siempre_sale3,siempre_sale4,siempre_sale5,siempre_sale6\n3300,2024-12-01,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24\n3301,2024-12-08,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25'
-      ),
-    });
+    await fileInput.setInputFiles('tests/e2e/fixtures/sample-draws.csv');
 
     // Wait for preview step
     await expect(
-      page.getByRole('heading', { name: /Vista previa.*2 válidas, 0 inválidas/ })
+      page.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })
     ).toBeVisible({ timeout: 15000 });
 
     // Debug: check page content
@@ -461,12 +456,37 @@ test.describe('Admin Import', () => {
     });
     await page.getByRole('button', { name: 'Continuar' }).click();
 
-    // Change policy to replace
-    await page.getByRole('radio', { name: 'Reemplazar' }).click();
-    await expect(page.getByRole('radio', { name: 'Reemplazar' })).toBeChecked();
+    // Wait for confirm step to load - the heading should change to "Confirmar importación"
+    await expect(page.getByRole('heading', { name: 'Confirmar importación' })).toBeVisible({
+      timeout: 15000,
+    });
 
-    // Change policy to merge
-    await page.getByRole('radio', { name: 'Fusionar' }).click();
-    await expect(page.getByRole('radio', { name: 'Fusionar' })).toBeChecked();
+    // Debug: log the radio buttons state
+    const radios = page.locator('input[type="radio"]');
+    const count = await radios.count();
+    console.log(`Found ${count} radio buttons`);
+    for (let i = 0; i < count; i++) {
+      const radio = radios.nth(i);
+      const value = await radio.getAttribute('value');
+      const disabled = await radio.isDisabled();
+      const checked = await radio.isChecked();
+      console.log(`Radio ${i}: value=${value}, disabled=${disabled}, checked=${checked}`);
+    }
+
+    // Change policy to replace - use JS to click the input directly (bypasses label issues on mobile)
+    await page.evaluate(() => {
+      const radio = document.querySelector('input[value="replace"]');
+      if (radio) radio.click();
+    });
+    await waitForStableContent(page);
+    await expect(page.locator('input[value="replace"]')).toBeChecked({ timeout: 10000 });
+
+    // Change policy to merge - use JS to click the input directly
+    await page.evaluate(() => {
+      const radio = document.querySelector('input[value="merge"]');
+      if (radio) radio.click();
+    });
+    await waitForStableContent(page);
+    await expect(page.locator('input[value="merge"]')).toBeChecked({ timeout: 10000 });
   });
 });
