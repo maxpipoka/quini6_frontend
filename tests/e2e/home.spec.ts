@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
-async function openMobileMenu(page) {
+async function openMobileMenu(page: Page) {
   const menuToggle = page.locator('#mobile-menu-toggle');
   const mobileMenu = page.locator('#mobile-menu');
   

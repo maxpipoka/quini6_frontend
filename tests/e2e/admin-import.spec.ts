@@ -475,7 +475,7 @@ test.describe('Admin Import', () => {
 
     // Change policy to replace - use JS to click the input directly (bypasses label issues on mobile)
     await page.evaluate(() => {
-      const radio = document.querySelector('input[value="replace"]');
+      const radio = document.querySelector<HTMLInputElement>('input[value="replace"]');
       if (radio) radio.click();
     });
     await waitForStableContent(page);
@@ -483,7 +483,7 @@ test.describe('Admin Import', () => {
 
     // Change policy to merge - use JS to click the input directly
     await page.evaluate(() => {
-      const radio = document.querySelector('input[value="merge"]');
+      const radio = document.querySelector<HTMLInputElement>('input[value="merge"]');
       if (radio) radio.click();
     });
     await waitForStableContent(page);
