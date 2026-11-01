@@ -9,6 +9,7 @@ interface ProgressProps {
   showPercentage?: boolean;
   'aria-live'?: 'polite' | 'assertive';
   className?: string;
+  id?: string;
 }
 
 const stageLabels: Record<ProgressStage, string> = {
@@ -32,8 +33,9 @@ export const Progress: React.FC<ProgressProps> = ({
   showPercentage = true,
   'aria-live': ariaLive = 'polite',
   className = '',
+  id,
 }) => {
-  const progressIdRef = useRef(`progress-${Math.random().toString(36).slice(2, 9)}`);
+  const progressIdRef = useRef(id ?? `progress-${Math.random().toString(36).slice(2, 9)}`);
   const [isIndeterminate, setIsIndeterminate] = useState(value === undefined);
 
   useEffect(() => {

@@ -260,11 +260,11 @@ export const sampleProps = {
     },
   },
   Progress: {
-    default: { value: 0, stage: 'processing' as const },
-    partial: { value: 50, stage: 'processing' as const },
-    complete: { value: 100, stage: 'completed' as const },
-    indeterminate: { value: undefined, stage: 'processing' as const },
-    error: { value: 30, stage: 'error' as const },
+    default: { value: 0, stage: 'processing' as const, id: 'progress-visual-default' },
+    partial: { value: 50, stage: 'processing' as const, id: 'progress-visual-partial' },
+    complete: { value: 100, stage: 'completed' as const, id: 'progress-visual-complete' },
+    indeterminate: { value: undefined, stage: 'processing' as const, id: 'progress-visual-indeterminate' },
+    error: { value: 30, stage: 'error' as const, id: 'progress-visual-error' },
   },
 };
 
