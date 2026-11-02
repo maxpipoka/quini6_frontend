@@ -55,6 +55,7 @@ export const ImportProgress: React.FC<Props> = ({
   };
 
   const startPolling = () => {
+    if (pollInterval <= 0) return;
     setIsPolling(true);
     pollTimerRef.current = window.setInterval(pollStatus, pollInterval);
   };

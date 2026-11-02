@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { runA11yCheck } from './a11y-setup';
 
 const componentFixtures = [
@@ -43,13 +43,15 @@ const componentFixtures = [
 ];
 
 test.describe('Accessibility Audit - Admin Import Components', () => {
-  for (const fixture of componentFixtures) {
-    test(`${fixture.name}`, async ({ page }) => {
-      await page.goto(fixture.path);
-      await page.waitForLoadState('domcontentloaded');
-      await page.waitForTimeout(500);
+  test.use({ storageState: undefined });
 
-      const accessibilityScanResults = await runA11yCheck(page);
+  for (const fixture of componentFixtures) {
+    test(`${fixture.name}`, async ({ adminPage }) => {
+      await adminPage.goto(fixture.path);
+      await adminPage.waitForLoadState('domcontentloaded');
+      await adminPage.waitForTimeout(500);
+
+      const accessibilityScanResults = await runA11yCheck(adminPage);
 
       expect(accessibilityScanResults.violations).toEqual([]);
     });

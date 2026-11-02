@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useId } from 'react';
 
 interface FileDropzoneProps {
   accept?: string;
@@ -25,7 +25,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const dropzoneId = `dropzone-${Math.random().toString(36).slice(2, 9)}`;
+  const dropzoneId = useId();
 
   const formatSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;

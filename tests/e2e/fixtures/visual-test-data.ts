@@ -238,29 +238,37 @@ export const sampleProps = {
       importId: '11111111-1111-4111-8111-111111111111',
       stage: 'processing' as ImportProgressStage,
       progress: 0,
+      pollInterval: 0,
     },
     inProgress: {
       importId: '22222222-2222-4222-8222-222222222222',
       stage: 'processing' as ImportProgressStage,
       progress: 45,
+      pollInterval: 0,
     },
     success: {
       importId: '33333333-3333-4333-8333-333333333333',
       stage: 'completed' as ImportProgressStage,
       progress: 100,
+      pollInterval: 0,
     },
     error: {
       importId: '44444444-4444-4444-8444-444444444444',
       stage: 'processing' as ImportProgressStage,
       progress: 67,
+      pollInterval: 0,
     },
   },
   Progress: {
-    default: { value: 0, stage: 'processing' as const },
-    partial: { value: 50, stage: 'processing' as const },
-    complete: { value: 100, stage: 'completed' as const },
-    indeterminate: { value: undefined, stage: 'processing' as const },
-    error: { value: 30, stage: 'error' as const },
+    default: { value: 0, stage: 'processing' as const, id: 'progress-visual-default' },
+    partial: { value: 50, stage: 'processing' as const, id: 'progress-visual-partial' },
+    complete: { value: 100, stage: 'completed' as const, id: 'progress-visual-complete' },
+    indeterminate: {
+      value: undefined,
+      stage: 'processing' as const,
+      id: 'progress-visual-indeterminate',
+    },
+    error: { value: 30, stage: 'error' as const, id: 'progress-visual-error' },
   },
 };
 

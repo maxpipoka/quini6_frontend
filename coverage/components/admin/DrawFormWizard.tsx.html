@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.63% </span>
+                <span class="strong">83.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>433/524</span>
+                <span class='fraction'>429/515</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.8% </span>
+                <span class="strong">82.65% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>80/99</span>
+                <span class='fraction'>81/98</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.63% </span>
+                <span class="strong">83.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>433/524</span>
+                <span class='fraction'>429/515</span>
             </div>
         
             
@@ -578,16 +578,7 @@
 <a name='L513'></a><a href='#L513'>513</a>
 <a name='L514'></a><a href='#L514'>514</a>
 <a name='L515'></a><a href='#L515'>515</a>
-<a name='L516'></a><a href='#L516'>516</a>
-<a name='L517'></a><a href='#L517'>517</a>
-<a name='L518'></a><a href='#L518'>518</a>
-<a name='L519'></a><a href='#L519'>519</a>
-<a name='L520'></a><a href='#L520'>520</a>
-<a name='L521'></a><a href='#L521'>521</a>
-<a name='L522'></a><a href='#L522'>522</a>
-<a name='L523'></a><a href='#L523'>523</a>
-<a name='L524'></a><a href='#L524'>524</a>
-<a name='L525'></a><a href='#L525'>525</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L516'></a><a href='#L516'>516</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -695,13 +686,6 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">178x</span>
-<span class="cline-any cline-yes">178x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">178x</span>
 <span class="cline-any cline-yes">178x</span>
 <span class="cline-any cline-yes">17x</span>
@@ -895,8 +879,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1220,13 +1202,6 @@ function reducer(state: WizardState, action: WizardAction): WizardState {
       return { ...state, drawDate: action.value, drawDateError };
     }
 &nbsp;
-<span class="branch-0 cbranch-no" title="branch not covered" >    case 'SET_OFFICIAL_NUMBER': {</span>
-<span class="cstat-no" title="statement not covered" >      const num = parseInt(action.value, 10);</span>
-<span class="cstat-no" title="statement not covered" >      const officialNumberError =</span>
-<span class="cstat-no" title="statement not covered" >        action.value &amp;&amp; (isNaN(num) || num &lt;= 0) ? 'El número oficial debe ser positivo' : '';</span>
-<span class="cstat-no" title="statement not covered" >      return { ...state, officialNumber: action.value, officialNumberError };</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-&nbsp;
     case 'NEXT_STEP': {
       const currentStep = state.steps[state.currentStep];
       if (state.currentStep &lt; 3 &amp;&amp; currentStep?.isValid) {
@@ -1392,7 +1367,7 @@ export function DrawFormWizard({
     dispatch({ type: 'SET_DRAW_DATE', value: e.target.value });
   };
 &nbsp;
-  const handleSubmit = async (e: FormEvent) =&gt; {
+  const handleSubmit = (e: FormEvent) =&gt; {
     e.preventDefault();
     if (!canSubmit || isLoading) <span class="branch-0 cbranch-no" title="branch not covered" >return;</span>
 &nbsp;
@@ -1420,14 +1395,12 @@ export function DrawFormWizard({
 <span class="cstat-no" title="statement not covered" >      return;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-    try {
-      await onSubmit(payload<span class="branch-0 cbranch-no" title="branch not covered" >);</span>
-    } catch (error: unknown) {
+    onSubmit(payload).catch((error: unknown) =&gt; {
       dispatch({
         type: 'SET_SUBMIT_ERROR',
         error: error instanceof Error ? error.<span class="branch-0 cbranch-no" title="branch not covered" >message : 'Error al guardar el sorteo',</span>
       });
-    }
+    });
   };
 &nbsp;
   const stepIndicators = MODALITY_ORDER.map((modality, index) =&gt; {
@@ -1440,21 +1413,21 @@ export function DrawFormWizard({
         &lt;div
           className={`flex size-10 items-center justify-center rounded-full text-sm font-semibold transition-all ${
             isComplete
-              ? 'bg-primary text-white'
+              ? 'bg-primary-500 text-white'
               : isCurrent
-                ? 'bg-primary/20 text-primary border-primary border-2'
+                ? 'bg-primary-500/20 border-2 border-primary-500 text-primary-500'
                 : 'border-2 border-border bg-surface text-text-muted'
           }`}
         &gt;
           {isComplete ? &lt;Check className="size-5" aria-hidden="true" /&gt; : index + 1}
         &lt;/div&gt;
         &lt;span
-          className={`mt-1 text-center text-xs font-medium ${isCurrent ? 'text-primary' : 'text-text-muted'}`}
+          className={`mt-1 text-center text-xs font-medium ${isCurrent ? 'text-primary-500' : 'text-text-muted'}`}
         &gt;
           {MODALITY_LABELS[modality]}
         &lt;/span&gt;
         &lt;div
-          className={`mt-1 h-1 w-20 transition-colors ${index &lt; 3 ? (step?.isValid ? 'bg-primary' : 'bg-border') : ''}`}
+          className={`mt-1 h-1 w-20 transition-colors ${index &lt; 3 ? (step?.isValid ? 'bg-primary-500' : 'bg-border') : ''}`}
         /&gt;
       &lt;/div&gt;
     );
@@ -1492,14 +1465,14 @@ export function DrawFormWizard({
             min="1"
             required
             disabled={isLoading}
-            className={`focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              state.officialNumberError ? 'border-error focus:ring-error' : ''
+            className={`w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+              state.officialNumberError ? 'border-error-500 focus:ring-error-500' : ''
             }`}
             aria-invalid={!!state.officialNumberError}
             aria-describedby={state.officialNumberError ? 'official-number-error' : undefined}
           /&gt;
           {state.officialNumberError &amp;&amp; (
-            &lt;p id="official-number-error" className="text-error mt-1 text-sm" role="alert"&gt;
+            &lt;p id="official-number-error" className="mt-1 text-sm text-error-500" role="alert"&gt;
               {state.officialNumberError}
             &lt;/p&gt;
           )}
@@ -1516,14 +1489,14 @@ export function DrawFormWizard({
             onChange={handleDrawDateChange}
             required
             disabled={isLoading}
-            className={`focus:ring-primary w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-              state.drawDateError ? 'border-error focus:ring-error' : ''
+            className={`w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-text-primary placeholder-text-muted transition-colors focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+              state.drawDateError ? 'border-error-500 focus:ring-error-500' : ''
             }`}
             aria-invalid={!!state.drawDateError}
             aria-describedby={state.drawDateError ? 'draw-date-error' : undefined}
           /&gt;
           {state.drawDateError &amp;&amp; (
-            &lt;p id="draw-date-error" className="text-error mt-1 text-sm" role="alert"&gt;
+            &lt;p id="draw-date-error" className="mt-1 text-sm text-error-500" role="alert"&gt;
               {state.drawDateError}
             &lt;/p&gt;
           )}
@@ -1557,7 +1530,7 @@ export function DrawFormWizard({
             {currentStepData.errors.length &gt; 0 &amp;&amp; (
               &lt;p
                 id={`${currentStepData.modality}-errors`}
-                className="text-error text-sm"
+                className="text-sm text-error-500"
                 role="alert"
               &gt;
                 {currentStepData.errors.join('. ')}
@@ -1569,7 +1542,7 @@ export function DrawFormWizard({
 &nbsp;
       {state.submitError &amp;&amp; (
         &lt;div
-          className="bg-error/10 border-error/20 text-error flex items-center gap-2 rounded-lg border p-3"
+          className="bg-error-500/10 border-error-500/20 flex items-center gap-2 rounded-lg border p-3 text-error-500"
           role="alert"
         &gt;
           &lt;AlertCircle className="size-5 flex-shrink-0" aria-hidden="true" /&gt;
@@ -1605,7 +1578,7 @@ export function DrawFormWizard({
             &lt;button
               type="submit"
               disabled={!canSubmit || isLoading}
-              className="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:bg-primary-500/90 flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
             &gt;
               {<span class="branch-0 cbranch-no" title="branch not covered" >isLoading ? (</span>
 <span class="cstat-no" title="statement not covered" >                &lt;&gt;</span>
@@ -1624,7 +1597,7 @@ export function DrawFormWizard({
               type="button"
               onClick={() =&gt; dispatch({ type: 'NEXT_STEP' })}
               disabled={!canGoNext || isLoading}
-              className="bg-primary hover:bg-primary/90 focus:ring-primary flex items-center gap-2 rounded-lg px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:bg-primary-500/90 flex items-center gap-2 rounded-lg bg-primary-500 px-4 py-2.5 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface disabled:cursor-not-allowed disabled:opacity-50"
             &gt;
               &lt;span&gt;Siguiente&lt;/span&gt;
               &lt;ChevronRight className="size-4" aria-hidden="true" /&gt;
@@ -1642,7 +1615,7 @@ export function DrawFormWizard({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-26T03:33:28.620Z
+                at 2026-10-31T02:53:54.026Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

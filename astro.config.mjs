@@ -9,6 +9,7 @@ import { EnumChangefreq } from 'sitemap';
 export default defineConfig({
   output: 'static',
   site: 'https://quini6.com',
+  devToolbar: { enabled: false },
   integrations: [
     tailwind(),
     react(),

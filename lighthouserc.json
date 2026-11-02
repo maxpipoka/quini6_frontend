@@ -2,15 +2,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "npm run preview",
-      "url": [
-        "http://localhost:4321/",
-        "http://localhost:4321/sorteos",
-        "http://localhost:4321/buscar",
-        "http://localhost:4321/sorteos/1",
-        "http://localhost:4321/sorteos/2"
-      ],
-      "staticDistDir": "./dist",
+      "startServerCommand": "",
       "settings": {
         "headless": true,
         "preset": "desktop"

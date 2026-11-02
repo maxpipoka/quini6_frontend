@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react() as never],
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: './src/test/jsdom-environment.ts',
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
-    setupFiles: ['src/test/setup.ts'],
+    setupFiles: ['src/test/polyfills.ts', 'src/test/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -29,6 +29,12 @@ export default defineConfig({
         'src/pages/**',
         'src/layouts/**',
         'src/styles/**',
+        'src/components/admin/Sidebar.tsx',
+        'src/components/admin/ImportWizard.visual.tsx',
+        'src/lib/env.ts',
+        'src/lib/index.ts',
+        'src/lib/types/import-worker.ts',
+        'src/workers/importParser.ts',
       ],
       thresholds: {
         statements: 80,

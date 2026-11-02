@@ -381,7 +381,7 @@ describe('ApiClient', () => {
   });
 
   describe('admin methods', () => {
-    it('adminLogin POSTs credentials to /admin/auth/login', async () => {
+    it('adminLogin POSTs credentials to admin/auth/login', async () => {
       const post = vi.fn().mockResolvedValue(jsonResponse({ user: { id: '1' } }));
       mockKyMethods.post = post;
 
@@ -391,31 +391,31 @@ describe('ApiClient', () => {
       });
 
       expect(post).toHaveBeenCalledWith(
-        '/admin/auth/login',
+        'admin/auth/login',
         expect.objectContaining({ json: { email: 'admin@example.com', password: 'password123' } })
       );
       expect(result).toEqual({ user: { id: '1' } });
     });
 
-    it('adminMe GETs /admin/auth/me', async () => {
+    it('adminMe GETs admin/auth/me', async () => {
       const get = vi.fn().mockResolvedValue(jsonResponse({ id: '1' }));
       mockKyMethods.get = get;
 
       await client.adminMe();
 
-      expect(get).toHaveBeenCalledWith('/admin/auth/me', expect.any(Object));
+      expect(get).toHaveBeenCalledWith('admin/auth/me', expect.any(Object));
     });
 
-    it('adminLogout POSTs /admin/auth/logout', async () => {
+    it('adminLogout POSTs admin/auth/logout', async () => {
       const post = vi.fn().mockResolvedValue(jsonResponse(undefined));
       mockKyMethods.post = post;
 
       await client.adminLogout();
 
-      expect(post).toHaveBeenCalledWith('/admin/auth/logout', expect.any(Object));
+      expect(post).toHaveBeenCalledWith('admin/auth/logout', expect.any(Object));
     });
 
-    it('adminChangePassword POSTs /admin/auth/change-password', async () => {
+    it('adminChangePassword POSTs admin/auth/change-password', async () => {
       const post = vi.fn().mockResolvedValue(jsonResponse(undefined));
       mockKyMethods.post = post;
 
@@ -425,41 +425,41 @@ describe('ApiClient', () => {
       });
 
       expect(post).toHaveBeenCalledWith(
-        '/admin/auth/change-password',
+        'admin/auth/change-password',
         expect.objectContaining({
           json: { currentPassword: 'oldpassword', newPassword: 'newpassword' },
         })
       );
     });
 
-    it('adminCreateDraw POSTs /admin/draws', async () => {
+    it('adminCreateDraw POSTs admin/draws', async () => {
       const post = vi.fn().mockResolvedValue(jsonResponse(drawResponse()));
       mockKyMethods.post = post;
 
       await client.adminCreateDraw(createDrawInput());
 
-      expect(post).toHaveBeenCalledWith('/admin/draws', expect.any(Object));
+      expect(post).toHaveBeenCalledWith('admin/draws', expect.any(Object));
     });
 
-    it('adminUpdateDraw PATCHes /admin/draws/:id', async () => {
+    it('adminUpdateDraw PATCHes admin/draws/:id', async () => {
       const patch = vi.fn().mockResolvedValue(jsonResponse(drawResponse()));
       mockKyMethods.patch = patch;
 
       await client.adminUpdateDraw('3245', { officialNumber: 3246 });
 
       expect(patch).toHaveBeenCalledWith(
-        '/admin/draws/3245',
+        'admin/draws/3245',
         expect.objectContaining({ json: { officialNumber: 3246 } })
       );
     });
 
-    it('adminDeleteDraw DELETEs /admin/draws/:id', async () => {
+    it('adminDeleteDraw DELETEs admin/draws/:id', async () => {
       const del = vi.fn().mockResolvedValue(jsonResponse(undefined));
       mockKyMethods.delete = del;
 
       await client.adminDeleteDraw('3245');
 
-      expect(del).toHaveBeenCalledWith('/admin/draws/3245', expect.any(Object));
+      expect(del).toHaveBeenCalledWith('admin/draws/3245', expect.any(Object));
     });
 
     it('adminImportPreview uploads the file as FormData', async () => {
@@ -470,19 +470,19 @@ describe('ApiClient', () => {
       await client.adminImportPreview(file);
 
       expect(post).toHaveBeenCalledWith(
-        '/admin/import/preview',
+        'admin/import/preview',
         expect.objectContaining({ body: expect.any(FormData) as FormData })
       );
     });
 
-    it('adminImportCommit POSTs /admin/import/commit', async () => {
+    it('adminImportCommit POSTs admin/import/commit', async () => {
       const post = vi.fn().mockResolvedValue(jsonResponse({ success: true }));
       mockKyMethods.post = post;
 
       await client.adminImportCommit({ previewId: TEST_UUID, duplicatePolicy: 'SKIP' });
 
       expect(post).toHaveBeenCalledWith(
-        '/admin/import/commit',
+        'admin/import/commit',
         expect.objectContaining({ json: { previewId: TEST_UUID, duplicatePolicy: 'SKIP' } })
       );
     });
@@ -493,16 +493,16 @@ describe('ApiClient', () => {
 
       await client.adminListImports({ page: 2, limit: 50 });
 
-      expect(get).toHaveBeenCalledWith('/admin/import?page=2&limit=50', expect.any(Object));
+      expect(get).toHaveBeenCalledWith('admin/import?page=2&limit=50', expect.any(Object));
     });
 
-    it('adminGetImport GETs /admin/import/:id', async () => {
+    it('adminGetImport GETs admin/import/:id', async () => {
       const get = vi.fn().mockResolvedValue(jsonResponse({ id: 'import-1' }));
       mockKyMethods.get = get;
 
       await client.adminGetImport('import-1');
 
-      expect(get).toHaveBeenCalledWith('/admin/import/import-1', expect.any(Object));
+      expect(get).toHaveBeenCalledWith('admin/import/import-1', expect.any(Object));
     });
   });
 
@@ -654,7 +654,7 @@ describe('ApiClient', () => {
     });
 
     describe('getImportHistory', () => {
-      it('GETs /admin/imports with query params', async () => {
+      it('GETs admin/imports with query params', async () => {
         const get = vi.fn().mockResolvedValue(jsonResponse(historyResponse));
         mockKyMethods.get = get;
 
@@ -666,7 +666,7 @@ describe('ApiClient', () => {
         });
 
         expect(get).toHaveBeenCalledWith(
-          '/admin/imports?page=1&limit=10&sort=date&order=desc',
+          'admin/imports?page=1&limit=10&sort=date&order=desc',
           expect.any(Object)
         );
         expect(result).toEqual(historyResponse);
@@ -678,7 +678,7 @@ describe('ApiClient', () => {
 
         await client.getImportHistory({ page: 2, limit: 10 });
 
-        expect(get).toHaveBeenCalledWith('/admin/imports?page=2&limit=10', expect.any(Object));
+        expect(get).toHaveBeenCalledWith('admin/imports?page=2&limit=10', expect.any(Object));
       });
 
       it('validates response with ImportHistoryResponseSchema', async () => {
@@ -703,20 +703,20 @@ describe('ApiClient', () => {
 
         // URLSearchParams encodes the colons and other special chars
         expect(get).toHaveBeenCalledWith(
-          '/admin/imports?page=1&limit=10&startDate=2024-01-01T00%3A00%3A00Z&endDate=2024-12-31T23%3A59%3A59Z&policy=replace',
+          'admin/imports?page=1&limit=10&startDate=2024-01-01T00%3A00%3A00Z&endDate=2024-12-31T23%3A59%3A59Z&policy=replace',
           expect.any(Object)
         );
       });
     });
 
     describe('getImportErrors', () => {
-      it('GETs /admin/imports/:id/errors', async () => {
+      it('GETs admin/imports/:id/errors', async () => {
         const get = vi.fn().mockResolvedValue(jsonResponse(errorsResponse));
         mockKyMethods.get = get;
 
         const result = await client.getImportErrors(TEST_UUID);
 
-        expect(get).toHaveBeenCalledWith(`/admin/imports/${TEST_UUID}/errors`, expect.any(Object));
+        expect(get).toHaveBeenCalledWith(`admin/imports/${TEST_UUID}/errors`, expect.any(Object));
         expect(result).toEqual(errorsResponse);
       });
 

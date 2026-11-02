@@ -412,29 +412,29 @@ export class ApiClient {
   // ============================================================================
 
   async adminLogin(credentials: schemas.LoginInput): Promise<{ user: unknown }> {
-    return this.request('post', '/admin/auth/login', {
+    return this.request('post', 'admin/auth/login', {
       json: credentials,
       validateBodyWith: schemas.LoginSchema,
     });
   }
 
   async adminMe(): Promise<unknown> {
-    return this.request('get', '/admin/auth/me');
+    return this.request('get', 'admin/auth/me');
   }
 
   async adminLogout(): Promise<void> {
-    await this.request('post', '/admin/auth/logout');
+    await this.request('post', 'admin/auth/logout');
   }
 
   async adminChangePassword(data: schemas.ChangePasswordInput): Promise<void> {
-    return this.request('post', '/admin/auth/change-password', {
+    return this.request('post', 'admin/auth/change-password', {
       json: data,
       validateBodyWith: schemas.ChangePasswordSchema,
     });
   }
 
   async adminCreateDraw(data: schemas.CreateDrawInput): Promise<schemas.DrawResponse> {
-    return this.request('post', '/admin/draws', {
+    return this.request('post', 'admin/draws', {
       json: data,
       validateBodyWith: schemas.CreateDrawSchema,
       validateWith: schemas.DrawResponseSchema,
@@ -442,7 +442,7 @@ export class ApiClient {
   }
 
   async adminUpdateDraw(id: string, data: schemas.UpdateDrawInput): Promise<schemas.DrawResponse> {
-    return this.request('patch', `/admin/draws/${id}`, {
+    return this.request('patch', `admin/draws/${id}`, {
       json: data,
       validateBodyWith: schemas.UpdateDrawSchema,
       validateWith: schemas.DrawResponseSchema,
@@ -450,21 +450,20 @@ export class ApiClient {
   }
 
   async adminDeleteDraw(id: string): Promise<void> {
-    await this.request('delete', `/admin/draws/${id}`);
+    await this.request('delete', `admin/draws/${id}`);
   }
 
   async adminImportPreview(file: File): Promise<unknown> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.request('post', '/admin/import/preview', {
+    return this.request('post', 'admin/import/preview', {
       body: formData,
-      // Don't set Content-Type - let browser set it with boundary
       headers: {},
     });
   }
 
   async adminImportCommit(data: schemas.CommitImportInput): Promise<unknown> {
-    return this.request('post', '/admin/import/commit', {
+    return this.request('post', 'admin/import/commit', {
       json: data,
       validateBodyWith: schemas.CommitImportSchema,
     });
@@ -479,12 +478,12 @@ export class ApiClient {
         searchParams.set(key, String(value));
       }
     });
-    const url = `/admin/import${searchParams.toString() ? `?${searchParams}` : ''}`;
+    const url = `admin/import${searchParams.toString() ? `?${searchParams}` : ''}`;
     return this.request('get', url);
   }
 
   async adminGetImport(id: string): Promise<unknown> {
-    return this.request('get', `/admin/import/${id}`);
+    return this.request('get', `admin/import/${id}`);
   }
 
   // ============================================================================
@@ -533,7 +532,7 @@ export class ApiClient {
         searchParams.set(key, String(value));
       }
     });
-    const url = `/admin/imports${searchParams.toString() ? `?${searchParams}` : ''}`;
+    const url = `admin/imports${searchParams.toString() ? `?${searchParams}` : ''}`;
     return this.request('get', url, {
       validateWith: schemas.ImportHistoryResponseSchema,
     });
@@ -544,7 +543,7 @@ export class ApiClient {
    * GET /admin/imports/{importId}/errors
    */
   async getImportErrors(importId: string): Promise<schemas.ImportErrorsResponse> {
-    return this.request('get', `/admin/imports/${importId}/errors`, {
+    return this.request('get', `admin/imports/${importId}/errors`, {
       validateWith: schemas.ImportErrorsResponseSchema,
     });
   }

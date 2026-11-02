@@ -1,11 +1,12 @@
 import { test, expect } from '../e2e/fixtures';
+import { waitForStableContent } from './a11y-setup';
 
 test.describe('Admin Import', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ adminPage }) => {
     // Attach listeners BEFORE any navigation
-    page.on('console', (msg) => console.log('BROWSER CONSOLE:', msg.type(), msg.text()));
-    page.on('pageerror', (err) => console.log('BROWSER ERROR:', err.message));
-    page.on('request', (request) => {
+    adminPage.on('console', (msg) => console.log('BROWSER CONSOLE:', msg.type(), msg.text()));
+    adminPage.on('pageerror', (err) => console.log('BROWSER ERROR:', err.message));
+    adminPage.on('request', (request) => {
       if (
         request.url().includes(':') &&
         !request.url().includes('http://') &&
@@ -17,12 +18,11 @@ test.describe('Admin Import', () => {
     });
 
     // Add an init script to catch the exact error location
-    await page.addInitScript(() => {
+    await adminPage.addInitScript(() => {
       const originalError = console.error;
       console.error = (...args) => {
         if (args[0] && typeof args[0] === 'string' && args[0].includes('Unexpected token')) {
           console.log('CAPTURED ERROR:', args[0]);
-          // Try to get stack trace
           try {
             throw new Error();
           } catch (e) {
@@ -48,93 +48,42 @@ test.describe('Admin Import', () => {
       });
     });
 
-    // First navigate to base URL to establish the origin, then add cookies
-    await page.goto('http://localhost:4321/');
-
-    // Now add cookies - they should be sent with subsequent requests
-    // Note: httpOnly must be false for Playwright to set it and for middleware to read it
-    await page.context().addCookies([
-      {
-        name: 'session',
-        value: 'e2e',
-        domain: 'localhost',
-        path: '/',
-        httpOnly: false,
-        secure: false,
-        sameSite: 'Lax',
-      },
-      {
-        name: 'csrf_token',
-        value: 'test-csrf-token',
-        domain: 'localhost',
-        path: '/',
-        httpOnly: false,
-        secure: false,
-        sameSite: 'Lax',
-      },
-    ]);
-
-    // Also set localStorage theme to avoid flash
-    await page.addInitScript(() => {
+    // Set localStorage theme to avoid flash
+    await adminPage.addInitScript(() => {
       localStorage.setItem('theme', 'light');
     });
 
-    // Set cookies via page.evaluate as well (more reliable for browser context)
-    await page.evaluate(() => {
-      document.cookie = 'session=e2e; path=/; domain=localhost; SameSite=Lax';
-      document.cookie = 'csrf_token=test-csrf-token; path=/; domain=localhost; SameSite=Lax';
-    });
-
-    // Debug: Check cookies are set
-    const cookies = await page.context().cookies();
-    console.log('COOKIES SET:', cookies);
-
     // Now navigate to import page - cookies will be sent with this request
-    await page.goto('/admin/imports/upload');
+    await adminPage.goto('/admin/imports/upload');
 
     // Wait for page to load and island to hydrate
-    await page.waitForLoadState('networkidle');
+    await adminPage.waitForLoadState('networkidle');
 
     // Scroll to trigger client:visible hydration
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.waitForTimeout(5000);
-
-    // Debug: print page content
-    const content = await page.content();
-    console.log('PAGE CONTENT:', content.substring(0, 8000));
-
-    // Check for the page title
-    const hasTitle = content.includes('Importar Sorteos');
-    console.log('HAS IMPORTAR SORTEOS TITLE:', hasTitle);
-
-    // Take a screenshot for debugging
-    await page.screenshot({ path: 'test-results/debug-upload-page.png', fullPage: true });
-
-    // Check if there's any React content
-    const hasReactContent = await page.locator('[data-astro-island]').count();
-    console.log('ASTRO ISLANDS FOUND:', hasReactContent);
+    await adminPage.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await adminPage.waitForTimeout(3000);
 
     // Wait for the file dropzone div (outer container with data-testid)
-    await page.waitForSelector('[data-testid="file-dropzone"]', { timeout: 15000 });
+    await adminPage.waitForSelector('[data-testid="file-dropzone"]', { timeout: 15000 });
 
     // Wait for the input to be in the DOM
-    await page.waitForSelector('[data-testid="file-dropzone"] input[type="file"]', {
+    await adminPage.waitForSelector('[data-testid="file-dropzone"] input[type="file"]', {
       state: 'attached',
       timeout: 15000,
     });
   });
 
   test('should complete full import flow: upload -> preview -> confirm -> result', async ({
-    page,
+    adminPage,
   }) => {
     // Listen for page errors immediately
-    page.on('pageerror', (err) => {
+    adminPage.on('pageerror', (err) => {
       console.log('PAGE ERROR:', err.message);
       console.log('PAGE ERROR STACK:', err.stack);
     });
 
     // Listen for ALL console messages
-    page.on('console', (msg) => {
+    adminPage.on('console', (msg) => {
       const text = msg.text();
       console.log('BROWSER CONSOLE [' + msg.type() + ']:', text);
       if (
@@ -149,14 +98,13 @@ test.describe('Admin Import', () => {
     });
 
     // Enable network logging for import preview
-    page.on('request', (request) => {
+    adminPage.on('request', (request) => {
       if (request.url().includes('imports/preview') || request.url().includes('imports')) {
         console.log('>>> IMPORT REQUEST:', request.method(), request.url());
         console.log('>>> REQUEST HEADERS:', JSON.stringify(request.headers(), null, 2));
         const postData = request.postData();
         if (postData) console.log('>>> REQUEST BODY:', postData.substring(0, 500));
       }
-      // Also log ALL requests that might be related
       if (
         request.url().includes('/api/') ||
         request.url().includes('3001') ||
@@ -166,7 +114,7 @@ test.describe('Admin Import', () => {
       }
     });
 
-    page.on('response', (response) => {
+    adminPage.on('response', (response) => {
       if (response.url().includes('imports/preview') || response.url().includes('imports')) {
         console.log('>>> IMPORT RESPONSE:', response.status(), response.url());
       }
@@ -179,7 +127,7 @@ test.describe('Admin Import', () => {
       }
     });
 
-    page.on('requestfailed', (request) => {
+    adminPage.on('requestfailed', (request) => {
       if (request.url().includes('imports/preview') || request.url().includes('imports')) {
         console.log('>>> IMPORT REQUEST FAILED:', request.url(), request.failure()?.errorText);
       }
@@ -193,26 +141,20 @@ test.describe('Admin Import', () => {
     });
 
     // Upload a CSV file - interact with FileDropzone (input is visually hidden but in DOM)
-    const fileInput = page.locator('[data-testid="file-dropzone"] input[type="file"]').first();
-    await fileInput.setInputFiles({
-      name: 'test-import.csv',
-      mimeType: 'text/csv',
-      buffer: Buffer.from(
-        'officialNumber,drawDate,tradicional1,tradicional2,tradicional3,tradicional4,tradicional5,tradicional6,la_segunda1,la_segunda2,la_segunda3,la_segunda4,la_segunda5,la_segunda6,revancha1,revancha2,revancha3,revancha4,revancha5,revancha6,siempre_sale1,siempre_sale2,siempre_sale3,siempre_sale4,siempre_sale5,siempre_sale6\n3300,2024-12-01,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24\n3301,2024-12-08,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25'
-      ),
-    });
+    const fileInput = adminPage.locator('[data-testid="file-dropzone"] input[type="file"]').first();
+    await fileInput.setInputFiles('tests/e2e/fixtures/sample-draws.csv');
 
     // Wait for preview step
     await expect(
-      page.getByRole('heading', { name: /Vista previa.*2 válidas, 0 inválidas/ })
+      adminPage.getByRole('heading', { name: /Vista previa.*8 válidas, 0 inválidas/ })
     ).toBeVisible({ timeout: 15000 });
 
     // Debug: check page content
-    const previewContent = await page.content();
+    const previewContent = await adminPage.content();
     console.log('PREVIEW PAGE CONTENT:', previewContent.substring(0, 5000));
 
     // Check if there's an error toast
-    const errorAlert = page.getByRole('alert');
+    const errorAlert = adminPage.getByRole('alert');
     const hasError = (await errorAlert.count()) > 0;
     if (hasError) {
       const errorText = await errorAlert.textContent();
@@ -220,12 +162,12 @@ test.describe('Admin Import', () => {
     }
 
     // Check button state before click
-    const continuarBtn = page.getByRole('button', { name: 'Continuar' });
+    const continuarBtn = adminPage.getByRole('button', { name: 'Continuar' });
     const isDisabled = await continuarBtn.isDisabled();
     console.log('CONTINUAR BUTTON DISABLED:', isDisabled);
 
     // Also check the button element
-    const btnElement = await page.evaluate(() => {
+    const btnElement = await adminPage.evaluate(() => {
       const btns = document.querySelectorAll('button');
       for (const btn of btns) {
         if (btn.textContent?.includes('Continuar')) {
@@ -241,17 +183,15 @@ test.describe('Admin Import', () => {
     console.log('BUTTON ELEMENT:', JSON.stringify(btnElement, null, 2));
 
     // Check validRows state in React
-    const validRowsCheck = await page.evaluate(() => {
-      // Look for any React component state
+    const validRowsCheck = await adminPage.evaluate(() => {
       const island = document.querySelector('astro-island');
       if (!island) return 'no island';
-      // Try to find any global state
       return 'island exists';
     });
     console.log('VALID ROWS CHECK:', validRowsCheck);
 
     // Listen for ALL network requests
-    page.on('request', (request) => {
+    adminPage.on('request', (request) => {
       const url = request.url();
       if (
         url.includes('/api/') ||
@@ -267,7 +207,7 @@ test.describe('Admin Import', () => {
       }
     });
 
-    page.on('response', (response) => {
+    adminPage.on('response', (response) => {
       const url = response.url();
       if (
         url.includes('/api/') ||
@@ -298,7 +238,7 @@ test.describe('Admin Import', () => {
     });
 
     // Listen for ALL console messages
-    page.on('console', (msg) => {
+    adminPage.on('console', (msg) => {
       const text = msg.text();
       console.log('BROWSER CONSOLE [' + msg.type() + ']:', text);
       if (
@@ -313,13 +253,13 @@ test.describe('Admin Import', () => {
     });
 
     // Listen for page errors with full details
-    page.on('pageerror', (err) => {
+    adminPage.on('pageerror', (err) => {
       console.log('PAGE ERROR:', err.message);
       console.log('PAGE ERROR STACK:', err.stack);
     });
 
     // Enable all request/response logging for debugging
-    page.on('request', (request) => {
+    adminPage.on('request', (request) => {
       if (
         request.url().includes('ImportWizard') ||
         request.url().includes('worker') ||
@@ -329,7 +269,7 @@ test.describe('Admin Import', () => {
       }
     });
 
-    page.on('response', (response) => {
+    adminPage.on('response', (response) => {
       if (
         response.url().includes('ImportWizard') ||
         response.url().includes('worker') ||
@@ -339,12 +279,12 @@ test.describe('Admin Import', () => {
       }
     });
 
-    page.on('requestfailed', (request) => {
+    adminPage.on('requestfailed', (request) => {
       console.log('REQUEST FAILED:', request.url(), request.failure()?.errorText);
     });
 
     // Check if ImportWizard is hydrated
-    const islandInfo = await page.evaluate(() => {
+    const islandInfo = await adminPage.evaluate(() => {
       const islands = document.querySelectorAll('astro-island');
       return Array.from(islands).map((el) => ({
         uid: el.getAttribute('uid'),
@@ -362,8 +302,8 @@ test.describe('Admin Import', () => {
     console.log('CLICKED CONTINUAR');
 
     // Check if the island's hydrate method was called
-    await page.waitForTimeout(1000);
-    const hydrateCheck = await page.evaluate(() => {
+    await adminPage.waitForTimeout(1000);
+    const hydrateCheck = await adminPage.evaluate(() => {
       const island = document.querySelector('astro-island[component-url*="ImportWizard"]');
       if (!island) return 'no island';
       return {
@@ -375,41 +315,44 @@ test.describe('Admin Import', () => {
     console.log('HYDRATE CHECK AFTER CLICK:', JSON.stringify(hydrateCheck, null, 2));
 
     // Check page content after click
-    const afterClickContent = await page.content();
+    const afterClickContent = await adminPage.content();
     console.log('AFTER CLICK CONTENT (first 3000 chars):', afterClickContent.substring(0, 3000));
 
     // Wait for confirm step (heading "Confirmar importación") - use polling to catch React state update
-    await expect(page.locator('[data-step="confirm"]')).toBeVisible({ timeout: 30000 });
-    await page.waitForTimeout(3000);
+    await expect(adminPage.locator('[data-step="confirm"]')).toBeVisible({ timeout: 30000 });
+
+    await adminPage.waitForTimeout(3000);
 
     // The step has changed to confirm - verify by checking data-step attribute on the island's inner div
-    const importWizardIsland = page.locator('astro-island[component-url*="ImportWizard"]').first();
+    const importWizardIsland = adminPage
+      .locator('astro-island[component-url*="ImportWizard"]')
+      .first();
     await expect(importWizardIsland.locator('[data-step="confirm"]')).toBeVisible({
       timeout: 10000,
     });
 
     // Click Confirmar e importar - the button should be available in the confirm step
-    await page.getByRole('button', { name: 'Confirmar e importar' }).click();
+    await adminPage.getByRole('button', { name: 'Confirmar e importar' }).click();
 
     // Wait for the confirmation modal to appear
-    await expect(page.locator('[role="dialog"]')).toBeVisible({ timeout: 10000 });
+    await expect(adminPage.locator('[role="dialog"]')).toBeVisible({ timeout: 10000 });
 
     // Verify confirmation modal content
     await expect(
-      page.locator('[role="dialog"]').getByRole('heading', { name: 'Confirmar importación' })
+      adminPage.locator('[role="dialog"]').getByRole('heading', { name: 'Confirmar importación' })
     ).toBeVisible();
     await expect(
-      page.locator('[role="dialog"]').getByText(/Se importarán.*sorteos con la política.*skip/)
+      adminPage.locator('[role="dialog"]').getByText(/Se importarán.*sorteos con la política.*skip/)
     ).toBeVisible();
 
     // Confirm in modal
-    await page.locator('[role="dialog"]').getByRole('button', { name: 'Confirmar' }).click();
+    await adminPage.locator('[role="dialog"]').getByRole('button', { name: 'Confirmar' }).click();
 
     // Wait for result step
-    await page.waitForTimeout(3000);
+    await adminPage.waitForTimeout(3000);
 
     // Re-query the island after state changes
-    const importWizardIslandResult = page
+    const importWizardIslandResult = adminPage
       .locator('astro-island[component-url*="ImportWizard"]')
       .first();
 
@@ -423,7 +366,7 @@ test.describe('Admin Import', () => {
     });
 
     // Wait a bit more for React to render the content
-    await page.waitForTimeout(2000);
+    await adminPage.waitForTimeout(2000);
 
     // Verify result step - scope to island since React state changes inside island don't update page
     await expect(
@@ -440,14 +383,14 @@ test.describe('Admin Import', () => {
     // We skip this E2E test and rely on unit test coverage.
   });
 
-  test('should allow policy selection', async ({ page }) => {
+  test('should allow policy selection', async ({ adminPage }) => {
     // Wait for file input to be available
-    await page.waitForSelector('[data-testid="file-dropzone"] input[type="file"]', {
+    await adminPage.waitForSelector('[data-testid="file-dropzone"] input[type="file"]', {
       state: 'attached',
       timeout: 15000,
     });
 
-    const fileInput = page.locator('[data-testid="file-dropzone"] input[type="file"]').first();
+    const fileInput = adminPage.locator('[data-testid="file-dropzone"] input[type="file"]').first();
     await fileInput.setInputFiles({
       name: 'test-import.csv',
       mimeType: 'text/csv',
@@ -456,17 +399,42 @@ test.describe('Admin Import', () => {
       ),
     });
 
-    await expect(page.getByRole('heading', { name: 'Vista previa' })).toBeVisible({
+    await expect(adminPage.getByRole('heading', { name: 'Vista previa' })).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole('button', { name: 'Continuar' }).click();
+    await adminPage.getByRole('button', { name: 'Continuar' }).click();
 
-    // Change policy to replace
-    await page.getByRole('radio', { name: 'Reemplazar' }).click();
-    await expect(page.getByRole('radio', { name: 'Reemplazar' })).toBeChecked();
+    // Wait for confirm step to load - the heading should change to "Confirmar importación"
+    await expect(adminPage.getByRole('heading', { name: 'Confirmar importación' })).toBeVisible({
+      timeout: 15000,
+    });
 
-    // Change policy to merge
-    await page.getByRole('radio', { name: 'Fusionar' }).click();
-    await expect(page.getByRole('radio', { name: 'Fusionar' })).toBeChecked();
+    // Debug: log the radio buttons state
+    const radios = adminPage.locator('input[type="radio"]');
+    const count = await radios.count();
+    console.log(`Found ${count} radio buttons`);
+    for (let i = 0; i < count; i++) {
+      const radio = radios.nth(i);
+      const value = await radio.getAttribute('value');
+      const disabled = await radio.isDisabled();
+      const checked = await radio.isChecked();
+      console.log(`Radio ${i}: value=${value}, disabled=${disabled}, checked=${checked}`);
+    }
+
+    // Change policy to replace - use JS to click the input directly (bypasses label issues on mobile)
+    await adminPage.evaluate(() => {
+      const radio = document.querySelector<HTMLInputElement>('input[value="replace"]');
+      if (radio) radio.click();
+    });
+    await waitForStableContent(adminPage);
+    await expect(adminPage.locator('input[value="replace"]')).toBeChecked({ timeout: 10000 });
+
+    // Change policy to merge - use JS to click the input directly
+    await adminPage.evaluate(() => {
+      const radio = document.querySelector<HTMLInputElement>('input[value="merge"]');
+      if (radio) radio.click();
+    });
+    await waitForStableContent(adminPage);
+    await expect(adminPage.locator('input[value="merge"]')).toBeChecked({ timeout: 10000 });
   });
 });
