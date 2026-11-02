@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.78% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>91/95</span>
+                <span class='fraction'>96/100</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.78% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>91/95</span>
+                <span class='fraction'>96/100</span>
             </div>
         
             
@@ -158,7 +158,12 @@
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -182,6 +187,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
@@ -205,6 +212,8 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
@@ -225,6 +234,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -260,10 +270,11 @@ import type {
   ImportCommitResponse,
   ImportProgress,
   ImportPolicy,
+  DrawRowInput,
 } from '../lib/schemas';
 &nbsp;
 interface UseImportCommitReturn {
-  preview: (rows: any[]) =&gt; Promise&lt;ImportPreviewResponse | null&gt;;
+  preview: (rows: DrawRowInput[]) =&gt; Promise&lt;ImportPreviewResponse | null&gt;;
   commit: (
     importId: string,
     policy: ImportPolicy,
@@ -282,25 +293,28 @@ export const useImportCommit = (): UseImportCommitReturn =&gt; {
 &nbsp;
   const clearError = useCallback(() =&gt; setError(null), []);
 &nbsp;
-  const preview = useCallback(async (rows: any[]): Promise&lt;ImportPreviewResponse | null&gt; =&gt; {
-    console.log('[useImportCommit] preview called with rows:', rows.length);
-    setIsLoading(true);
-    setError(null);
-    try {
-      const client = getApiClient();
-      console.log('[useImportCommit] calling client.importPreview');
-      const result = await client.importPreview(rows);
-      console.log('[useImportCommit] preview result:', result);
-      return result;
-    } catch (err) {
-      console.error('[useImportCommit] preview error:', err);
-      const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
-      setError(error);
-      return null;
-<span class="branch-0 cbranch-no" title="branch not covered" >    } f</span>inally {
-      setIsLoading(false);
-    }
-  }, []);
+  const preview = useCallback(
+    async (rows: DrawRowInput[]): Promise&lt;ImportPreviewResponse | null&gt; =&gt; {
+      console.log('[useImportCommit] preview called with rows:', rows.length);
+      setIsLoading(true);
+      setError(null);
+      try {
+        const client = getApiClient();
+        console.log('[useImportCommit] calling client.importPreview');
+        const result = await client.importPreview(rows);
+        console.log('[useImportCommit] preview result:', result);
+        return result;
+      } catch (err) {
+        console.error('[useImportCommit] preview error:', err);
+        const error = err instanceof Error ? err : new Error('Error desconocido en vista previa');
+        setError(error);
+        return null;
+<span class="branch-0 cbranch-no" title="branch not covered" >      } f</span>inally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 &nbsp;
   const commit = useCallback(
     async (
@@ -321,11 +335,12 @@ export const useImportCommit = (): UseImportCommitReturn =&gt; {
         return result;
       } catch (err) {
         console.error('[useImportCommit] commit error:', err);
+        const errWithResponse = err as { response?: unknown; body?: unknown };
         if (err instanceof Error &amp;&amp; 'response' in err) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >          console.error('[useImportCommit] error response:', (err as any).response);</span>
+<span class="cstat-no" title="statement not covered" >          console.error('[useImportCommit] error response:', errWithResponse.response);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
         if (err instanceof Error &amp;&amp; 'body' in err) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >          console.error('[useImportCommit] error body:', (err as any).body);</span>
+<span class="cstat-no" title="statement not covered" >          console.error('[useImportCommit] error body:', errWithResponse.body);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
         const error =
           err instanceof Error ? err : new Error('Error desconocido al confirmar importación');
@@ -355,7 +370,7 @@ export default useImportCommit;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-26T03:33:28.620Z
+                at 2026-10-31T02:53:54.026Z
             </div>
         <script src="../prettify.js"></script>
         <script>
