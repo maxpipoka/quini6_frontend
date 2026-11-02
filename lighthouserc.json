@@ -2,14 +2,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "url": [
-        "http://localhost:4321/",
-        "http://localhost:4321/sorteos",
-        "http://localhost:4321/buscar",
-        "http://localhost:4321/sorteos/3245",
-        "http://localhost:4321/sorteos/3244"
-      ],
-      "staticDistDir": "./dist",
+      "startServerCommand": "",
       "settings": {
         "headless": true,
         "preset": "desktop"
