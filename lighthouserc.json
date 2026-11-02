@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "",
+      "startServerCommand": "npx astro preview --port 4321",
       "url": [
         "http://localhost:4321/",
         "http://localhost:4321/sorteos",
