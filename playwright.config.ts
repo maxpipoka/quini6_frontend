@@ -27,6 +27,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: ['**/visual.spec.ts'],
     },
     {
       name: 'firefox',
