@@ -244,13 +244,12 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                   key={draw.id}
                   href={`/sorteos/${draw.officialNumber}`}
                   class="card-elevated block p-6 transition-shadow hover:shadow-lg"
-                  aria-label={`Ver sorteo Nº ${draw.officialNumber} del ${formatShortDate(draw.drawDate)}`}
                 >
                   <div class="mb-4 flex items-center justify-between">
                     <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">
                       Sorteo Nº {draw.officialNumber}
                     </span>
-                    <time class="text-caption text-text-muted" dateTime={draw.drawDate}>
+                    <time class="text-caption text-text-secondary" dateTime={draw.drawDate}>
                       {formatShortDate(draw.drawDate)}
                     </time>
                   </div>
@@ -260,7 +259,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                         key={result.modality}
                         class="flex flex-col items-center gap-1.5 text-center"
                       >
-                        <span class="text-[10px] font-medium uppercase tracking-wide text-text-muted">
+                        <span class="text-[10px] font-medium uppercase tracking-wide text-text-secondary">
                           {MODALITY_LABELS[result.modality] ?? result.modality}
                         </span>
                         <div
@@ -297,7 +296,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     <section class="bg-primary-600 py-16 md:py-24" aria-labelledby="cta-heading">
       <Container maxWidth="lg">
         <div class="text-center text-white">
-          <h2 id="cta-heading" class="mb-4 font-sans text-display-sm">
+          <h2 id="cta-heading" class="mb-4 font-sans text-display-sm text-white">
             ¿Quiere buscar una combinación específica?
           </h2>
           <p class="mx-auto mb-8 max-w-2xl text-lg text-primary-100">
@@ -319,8 +318,8 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
           aria-label="Espacio publicitario"
         >
           <div class="p-4 text-center">
-            <p class="text-text-muted">Espacio publicitario (728×90)</p>
-            <p class="mt-1 text-caption text-text-muted">Se colapsa si no hay anuncio</p>
+            <p class="text-text-secondary">Espacio publicitario (728×90)</p>
+            <p class="mt-1 text-caption text-text-secondary">Se colapsa si no hay anuncio</p>
           </div>
         </div>
       </Container>

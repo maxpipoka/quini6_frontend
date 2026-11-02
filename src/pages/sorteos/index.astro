@@ -159,7 +159,7 @@ const columns = [
             .map(
               (result) => `
             <div class="flex flex-col items-center gap-1 text-center">
-              <span class="text-[10px] font-medium text-text-muted uppercase">${MODALITY_LABELS[result.modality] ?? result.modality}</span>
+              <span class="text-[10px] font-medium text-text-secondary uppercase">${MODALITY_LABELS[result.modality] ?? result.modality}</span>
               <div class="flex gap-0.5">
                 ${result.numbers
                   .map(
@@ -206,7 +206,7 @@ function getModalityColorClass(modality: string) {
     primary: 'bg-primary-500 text-white border-primary-500',
     secondary: 'bg-secondary-500 text-white border-secondary-500',
     success: 'bg-success-500 text-white border-success-500',
-    warning: 'bg-warning-500 text-neutral-900 border-warning-500 dark:text-neutral-50',
+    warning: 'bg-warning-500 text-neutral-900 border-warning-500 dark:text-neutral-900',
   };
   return colors[color];
 }

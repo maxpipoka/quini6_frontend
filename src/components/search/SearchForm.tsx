@@ -206,7 +206,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
               <strong>{filledNumbers.map((n) => n.toString().padStart(2, '0')).join(', ')}</strong>{' '}
               no han salido juntos en ningún sorteo registrado.
             </p>
-            <p className="text-sm text-text-muted">
+            <p className="text-sm text-text-secondary">
               Intente con otra combinación o revise el historial completo.
             </p>
           </div>
@@ -214,7 +214,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
 
         {status === 'idle' && (
           <div className="card-elevated p-8 text-center">
-            <p className="text-text-muted">
+            <p className="text-text-secondary">
               Ingrese sus 6 números arriba y pulse &quot;Buscar combinación&quot; para ver los
               resultados.
             </p>
