@@ -247,9 +247,8 @@ jobs:
             http://localhost:4321/buscar
             http://localhost:4321/sorteos/3245
             http://localhost:4321/sorteos/3244
-          budgetPath: ./lighthouserc.json
+          configPath: ./lighthouserc.json
           uploadArtifacts: true
-          serverBaseUrl: http://localhost:4321
         env:
           VITE_API_BASE_URL: http://localhost:3001/api
 
