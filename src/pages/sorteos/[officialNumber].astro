@@ -33,74 +33,33 @@ interface Props {
  */
 export async function getStaticPaths() {
   // Mock data for static generation at build time when API is not available
-  const MOCK_DRAWS: DrawLike[] = [
-    {
-      id: '1',
-      officialNumber: 1,
-      drawDate: '2024-01-01T20:00:00.000Z',
-      createdAt: '2024-01-01T20:00:00.000Z',
-      updatedAt: '2024-01-01T20:00:00.000Z',
-      results: [
-        {
-          modality: 'TRADICIONAL',
-          numbers: [5, 12, 23, 34, 41, 45],
-          createdAt: '2024-01-01T20:00:00.000Z',
-          updatedAt: '2024-01-01T20:00:00.000Z',
-        },
-        {
-          modality: 'LA_SEGUNDA',
-          numbers: [3, 18, 27, 31, 39, 42],
-          createdAt: '2024-01-01T20:00:00.000Z',
-          updatedAt: '2024-01-01T20:00:00.000Z',
-        },
-        {
-          modality: 'REVANCHA',
-          numbers: [7, 14, 22, 29, 36, 44],
-          createdAt: '2024-01-01T20:00:00.000Z',
-          updatedAt: '2024-01-01T20:00:00.000Z',
-        },
-        {
-          modality: 'SIEMPRE_SALE',
-          numbers: [2, 11, 19, 26, 33, 40],
-          createdAt: '2024-01-01T20:00:00.000Z',
-          updatedAt: '2024-01-01T20:00:00.000Z',
-        },
-      ],
-    },
-    {
-      id: '2',
-      officialNumber: 2,
-      drawDate: '2024-01-08T20:00:00.000Z',
-      createdAt: '2024-01-08T20:00:00.000Z',
-      updatedAt: '2024-01-08T20:00:00.000Z',
-      results: [
-        {
-          modality: 'TRADICIONAL',
-          numbers: [8, 15, 24, 35, 42, 43],
-          createdAt: '2024-01-08T20:00:00.000Z',
-          updatedAt: '2024-01-08T20:00:00.000Z',
-        },
-        {
-          modality: 'LA_SEGUNDA',
-          numbers: [4, 16, 25, 30, 37, 41],
-          createdAt: '2024-01-08T20:00:00.000Z',
-          updatedAt: '2024-01-08T20:00:00.000Z',
-        },
-        {
-          modality: 'REVANCHA',
-          numbers: [6, 13, 21, 28, 38, 45],
-          createdAt: '2024-01-08T20:00:00.000Z',
-          updatedAt: '2024-01-08T20:00:00.000Z',
-        },
-        {
-          modality: 'SIEMPRE_SALE',
-          numbers: [1, 10, 20, 25, 32, 39],
-          createdAt: '2024-01-08T20:00:00.000Z',
-          updatedAt: '2024-01-08T20:00:00.000Z',
-        },
-      ],
-    },
-  ];
+  // Must match mock API (tests/mock-api/server.mjs): 30 draws, officialNumber 3245 -> 3216
+  const MODALITIES: Modality[] = ['TRADICIONAL', 'LA_SEGUNDA', 'REVANCHA', 'SIEMPRE_SALE'];
+  const EXACT_MATCH = [5, 12, 23, 34, 41, 45];
+  const BASE_DATE = Date.UTC(2024, 5, 1, 20, 0, 0);
+  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+  function buildNumbers(seed: number, modalityIndex: number): SixUniqueNumbers {
+    return Array.from({ length: 6 }, (_, k) => (seed * 3 + modalityIndex * 7 + k * 5) % 46);
+  }
+
+  const MOCK_DRAWS: DrawLike[] = Array.from({ length: 30 }, (_, index) => {
+    const drawDate = new Date(BASE_DATE - index * WEEK_MS).toISOString();
+    return {
+      id: `mock-${index}`,
+      officialNumber: 3245 - index,
+      drawDate,
+      createdAt: drawDate,
+      updatedAt: drawDate,
+      results: MODALITIES.map((modality, modalityIndex) => ({
+        modality,
+        numbers:
+          index === 0 && modalityIndex === 0 ? EXACT_MATCH : buildNumbers(index + 1, modalityIndex),
+        createdAt: drawDate,
+        updatedAt: drawDate,
+      })),
+    };
+  });
 
   // Check if we're in a build environment with API access
   const hasApiAccess = !!import.meta.env.VITE_API_BASE_URL;
