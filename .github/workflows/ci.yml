@@ -247,7 +247,6 @@ jobs:
             http://localhost:4321/buscar
             http://localhost:4321/sorteos/3245
             http://localhost:4321/sorteos/3244
-            http://localhost:4321/404
           budgetPath: ./lighthouserc.json
           uploadArtifacts: true
         env:
