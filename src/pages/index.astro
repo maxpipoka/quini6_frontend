@@ -32,7 +32,7 @@ const MOCK_DRAWS: DrawLike[] = Array.from({ length: 30 }, (_, index) => {
     updatedAt: drawDate,
     results: MODALITIES.map((modality, modalityIndex) => ({
       modality,
-      numbers: Array.from({ length: 6 }, (_, k) => ((index * 3 + modalityIndex * 7 + k * 5) % 46)),
+      numbers: Array.from({ length: 6 }, (_, k) => (index * 3 + modalityIndex * 7 + k * 5) % 46),
       createdAt: drawDate,
       updatedAt: drawDate,
     })),

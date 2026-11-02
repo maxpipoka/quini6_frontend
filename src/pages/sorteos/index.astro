@@ -41,7 +41,7 @@ const MOCK_DRAWS: DrawLike[] = Array.from({ length: 30 }, (_, index) => {
     updatedAt: drawDate,
     results: MODALITIES.map((modality, modalityIndex) => ({
       modality,
-      numbers: Array.from({ length: 6 }, (_, k) => ((index * 3 + modalityIndex * 7 + k * 5) % 46)),
+      numbers: Array.from({ length: 6 }, (_, k) => (index * 3 + modalityIndex * 7 + k * 5) % 46),
       createdAt: drawDate,
       updatedAt: drawDate,
     })),
@@ -57,7 +57,13 @@ function toSummary(draw: DrawLike): DrawSummary {
   };
 }
 
-let drawsResponse: { data: DrawSummary[]; page: number; limit: number; total: number; totalPages: number } | null = null;
+let drawsResponse: {
+  data: DrawSummary[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+} | null = null;
 let drawsError: unknown = null;
 let availableYears: number[] = [];
 
@@ -72,16 +78,16 @@ try {
 } catch (error) {
   console.warn('Could not fetch draw history from API, using mock data:', error);
   drawsError = null; // Don't show error, use mock data
-  
+
   // Filter mock data by year if needed
   let filteredDraws = MOCK_DRAWS;
   if (year) {
     filteredDraws = MOCK_DRAWS.filter((draw) => draw.drawDate.startsWith(year.toString()));
   }
-  
+
   const start = (page - 1) * limit;
   const paginatedData = filteredDraws.slice(start, start + limit).map(toSummary);
-  
+
   drawsResponse = {
     data: paginatedData,
     page,
@@ -89,7 +95,7 @@ try {
     total: filteredDraws.length,
     totalPages: Math.max(1, Math.ceil(filteredDraws.length / limit)),
   };
-  
+
   const currentYear = new Date().getFullYear();
   availableYears = Array.from({ length: 10 }, (_, i) => currentYear - i);
 }
