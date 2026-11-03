@@ -203,7 +203,7 @@ describe('focus-trap', () => {
 
     it('no-ops on undefined', () => {
       const activeBefore = document.activeElement;
-      restoreFocus(undefined as any);
+      restoreFocus(undefined as unknown as HTMLElement | null);
       expect(document.activeElement).toBe(activeBefore);
     });
   });

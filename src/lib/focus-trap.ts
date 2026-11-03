@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Focus Trap Utility
  * Extracted from Modal.astro for reuse in Header mobile menu and other overlays
  * Framework-agnostic vanilla TypeScript

@@ -1,5 +1,5 @@
-/**
- * Site Configuration
+﻿/**
+ * Site configuration constants
  * Single source of truth for site URL and name
  * Used by Layout, sitemap, robots.txt, JSON-LD, etc.
  */

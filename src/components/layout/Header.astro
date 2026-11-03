@@ -6,7 +6,6 @@
  */
 
 import NumberBall from '../draws/NumberBall.tsx';
-import { trapFocus, restoreFocus } from '../../lib/focus-trap.ts';
 
 interface Props {
   currentPath?: string;
@@ -167,6 +166,9 @@ const { currentPath = '/' } = Astro.props;
 
 <script is:inline>
   import { trapFocus, restoreFocus } from '../../lib/focus-trap.ts';
+
+  // These are used in the event handlers below
+  void 0; // silence unused import warnings
 
   document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('mobile-menu-toggle');
