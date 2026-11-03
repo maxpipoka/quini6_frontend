@@ -4,6 +4,7 @@
  */
 
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -118,11 +119,32 @@ const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 EstadÃ
         sameAs: ['https://twitter.com/quini6stats', 'https://github.com/quini6/stats'],
       })}
     />
+
+    <!-- ClientRouter for SPA-like navigation (must be in head) -->
+    <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col">
     <!-- Skip Link for Accessibility -->
     <a href="#main-content" class="skip-link"> Saltar al contenido principal </a>
 
     <slot />
+
+    <!-- Navigation Focus Move (sessionStorage-gated: first load untouched) -->
+    <!-- Set hasNavigated flag on initial page load so first navigation moves focus -->
+    <script is:inline>
+      sessionStorage.setItem('hasNavigated', 'true');
+    </script>
+
+    <script is:inline>
+      document.addEventListener('astro:after-swap', () => {
+        // Move focus to main heading on every ClientRouter navigation
+        const mainHeading = document.querySelector('main h1, #main-content h1, h1');
+
+        if (mainHeading instanceof HTMLElement) {
+          mainHeading.setAttribute('tabindex', '-1');
+          mainHeading.focus({ preventScroll: true });
+        }
+      });
+    </script>
   </body>
 </html>
