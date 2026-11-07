@@ -6,7 +6,7 @@
 
 # Interface: ImportParserError
 
-Defined in: [lib/types/import-worker.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L26)
+Defined in: [lib/types/import-worker.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L26)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/types/import-worker.ts:26](https://github.com/maxpipoka/quini6_
 
 > **type**: `"ERROR"`
 
-Defined in: [lib/types/import-worker.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L27)
+Defined in: [lib/types/import-worker.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L27)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [lib/types/import-worker.ts:27](https://github.com/maxpipoka/quini6_
 
 > **message**: `string`
 
-Defined in: [lib/types/import-worker.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L28)
+Defined in: [lib/types/import-worker.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L28)

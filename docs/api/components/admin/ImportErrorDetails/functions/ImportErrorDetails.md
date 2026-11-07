@@ -8,7 +8,7 @@
 
 > **ImportErrorDetails**(`__namedParameters`): `Element`
 
-Defined in: [components/admin/ImportErrorDetails.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/admin/ImportErrorDetails.tsx#L10)
+Defined in: [components/admin/ImportErrorDetails.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/ImportErrorDetails.tsx#L10)
 
 ## Parameters
 

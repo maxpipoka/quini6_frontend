@@ -6,7 +6,7 @@
 
 # Interface: PrizeTableProps
 
-Defined in: [components/draws/PrizeTable.tsx:3](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/PrizeTable.tsx#L3)
+Defined in: [components/draws/PrizeTable.tsx:3](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/PrizeTable.tsx#L3)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/draws/PrizeTable.tsx:3](https://github.com/maxpipoka/qui
 
 > **prizes**: `object`[]
 
-Defined in: [components/draws/PrizeTable.tsx:4](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/PrizeTable.tsx#L4)
+Defined in: [components/draws/PrizeTable.tsx:4](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/PrizeTable.tsx#L4)
 
 #### category
 

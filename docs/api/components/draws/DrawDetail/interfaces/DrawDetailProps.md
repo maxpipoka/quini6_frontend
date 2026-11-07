@@ -6,7 +6,7 @@
 
 # Interface: DrawDetailProps
 
-Defined in: [components/draws/DrawDetail.tsx:7](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L7)
+Defined in: [components/draws/DrawDetail.tsx:7](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L7)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/draws/DrawDetail.tsx:7](https://github.com/maxpipoka/qui
 
 > **draw**: `object`
 
-Defined in: [components/draws/DrawDetail.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L8)
+Defined in: [components/draws/DrawDetail.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L8)
 
 #### officialNumber
 
@@ -50,7 +50,7 @@ Defined in: [components/draws/DrawDetail.tsx:8](https://github.com/maxpipoka/qui
 
 > `optional` **onPrev?**: () => `void`
 
-Defined in: [components/draws/DrawDetail.tsx:25](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L25)
+Defined in: [components/draws/DrawDetail.tsx:25](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L25)
 
 #### Returns
 
@@ -62,7 +62,7 @@ Defined in: [components/draws/DrawDetail.tsx:25](https://github.com/maxpipoka/qu
 
 > `optional` **onNext?**: () => `void`
 
-Defined in: [components/draws/DrawDetail.tsx:26](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L26)
+Defined in: [components/draws/DrawDetail.tsx:26](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L26)
 
 #### Returns
 
@@ -74,7 +74,7 @@ Defined in: [components/draws/DrawDetail.tsx:26](https://github.com/maxpipoka/qu
 
 > `optional` **hasPrev?**: `boolean`
 
-Defined in: [components/draws/DrawDetail.tsx:27](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L27)
+Defined in: [components/draws/DrawDetail.tsx:27](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L27)
 
 ***
 
@@ -82,4 +82,4 @@ Defined in: [components/draws/DrawDetail.tsx:27](https://github.com/maxpipoka/qu
 
 > `optional` **hasNext?**: `boolean`
 
-Defined in: [components/draws/DrawDetail.tsx:28](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/DrawDetail.tsx#L28)
+Defined in: [components/draws/DrawDetail.tsx:28](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DrawDetail.tsx#L28)

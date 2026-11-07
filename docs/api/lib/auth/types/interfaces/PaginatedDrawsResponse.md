@@ -6,7 +6,7 @@
 
 # Interface: PaginatedDrawsResponse
 
-Defined in: [lib/auth/types.ts:40](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L40)
+Defined in: [lib/auth/types.ts:40](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L40)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/auth/types.ts:40](https://github.com/maxpipoka/quini6_frontend/
 
 > **data**: [`DrawSummary`](DrawSummary.md)[]
 
-Defined in: [lib/auth/types.ts:41](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L41)
+Defined in: [lib/auth/types.ts:41](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L41)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/auth/types.ts:41](https://github.com/maxpipoka/quini6_frontend/
 
 > **page**: `number`
 
-Defined in: [lib/auth/types.ts:42](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L42)
+Defined in: [lib/auth/types.ts:42](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L42)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [lib/auth/types.ts:42](https://github.com/maxpipoka/quini6_frontend/
 
 > **limit**: `number`
 
-Defined in: [lib/auth/types.ts:43](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L43)
+Defined in: [lib/auth/types.ts:43](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L43)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [lib/auth/types.ts:43](https://github.com/maxpipoka/quini6_frontend/
 
 > **total**: `number`
 
-Defined in: [lib/auth/types.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L44)
+Defined in: [lib/auth/types.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L44)
 
 ***
 
@@ -46,4 +46,4 @@ Defined in: [lib/auth/types.ts:44](https://github.com/maxpipoka/quini6_frontend/
 
 > **totalPages**: `number`
 
-Defined in: [lib/auth/types.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L45)
+Defined in: [lib/auth/types.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L45)

@@ -3,6 +3,13 @@
  * Typed event names and trackEvent helper with graceful fallback
  */
 
+// Type augmentation for Plausible Analytics global
+declare global {
+  interface Window {
+    plausible?: (eventName: string, options?: { props: Record<string, unknown> }) => void;
+  }
+}
+
 // Union of all tracked event names for type safety
 export type EventName =
   | 'search_combination'

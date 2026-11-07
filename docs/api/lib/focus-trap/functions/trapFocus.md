@@ -8,7 +8,7 @@
 
 > **trapFocus**(`options`): () => `void`
 
-Defined in: [lib/focus-trap.ts:54](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/focus-trap.ts#L54)
+Defined in: [lib/focus-trap.ts:54](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/focus-trap.ts#L54)
 
 Traps focus within the given container
 Cycles Tab/Shift+Tab within the container

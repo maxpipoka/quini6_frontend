@@ -8,4 +8,4 @@
 
 > `const` **FileDropzone**: `React.FC`\<`FileDropzoneProps`\>
 
-Defined in: [components/ui/FileDropzone.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/ui/FileDropzone.tsx#L13)
+Defined in: [components/ui/FileDropzone.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/ui/FileDropzone.tsx#L13)

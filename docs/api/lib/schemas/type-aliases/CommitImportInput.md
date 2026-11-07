@@ -8,4 +8,4 @@
 
 > **CommitImportInput** = `z.infer`\<*typeof* [`CommitImportSchema`](../variables/CommitImportSchema.md)\>
 
-Defined in: [lib/schemas.ts:241](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/schemas.ts#L241)
+Defined in: [lib/schemas.ts:241](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L241)

@@ -8,4 +8,4 @@
 
 > **EventProps** = [`SearchCombinationProps`](../interfaces/SearchCombinationProps.md) \| [`AdminLoginProps`](../interfaces/AdminLoginProps.md) \| [`ImportStartProps`](../interfaces/ImportStartProps.md) \| [`ImportCommitProps`](../interfaces/ImportCommitProps.md) \| [`ImportErrorProps`](../interfaces/ImportErrorProps.md) \| [`HealthCheckViewProps`](../interfaces/HealthCheckViewProps.md) \| `Record`\<`string`, `unknown`\>
 
-Defined in: [lib/analytics.ts:53](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L53)
+Defined in: [lib/analytics.ts:60](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L60)

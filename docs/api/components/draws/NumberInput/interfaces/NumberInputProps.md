@@ -6,7 +6,7 @@
 
 # Interface: NumberInputProps
 
-Defined in: [components/draws/NumberInput.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L8)
+Defined in: [components/draws/NumberInput.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L8)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/draws/NumberInput.tsx:8](https://github.com/maxpipoka/qu
 
 > **value**: (`number` \| `null`)[]
 
-Defined in: [components/draws/NumberInput.tsx:9](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L9)
+Defined in: [components/draws/NumberInput.tsx:9](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L9)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [components/draws/NumberInput.tsx:9](https://github.com/maxpipoka/qu
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [components/draws/NumberInput.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L10)
+Defined in: [components/draws/NumberInput.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L10)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [components/draws/NumberInput.tsx:10](https://github.com/maxpipoka/q
 
 > `optional` **error?**: `string`
 
-Defined in: [components/draws/NumberInput.tsx:11](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L11)
+Defined in: [components/draws/NumberInput.tsx:11](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L11)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [components/draws/NumberInput.tsx:11](https://github.com/maxpipoka/q
 
 > `optional` **disabled?**: `boolean`
 
-Defined in: [components/draws/NumberInput.tsx:12](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L12)
+Defined in: [components/draws/NumberInput.tsx:12](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L12)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [components/draws/NumberInput.tsx:12](https://github.com/maxpipoka/q
 
 > `optional` **autoAdvance?**: `boolean`
 
-Defined in: [components/draws/NumberInput.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/draws/NumberInput.tsx#L13)
+Defined in: [components/draws/NumberInput.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberInput.tsx#L13)

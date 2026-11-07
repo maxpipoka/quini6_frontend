@@ -6,7 +6,7 @@
 
 # Interface: ImportParseError
 
-Defined in: [lib/types/import-worker.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L44)
+Defined in: [lib/types/import-worker.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L44)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/types/import-worker.ts:44](https://github.com/maxpipoka/quini6_
 
 > **row**: `number`
 
-Defined in: [lib/types/import-worker.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L45)
+Defined in: [lib/types/import-worker.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L45)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/types/import-worker.ts:45](https://github.com/maxpipoka/quini6_
 
 > `optional` **field?**: `string`
 
-Defined in: [lib/types/import-worker.ts:46](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L46)
+Defined in: [lib/types/import-worker.ts:46](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L46)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [lib/types/import-worker.ts:46](https://github.com/maxpipoka/quini6_
 
 > **message**: `string`
 
-Defined in: [lib/types/import-worker.ts:47](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L47)
+Defined in: [lib/types/import-worker.ts:47](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L47)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [lib/types/import-worker.ts:47](https://github.com/maxpipoka/quini6_
 
 > `optional` **rawValue?**: `unknown`
 
-Defined in: [lib/types/import-worker.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/types/import-worker.ts#L48)
+Defined in: [lib/types/import-worker.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L48)

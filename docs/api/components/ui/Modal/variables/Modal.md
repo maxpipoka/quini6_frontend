@@ -8,4 +8,4 @@
 
 > `const` **Modal**: `React.FC`\<`Props`\>
 
-Defined in: [components/ui/Modal.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/ui/Modal.tsx#L15)
+Defined in: [components/ui/Modal.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/ui/Modal.tsx#L15)

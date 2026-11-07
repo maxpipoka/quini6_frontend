@@ -6,7 +6,7 @@
 
 # Interface: ImportErrorProps
 
-Defined in: [lib/analytics.ts:41](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L41)
+Defined in: [lib/analytics.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L48)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/analytics.ts:41](https://github.com/maxpipoka/quini6_frontend/b
 
 > `optional` **importId?**: `string`
 
-Defined in: [lib/analytics.ts:42](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L42)
+Defined in: [lib/analytics.ts:49](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L49)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/analytics.ts:42](https://github.com/maxpipoka/quini6_frontend/b
 
 > **stage**: `"preview"` \| `"commit"` \| `"parse"`
 
-Defined in: [lib/analytics.ts:43](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L43)
+Defined in: [lib/analytics.ts:50](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L50)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [lib/analytics.ts:43](https://github.com/maxpipoka/quini6_frontend/b
 
 > **errorMessage**: `string`
 
-Defined in: [lib/analytics.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L44)
+Defined in: [lib/analytics.ts:51](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L51)

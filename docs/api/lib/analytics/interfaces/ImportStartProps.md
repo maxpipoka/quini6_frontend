@@ -6,7 +6,7 @@
 
 # Interface: ImportStartProps
 
-Defined in: [lib/analytics.ts:29](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L29)
+Defined in: [lib/analytics.ts:36](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L36)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/analytics.ts:29](https://github.com/maxpipoka/quini6_frontend/b
 
 > **fileName**: `string`
 
-Defined in: [lib/analytics.ts:30](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L30)
+Defined in: [lib/analytics.ts:37](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L37)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/analytics.ts:30](https://github.com/maxpipoka/quini6_frontend/b
 
 > **fileSize**: `number`
 
-Defined in: [lib/analytics.ts:31](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L31)
+Defined in: [lib/analytics.ts:38](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L38)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [lib/analytics.ts:31](https://github.com/maxpipoka/quini6_frontend/b
 
 > **rowCount**: `number`
 
-Defined in: [lib/analytics.ts:32](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L32)
+Defined in: [lib/analytics.ts:39](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L39)

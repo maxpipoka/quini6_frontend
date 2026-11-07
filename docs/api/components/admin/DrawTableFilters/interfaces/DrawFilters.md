@@ -6,7 +6,7 @@
 
 # Interface: DrawFilters
 
-Defined in: [components/admin/DrawTableFilters.tsx:7](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/admin/DrawTableFilters.tsx#L7)
+Defined in: [components/admin/DrawTableFilters.tsx:7](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L7)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/admin/DrawTableFilters.tsx:7](https://github.com/maxpipo
 
 > **startDate**: `string`
 
-Defined in: [components/admin/DrawTableFilters.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/admin/DrawTableFilters.tsx#L8)
+Defined in: [components/admin/DrawTableFilters.tsx:8](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L8)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [components/admin/DrawTableFilters.tsx:8](https://github.com/maxpipo
 
 > **endDate**: `string`
 
-Defined in: [components/admin/DrawTableFilters.tsx:9](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/admin/DrawTableFilters.tsx#L9)
+Defined in: [components/admin/DrawTableFilters.tsx:9](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L9)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [components/admin/DrawTableFilters.tsx:9](https://github.com/maxpipo
 
 > **modality**: `DrawModality`
 
-Defined in: [components/admin/DrawTableFilters.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/components/admin/DrawTableFilters.tsx#L10)
+Defined in: [components/admin/DrawTableFilters.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L10)

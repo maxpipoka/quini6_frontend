@@ -8,7 +8,7 @@
 
 > **setCsrfHeader**(`request`): `Request`
 
-Defined in: [lib/auth/csrf.ts:7](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/csrf.ts#L7)
+Defined in: [lib/auth/csrf.ts:7](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/csrf.ts#L7)
 
 ## Parameters
 

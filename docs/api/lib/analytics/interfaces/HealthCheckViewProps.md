@@ -6,7 +6,7 @@
 
 # Interface: HealthCheckViewProps
 
-Defined in: [lib/analytics.ts:47](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L47)
+Defined in: [lib/analytics.ts:54](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L54)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/analytics.ts:47](https://github.com/maxpipoka/quini6_frontend/b
 
 > **apiStatus**: `"ok"` \| `"degraded"` \| `"down"`
 
-Defined in: [lib/analytics.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L48)
+Defined in: [lib/analytics.ts:55](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L55)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [lib/analytics.ts:48](https://github.com/maxpipoka/quini6_frontend/b
 
 > **dbStatus**: `"ok"` \| `"down"`
 
-Defined in: [lib/analytics.ts:49](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/analytics.ts#L49)
+Defined in: [lib/analytics.ts:56](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L56)

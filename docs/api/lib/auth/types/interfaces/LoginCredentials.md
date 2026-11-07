@@ -6,7 +6,7 @@
 
 # Interface: LoginCredentials
 
-Defined in: [lib/auth/types.ts:14](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L14)
+Defined in: [lib/auth/types.ts:14](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L14)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/auth/types.ts:14](https://github.com/maxpipoka/quini6_frontend/
 
 > **email**: `string`
 
-Defined in: [lib/auth/types.ts:15](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L15)
+Defined in: [lib/auth/types.ts:15](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L15)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [lib/auth/types.ts:15](https://github.com/maxpipoka/quini6_frontend/
 
 > **password**: `string`
 
-Defined in: [lib/auth/types.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/803769e3ab929a99e160482efb642007cfa47821/src/lib/auth/types.ts#L16)
+Defined in: [lib/auth/types.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L16)
