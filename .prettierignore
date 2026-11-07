@@ -1,5 +1,6 @@
 # Build outputs
 dist/
+dist-no-analyze/
 build/
 *.local
 
@@ -52,3 +53,8 @@ vercel.json
 *.mjs
 !.prettierrc
 !README.md
+
+# Generated reports/artifacts
+lighthouse-report.json
+stats.html
+package-lock.json

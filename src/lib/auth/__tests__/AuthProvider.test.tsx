@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, afterAll, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../AuthProvider';
+import { server } from '../../../test/setup';
 
 // Set up environment variables for tests
 vi.stubEnv('VITE_API_BASE_URL', 'http://localhost:3000');
@@ -36,6 +37,18 @@ const TestComponent = () => {
 };
 
 describe('AuthProvider', () => {
+  beforeAll(() => {
+    server.listen();
+  });
+
+  afterAll(() => {
+    server.close();
+  });
+
+  afterEach(() => {
+    server.resetHandlers();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     // Set up csrf_token cookie for tests

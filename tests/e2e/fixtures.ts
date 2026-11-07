@@ -23,6 +23,9 @@ export const test = base.extend<TestFixtures>({
   adminPage: async ({ browser }, use) => {
     const context = await browser.newContext({
       storageState: ADMIN_STORAGE_STATE,
+      extraHTTPHeaders: {
+        'x-test-session': 'test-session',
+      },
     });
     const page = await context.newPage();
     await use(page);
@@ -38,3 +41,20 @@ export const test = base.extend<TestFixtures>({
 });
 
 export const expect = test.expect;
+
+/**
+ * Authenticates the given page's context using the storage state
+ * created by global-setup (tests/.auth/admin.json).
+ */
+export async function adminLogin(page: Page): Promise<void> {
+  const fs = await import('fs');
+  if (!fs.existsSync(ADMIN_STORAGE_STATE)) {
+    throw new Error(
+      `Admin storage state not found at ${ADMIN_STORAGE_STATE}. Run global setup first.`
+    );
+  }
+  const state = JSON.parse(fs.readFileSync(ADMIN_STORAGE_STATE, 'utf-8')) as {
+    cookies: Parameters<BrowserContext['addCookies']>[0];
+  };
+  await page.context().addCookies(state.cookies);
+}

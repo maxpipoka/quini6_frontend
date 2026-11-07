@@ -9,6 +9,9 @@ export default defineConfig({
     environment: './src/test/jsdom-environment.ts',
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'tests/unit/**/*.test.ts'],
     setupFiles: ['src/test/polyfills.ts', 'src/test/setup.ts'],
+    // Coverage instrumentation slows module (re)imports in dynamic-import hooks
+    hookTimeout: 30000,
+    testTimeout: 15000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -11,6 +11,9 @@ declare module '*.astro' {
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
   readonly VITE_SITE_URL: string;
+  readonly VITE_SENTRY_DSN?: string;
+  readonly VITE_PLAUSIBLE_DOMAIN?: string;
+  readonly VITE_BUNDLE_ANALYZE?: string;
   readonly VERCEL_DEPLOY_HOOK_SECRET?: string;
   readonly NODE_ENV: 'development' | 'production' | 'test';
 
@@ -24,4 +27,13 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+// Plausible Analytics global
+interface Window {
+  plausible?: (eventName: string, options?: { props: Record<string, unknown> }) => void;
+  __AUTH_USER__?: {
+    id: string;
+    email: string;
+  };
 }

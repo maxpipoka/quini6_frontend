@@ -1,5 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from './layout.astro';
 ---
 
 <Layout title="Admin Login - Quini 6">
@@ -58,6 +58,27 @@ import Layout from '../../layouts/Layout.astro';
   </div>
 
   <script>
+    // Inline trackEvent to avoid module import issues in inline scripts
+    function trackEvent(name: string, props?: Record<string, unknown>): void {
+      console.log('[Login] trackEvent called:', name, props);
+      if (typeof window === 'undefined') return;
+      const plausible = window.plausible;
+      if (!plausible) {
+        if (import.meta.env?.DEV) {
+          console.debug('[Analytics] Plausible not available, skipping event:', name, props);
+        }
+        return;
+      }
+      try {
+        plausible(name, { props: props ?? {} });
+        console.log('[Login] Plausible event sent:', name);
+      } catch (error) {
+        if (import.meta.env?.DEV) {
+          console.warn('[Analytics] Failed to track event:', name, error);
+        }
+      }
+    }
+
     const form = document.getElementById('login-form');
     const submitBtn = document.getElementById('submit-btn');
     const errorMessage = document.getElementById('error-message');
@@ -108,8 +129,21 @@ import Layout from '../../layouts/Layout.astro';
         console.log('LOGIN RESPONSE BODY:', result);
 
         if (!response.ok) {
+          trackEvent('admin_login_failed', {
+            success: false,
+            errorType:
+              response.status === 401
+                ? 'invalid_credentials'
+                : response.status >= 500
+                  ? 'server_error'
+                  : response.status === 0
+                    ? 'network_error'
+                    : 'unknown',
+          });
           throw new Error(result.message || 'Credenciales inválidas');
         }
+
+        trackEvent('admin_login', { success: true });
 
         // Redirect to admin draws or the redirect param
         const urlParams = new URLSearchParams(window.location.search);
@@ -120,8 +154,10 @@ import Layout from '../../layouts/Layout.astro';
         console.log('CURRENT HREF AFTER:', window.location.href);
       } catch (error) {
         console.log('LOGIN ERROR:', error);
-        errorMessage.textContent =
-          error instanceof Error ? error.message : 'Error al iniciar sesión';
+        if (!errorMessage.textContent.includes('admin_login_failed')) {
+          errorMessage.textContent =
+            error instanceof Error ? error.message : 'Error al iniciar sesión';
+        }
         errorMessage.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;

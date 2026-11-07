@@ -41,6 +41,24 @@ const mockImportErrors = {
 };
 
 export const handlers = [
+  // Health check endpoints (for HealthDashboard tests)
+  http.get('http://localhost:3001/api/health', () => {
+    return HttpResponse.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      version: '1.0.0',
+      uptime: 123.45,
+    });
+  }),
+
+  http.get('http://localhost:3001/api/health/db', () => {
+    return HttpResponse.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      latency: 12.5,
+    });
+  }),
+
   // Auth endpoints
   http.get('/api/admin/auth/me', () => {
     return HttpResponse.json({

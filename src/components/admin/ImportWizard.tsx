@@ -16,6 +16,7 @@ import type {
   ImportPreviewRow,
   ImportProgressStage,
 } from '../../lib/schemas';
+import { trackEvent } from '../../lib/analytics';
 
 interface Props {
   onImportSuccess?: () => void;
@@ -75,6 +76,14 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
           const { rows, parseErrors } = message;
           if (!currentFileRef.current) return;
           setParsedFile({ rows, parseErrors, file: currentFileRef.current });
+
+          // Update import_start event with actual row count
+          trackEvent('import_start', {
+            fileName: currentFileRef.current.name,
+            fileSize: currentFileRef.current.size,
+            rowCount: rows.length,
+          });
+
           // Pre-select rows so the continue action is available immediately;
           // the preview effect narrows this down to schema-valid rows.
           setSelectedRows(new Set(rows.map((_, index) => index)));
@@ -82,6 +91,10 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
           setStep('preview');
         } else if (message.type === 'ERROR') {
           console.log('[ImportWizard] worker ERROR message:', message.message);
+          trackEvent('import_error', {
+            stage: 'parse',
+            errorMessage: message.message,
+          });
           setToast({ type: 'error', title: 'Error al procesar', message: message.message });
           setStep('upload');
         } else if (message.type === 'PROGRESS') {
@@ -131,6 +144,13 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       const mimeType = file.type || (file.name.endsWith('.xlsx') ? XLSX_MIME_TYPE : 'text/csv');
       console.log('[ImportWizard] Sending file to worker:', { fileName: file.name, mimeType });
 
+      // Track import_start event
+      trackEvent('import_start', {
+        fileName: file.name,
+        fileSize: file.size,
+        rowCount: 0, // Will be updated after parsing
+      });
+
       void file.arrayBuffer().then((buffer) => {
         const input: ImportParserInput = { file: buffer, fileName: file.name, mimeType };
         console.log('[ImportWizard] Posting message to worker:', input);
@@ -161,6 +181,10 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
           console.log('[ImportWizard] after setStep confirm');
         } else {
           console.log('[ImportWizard] preview failed - no result');
+          trackEvent('import_error', {
+            stage: 'preview',
+            errorMessage: 'No se pudo generar la vista previa',
+          });
           setToast({
             type: 'error',
             title: 'Error en vista previa',
@@ -171,6 +195,10 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       })
       .catch((error) => {
         console.error('[ImportWizard] preview error:', error);
+        trackEvent('import_error', {
+          stage: 'preview',
+          errorMessage: error instanceof Error ? error.message : 'Error inesperado',
+        });
         setToast({
           type: 'error',
           title: 'Error en vista previa',
@@ -188,6 +216,14 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
     if (!importId) return;
 
     console.log('[ImportWizard] handleCommit called', { importId, policy });
+
+    // Track import_commit event
+    trackEvent('import_commit', {
+      importId,
+      policy,
+      selectedRows: selectedRows.size,
+    });
+
     setShowConfirmModal(false);
     setStep('progress');
     progressStageRef.current = 'committing';
@@ -214,6 +250,11 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
           onImportSuccess?.();
         } else {
           console.log('[ImportWizard] commit returned null/undefined');
+          trackEvent('import_error', {
+            importId,
+            stage: 'commit',
+            errorMessage: 'No se pudo completar la importación',
+          });
           setToast({
             type: 'error',
             title: 'Error en importación',
@@ -224,6 +265,11 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
       })
       .catch((error) => {
         console.error('[ImportWizard] commit error:', error);
+        trackEvent('import_error', {
+          importId,
+          stage: 'commit',
+          errorMessage: error instanceof Error ? error.message : 'Error inesperado',
+        });
         setToast({
           type: 'error',
           title: 'Error en importación',
@@ -231,7 +277,7 @@ export const ImportWizard: React.FC<Props> = ({ onImportSuccess }) => {
         });
         setStep('result');
       });
-  }, [importId, policy, commit, onImportSuccess]);
+  }, [importId, policy, commit, onImportSuccess, selectedRows.size]);
 
   const handleRowSelect = useCallback((rowIndex: number, selected: boolean) => {
     setSelectedRows((prev) => {

@@ -71,14 +71,45 @@ module.exports = {
         extraFileExtensions: ['.md'],
       },
     },
+    {
+      // Tests intentionally use loose types (any, mock casts)
+      files: ['**/*.test.*', '**/__tests__/**', 'tests/**', 'src/test/**'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        'no-empty': 'off',
+      },
+    },
+    {
+      // Static runtime scripts (not part of the TS build — no type info)
+      files: ['public/**/*.js'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
   ],
   ignorePatterns: [
     'dist/',
+    'dist-no-analyze/',
     'node_modules/',
     '.astro/',
     'coverage/',
     'storybook-static/',
     'openspec/',
+    '.lighthouseci/',
+    'playwright-report/',
+    'test-results/',
     '*.md',
   ],
 };

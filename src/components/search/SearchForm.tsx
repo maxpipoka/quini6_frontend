@@ -3,6 +3,7 @@ import { NumberInput } from '../draws/NumberInput';
 import { NumberBall } from '../draws/NumberBall';
 import { MODALITY_LABELS } from '../../lib/schemas';
 import type { ExactSearchResponse, Modality } from '../../lib/schemas';
+import { trackEvent } from '../../lib/analytics';
 
 const MODALITY_COLORS: Record<Modality, 'primary' | 'secondary' | 'success' | 'warning'> = {
   TRADICIONAL: 'primary',
@@ -73,8 +74,16 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
           return;
         }
 
-        setResult((await response.json()) as ExactSearchResponse);
+        const resultData = (await response.json()) as ExactSearchResponse;
+        setResult(resultData);
         setStatus('success');
+
+        // Track search_combination event
+        trackEvent('search_combination', {
+          numbers: filledNumbers.map((n) => n.toString().padStart(2, '0')).join(','),
+          hasResults: resultData.matches.length > 0,
+          totalMatches: resultData.totalMatches,
+        });
       } catch (error) {
         setErrorMessage(error instanceof Error ? error.message : 'Error inesperado');
         setStatus('error');

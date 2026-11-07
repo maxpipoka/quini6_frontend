@@ -165,15 +165,137 @@ const { currentPath = '/' } = Astro.props;
 </header>
 
 <script is:inline>
-  import { trapFocus, restoreFocus } from '../../lib/focus-trap.ts';
+  console.log('[Header] SCRIPT START - TOP OF SCRIPT');
+  // Focus trap utility - inlined from focus-trap.ts (is:inline doesn't support imports)
+  function getFocusableElements(container) {
+    const selector = [
+      'button:not([disabled]):not([tabindex="-1"])',
+      '[href]:not([disabled]):not([tabindex="-1"])',
+      'input:not([disabled]):not([tabindex="-1"])',
+      'select:not([disabled]):not([tabindex="-1"])',
+      'textarea:not([disabled]):not([tabindex="-1"])',
+      '[tabindex]:not([tabindex="-1"])',
+      '[contenteditable="true"]:not([tabindex="-1"])',
+    ].join(', ');
 
-  // These are used in the event handlers below
-  void 0; // silence unused import warnings
+    const elements = Array.from(container.querySelectorAll(selector));
 
-  document.addEventListener('DOMContentLoaded', () => {
+    // Filter out elements that are not visually focusable
+    // In production: check offsetParent !== null
+    // In test environments (jsdom): offsetParent is always null, so check computed style
+    const isTestEnv = document.body?.offsetParent === null;
+
+    return elements.filter((el) => {
+      if (isTestEnv) {
+        const style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+      }
+      return el.offsetParent !== null;
+    });
+  }
+
+  function trapFocus(options) {
+    const { container, onEscape, onClose } = options;
+    let previouslyFocusedElement = null;
+    let focusableElements = [];
+
+    function updateFocusableElements() {
+      focusableElements = getFocusableElements(container);
+    }
+
+    function handleKeydown(event) {
+      // Handle Escape key
+      if (event.key === 'Escape' && onEscape) {
+        event.preventDefault();
+        onEscape();
+        return;
+      }
+
+      // Handle Tab cycling
+      if (event.key !== 'Tab') return;
+
+      updateFocusableElements();
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (!firstElement || !lastElement) return;
+
+      if (event.shiftKey) {
+        // Shift+Tab: moving backwards
+        if (document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // Tab: moving forwards
+        if (document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+
+    function initialize() {
+      // Store previously focused element
+      previouslyFocusedElement = document.activeElement;
+
+      // Get initial focusable elements
+      updateFocusableElements();
+
+      // Focus first focusable element
+      const firstFocusable = focusableElements[0];
+      firstFocusable?.focus();
+
+      // Add event listeners
+      document.addEventListener('keydown', handleKeydown);
+    }
+
+    function cleanup() {
+      document.removeEventListener('keydown', handleKeydown);
+
+      // Return focus to previously focused element
+      previouslyFocusedElement?.focus();
+      previouslyFocusedElement = null;
+      focusableElements = [];
+
+      onClose?.();
+    }
+
+    // Initialize immediately
+    initialize();
+
+    // Return cleanup function
+    return cleanup;
+  }
+
+  function restoreFocus(element) {
+    element?.focus();
+  }
+
+  console.log('[Header] Script loaded, adding DOMContentLoaded listener');
+  console.log('[Header] Document readyState:', document.readyState);
+
+  // Also log when script starts executing
+  console.log('[Header] Script START executing');
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[Header] DOMContentLoaded fired');
+      initMobileMenu();
+    });
+  } else {
+    console.log('[Header] DOM already loaded, calling initMobileMenu directly');
+    initMobileMenu();
+  }
+
+  function initMobileMenu() {
     const menuToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     const themeToggle = document.getElementById('theme-toggle');
+    console.log('[Header] initMobileMenu called');
+    console.log('[Header] menuToggle:', menuToggle);
+    console.log('[Header] mobileMenu:', mobileMenu);
 
     let cleanupFocusTrap: (() => void) | null = null;
 
@@ -197,6 +319,7 @@ const { currentPath = '/' } = Astro.props;
     }
 
     if (menuToggle && mobileMenu) {
+      console.log('[Header] Both menuToggle and mobileMenu found');
       const closeMenu = () => {
         mobileMenu.classList.add('hidden');
         menuToggle.setAttribute('aria-expanded', 'false');
@@ -225,15 +348,21 @@ const { currentPath = '/' } = Astro.props;
         });
 
         // Focus first focusable element in menu
-        const firstFocusable = mobileMenu.querySelector('a, button') as HTMLElement;
+        const firstFocusable = mobileMenu.querySelector('a, button');
         firstFocusable?.focus();
       };
 
       menuToggle.addEventListener('click', () => {
+        console.log('[Header] Menu toggle clicked');
+        console.log('[Header] mobileMenu:', mobileMenu);
+        console.log('[Header] mobileMenu.classList:', mobileMenu.classList);
+        console.log('[Header] mobileMenu.classList.contains(hidden):', mobileMenu.classList.contains('hidden'));
         const isOpen = mobileMenu.classList.contains('hidden');
         if (isOpen) {
+          console.log('[Header] Opening menu');
           openMenu();
         } else {
+          console.log('[Header] Closing menu');
           closeMenu();
           restoreFocus(menuToggle);
         }
@@ -247,7 +376,13 @@ const { currentPath = '/' } = Astro.props;
         });
       });
     }
-  });
+  }
+  initMobileMenu();
+  // Expose for testing
+  window.initMobileMenu = initMobileMenu;
+  window.__headerScriptRan = true;
+  console.log('[Header] initMobileMenu exposed on window');
+  console.log('[Header] window.initMobileMenu:', window.initMobileMenu);
 </script>
 
 <style>

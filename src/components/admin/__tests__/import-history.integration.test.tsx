@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { server } from '@/test/setup';
@@ -28,6 +28,14 @@ const generateUUID = () => {
   });
 };
 
+beforeAll(() => {
+  server.listen();
+});
+
+afterAll(() => {
+  server.close();
+});
+
 beforeEach(async () => {
   vi.clearAllMocks();
   WorkerMock = vi.fn().mockImplementation(() => mockWorkerInstance) as unknown as typeof Worker;
@@ -39,6 +47,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  server.resetHandlers();
   vi.unstubAllGlobals();
   vi.resetModules();
 });
