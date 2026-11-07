@@ -1,4 +1,4 @@
-name: CI Pipeline
+﻿name: CI Pipeline
 
 # CI Pipeline Steps (run in order, with parallel execution where noted):
 # 1. TypeCheck (typecheck job)
@@ -333,3 +333,4 @@ jobs:
           name: storybook-static
           path: storybook-static/
           retention-days: 7
+
