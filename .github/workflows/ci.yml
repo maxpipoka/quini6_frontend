@@ -1,5 +1,16 @@
 name: CI Pipeline
 
+# CI Pipeline Steps (run in order, with parallel execution where noted):
+# 1. TypeCheck (typecheck job)
+# 2. Lint (lint job) - runs in parallel with typecheck
+# 3. Unit Tests (test job) - runs in parallel with typecheck/lint
+# 4. Documentation (docs job) - runs in parallel with typecheck/lint/test
+# 5. Build (build job) - needs: [typecheck, lint, test, docs]
+# 6. E2E Tests (e2e job) - needs: build
+# 7. Documentation generation (TypeDoc) - part of docs job
+# 8. Lighthouse CI (lighthouse job) - needs: build (on PR/main only)
+# 9. Build Storybook (storybook job) - needs: [typecheck, lint, docs]
+
 on:
   pull_request:
     branches: [main]
@@ -28,6 +39,36 @@ jobs:
 
       - name: Run TypeScript type checking
         run: npm run typecheck
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate documentation (TypeDoc)
+        run: npm run docs:generate
+
+      - name: Validate documentation
+        run: npm run docs:validate
+
+      - name: Upload generated docs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-generated
+          path: docs/api/
+          retention-days: 7
 
   lint:
     name: Lint
@@ -80,7 +121,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [typecheck, lint, test]
+    needs: [typecheck, lint, test, docs]
     env:
       VITE_API_BASE_URL: http://localhost:3001/api
     steps:
@@ -269,7 +310,7 @@ jobs:
   storybook:
     name: Build Storybook
     runs-on: ubuntu-latest
-    needs: [typecheck, lint]
+    needs: [typecheck, lint, docs]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

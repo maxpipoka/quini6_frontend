@@ -18,6 +18,8 @@ const config: StorybookConfig = {
       '@mock': path.resolve(__dirname, '../src/mock'),
       '@tests': path.resolve(__dirname, '../tests'),
     };
+    // GitHub Pages base path for Storybook deployment
+    config.base = '/quini6_frontend/';
     return config;
   },
 };

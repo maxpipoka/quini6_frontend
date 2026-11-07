@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@lib/*": ["src/lib/*"],
+      "@styles/*": ["src/styles/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@pages/*": ["src/pages/*"],
+      "@mock/*": ["src/mock/*"],
+      "@tests/*": ["tests/*"]
+    },
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["astro/client", "vite/client"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+"exclude": [
+    "dist",
+    "node_modules",
+    ".astro",
+    "astro.config.mjs",
+    "tests",
+    "test",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/middleware.ts",
+    "src/lib/sentry.ts",
+    "src/pages/**/*.astro",
+    "src/layouts/**/*.astro",
+    "src/components/**/*.astro",
+    "src/lib/sitemap-generator.ts",
+    "src/components/layout/index.ts",
+    "src/components/ui/index.ts",
+    "**/*.astro",
+    "src/env.d.ts"
+  ]
+}
