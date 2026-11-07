@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { Sidebar } from '../../components/admin/Sidebar.tsx';
+
+const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
 ---
 
 <Layout title="Admin - Quini 6">
@@ -71,6 +73,25 @@ import { Sidebar } from '../../components/admin/Sidebar.tsx';
       padding: 2rem;
     }
   </style>
+
+  <!-- Plausible Analytics Script -->
+  {plausibleDomain && (
+    <script
+      is:inline
+      set:html={`const script = document.createElement('script'); script.defer = true; script.dataset.domain = '${plausibleDomain}'; script.src = 'https://plausible.io/js/script.js'; document.head.appendChild(script);`}
+    />
+  )}
+
+  <!-- Sentry & Web Vitals Initialization -->
+  <script is:inline>
+    import { initSentry, initWebVitals } from '@lib/sentry';
+    // Initialize Sentry (production only, handled by @sentry/astro integration)
+    // This ensures client-side configuration
+    if (import.meta.env.PROD) {
+      initSentry();
+      initWebVitals();
+    }
+  </script>
 
   <div class="min-h-screen bg-neutral-50 dark:bg-neutral-900">
     <Sidebar client:visible />

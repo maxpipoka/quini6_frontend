@@ -11,6 +11,9 @@ const __dirname = path.dirname(__filename);
 
 const ADMIN_STORAGE_STATE = path.join(__dirname, '..', '.auth', 'admin.json');
 
+// Fixed test session ID that the mock API accepts
+const TEST_SESSION_ID = 'test-session';
+
 async function globalSetup(config: FullConfig) {
   const baseURL = config.projects[0]?.use?.baseURL ?? 'http://localhost:4321';
 
@@ -21,37 +24,40 @@ async function globalSetup(config: FullConfig) {
     fs.mkdirSync(authDir, { recursive: true });
   }
 
-  // Launch browser and log in as admin
+  // Launch browser and create a context with the fixed test session cookie
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  try {
-    // Go to login page
-    await page.goto(`${baseURL}/admin/login`);
+  // Set the fixed test session cookie
+  await context.addCookies([
+    {
+      name: 'csrf_token',
+      value: 'test-csrf-token',
+      domain: 'localhost',
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure: false,
+      sameSite: 'Lax',
+    },
+    {
+      name: 'session',
+      value: TEST_SESSION_ID,
+      domain: 'localhost',
+      path: '/',
+      expires: -1,
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+    },
+  ]);
 
-    // Wait for form to be ready
-    await page.waitForSelector('form', { timeout: 10000 });
+  // Save storage state
+  await context.storageState({ path: ADMIN_STORAGE_STATE });
+  console.log('Admin storage state saved to:', ADMIN_STORAGE_STATE);
 
-    // Fill login form
-    await page.fill('input[name="email"], input[type="email"]', 'admin@quini6.com');
-    await page.fill('input[name="password"], input[type="password"]', 'password123');
-
-    // Submit
-    await page.click('button[type="submit"]');
-
-    // Wait for redirect to admin dashboard
-    await page.waitForURL('**/admin/**', { timeout: 10000 });
-
-    // Save storage state
-    await page.context().storageState({ path: ADMIN_STORAGE_STATE });
-    console.log('Admin storage state saved to:', ADMIN_STORAGE_STATE);
-  } catch (error) {
-    console.error('Failed to create admin storage state:', error);
-    // Create empty storage state as fallback
-    await page.context().storageState({ path: ADMIN_STORAGE_STATE });
-  } finally {
-    await browser.close();
-  }
+  await browser.close();
 }
 
 export default globalSetup;

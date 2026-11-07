@@ -82,6 +82,10 @@ export default defineConfig({
       port: 4321,
       reuseExistingServer: true,
       timeout: 120000,
+      env: {
+        VITE_SITE_URL: 'https://quini6.com',
+        VITE_PLAUSIBLE_DOMAIN: 'quini6.example.com',
+      },
     },
   ],
   snapshotDir: './tests/e2e/visual-snapshots',

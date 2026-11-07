@@ -1,7 +1,7 @@
 {
-  "http://localhost:50809/": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1792814630098-9721.report.html",
-  "http://localhost:50809/sorteos/": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1792814631401-22738.report.html",
-  "http://localhost:50809/buscar/": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1792814632727-90043.report.html",
-  "http://localhost:50809/sorteos/1/": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1792814633994-30001.report.html",
-  "http://localhost:50809/sorteos/2/": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1792814635303-1380.report.html"
+  "http://localhost:52788/404.html": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1793907666206-45097.report.html",
+  "http://localhost:52788/index.html": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1793907667611-4400.report.html",
+  "http://localhost:52788/offline.html": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1793907668919-73969.report.html",
+  "http://localhost:52788/admin/login/?redirect=%2Fadmin%2Fchange-password%2F": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1793907670205-164.report.html",
+  "http://localhost:52788/admin/debug-cookies/index.html": "https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1793907671593-2083.report.html"
 }

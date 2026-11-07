@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { HealthDashboard } from '../../components/admin/HealthDashboard.tsx';
+
+/**
+ * Admin Health Check Page
+ * Fetches health data client-side for static generation compatibility.
+ * The HealthDashboard component handles all data fetching and auto-refresh.
+ */
+---
+
+<Layout title="Salud del sistema - Admin - Quini 6">
+  <style>
+    .health-page {
+      max-width: 800px;
+    }
+  </style>
+
+  <div class="health-page">
+    <HealthDashboard
+      client:visible
+      initialApiHealth={initialApiHealth}
+      initialDbHealth={initialDbHealth}
+    />
+  </div>
+</Layout>

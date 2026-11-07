@@ -152,14 +152,13 @@ const MODALITY_COLORS: Record<Modality, 'primary' | 'secondary' | 'success' | 'w
 const pageTitle = `Sorteo Nº ${draw.officialNumber} - ${formatShortDate(draw.drawDate)}`;
 const pageDescription = `Resultados completos del sorteo Nº ${draw.officialNumber} del Quini 6 (${formatDate(draw.drawDate)}). Cuatro modalidades: Tradicional, La Segunda, Revancha y Siempre Sale.`;
 const canonicalUrl = `/sorteos/${draw.officialNumber}`;
-const ogImageUrl = `/og-draw-${draw.officialNumber}.jpg`; // Would be generated dynamically in production
+// Use default og-image since per-draw images don't exist yet
 ---
 
 <Layout
   title={pageTitle}
   description={pageDescription}
   canonical={canonicalUrl}
-  ogImage={ogImageUrl}
   ogType="article"
 >
   <Header currentPath="/sorteos" />

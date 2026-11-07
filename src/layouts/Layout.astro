@@ -31,6 +31,8 @@ const canonicalUrl = canonical ? `${siteUrl}${canonical}` : Astro.url.href;
 const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-default.jpg`;
 
 const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 Estad√≠sticas`;
+
+const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
 ---
 
 <!doctype html>
@@ -57,6 +59,8 @@ const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 Estad√
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Quini 6 Estad√≠sticas" />
     <meta property="og:locale" content="es_AR" />
 
@@ -117,6 +121,24 @@ const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 Estad√
         url: siteUrl,
         logo: `${siteUrl}/logo.png`,
         sameAs: ['https://twitter.com/quini6stats', 'https://github.com/quini6/stats'],
+      })}
+    />
+
+    <!-- JSON-LD Structured Data for WebSite with SearchAction -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Quini 6 Estad√≠sticas',
+        url: siteUrl,
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            urlTemplate: `${siteUrl}/buscar?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
       })}
     />
 

@@ -1,18 +1,11 @@
-import { beforeAll, afterAll, afterEach, vi } from 'vitest';
+import { beforeAll, afterAll, vi } from 'vitest';
 import { setupServer } from 'msw/node';
 import { handlers } from '../mock/handlers';
 import '@testing-library/jest-dom';
 
-// MSW server for API mocking
+// MSW server for API mocking - DON'T start it automatically
+// Tests that need MSW should call server.listen() themselves
 export const server = setupServer(...handlers);
-
-beforeAll(() => {
-  // MSW's SharedOptions type doesn't include onUnhandledRequest in its type definition
-  // but it's a valid runtime option
-  server.listen({ onUnhandledRequest: 'error' } as Parameters<typeof server.listen>[0]);
-});
-afterAll(() => server.close());
-afterEach(() => server.resetHandlers());
 
 // Mock matchMedia (jsdom only)
 if (typeof window !== 'undefined') {

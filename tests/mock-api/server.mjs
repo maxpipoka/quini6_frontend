@@ -56,7 +56,7 @@ function sendJson(res, status, payload, req, extraHeaders = {}) {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Credentials': credentials ? 'true' : 'false',
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-CSRF-Token,X-Request-ID',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-CSRF-Token,X-Request-ID,X-Test-Session',
   };
 
   for (const [key, value] of Object.entries(extraHeaders)) {
@@ -112,15 +112,50 @@ const server = http.createServer(async (req, res) => {
   res.on('error', (err) => console.error('Response error:', err));
 
   if (req.method === 'OPTIONS') {
-    sendJson(res, 204, {}, req);
+    // Allow x-test-session header for preflight
+    sendJson(res, 204, {}, req, {
+      'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-CSRF-Token,X-Request-ID,X-Test-Session',
+    });
     return;
   }
 
   // Health check
   if (path === '/api/health') {
-    sendJson(res, 200, { status: 'ok', worker: WORKER_ID }, req, {
+    // Accept x-test-session header OR session cookie for E2E auth bypass (like middleware does)
+    const testSessionHeader = req.headers['x-test-session'];
+    const cookie = req.headers.cookie || '';
+    const sessionMatch = cookie.match(/session=([^;]+)/);
+    const hasTestSession = testSessionHeader === 'test-session' || 
+                           (sessionMatch && (sessionMatch[1] === 'test-session' || sessionMatch[1].startsWith('session-')));
+    if (!hasTestSession) {
+      sendJson(res, 401, { message: 'No autorizado' }, req);
+      return;
+    }
+    sendJson(res, 200, { 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      uptime: 12345,
+      version: '1.0.0-test',
+      worker: WORKER_ID 
+    }, req, {
       'Set-Cookie': 'csrf_token=test-csrf-token; Path=/; SameSite=Lax',
     });
+    return;
+  }
+
+  // DB Health check
+  if (path === '/api/health/db') {
+    // Accept x-test-session header OR session cookie for E2E auth bypass
+    const testSessionHeader = req.headers['x-test-session'];
+    const cookie = req.headers.cookie || '';
+    const sessionMatch = cookie.match(/session=([^;]+)/);
+    const hasTestSession = testSessionHeader === 'test-session' || 
+                           (sessionMatch && (sessionMatch[1] === 'test-session' || sessionMatch[1].startsWith('session-')));
+    if (!hasTestSession) {
+      sendJson(res, 401, { message: 'No autorizado' }, req);
+      return;
+    }
+    sendJson(res, 200, { status: 'ok', latency: 15.5, timestamp: new Date().toISOString() }, req);
     return;
   }
 
@@ -161,6 +196,10 @@ const server = http.createServer(async (req, res) => {
     if (sessionMatch && sessions.has(sessionMatch[1])) {
       const session = sessions.get(sessionMatch[1]);
       sendJson(res, 200, { user: { email: session.email, role: session.role } }, req);
+    } else if (sessionMatch && (sessionMatch[1].startsWith('session-') || sessionMatch[1] === 'test-session')) {
+      // Accept any test session pattern for E2E tests (global-setup creates session in different worker)
+      // Also accept 'test-session' as a fixed test session ID
+      sendJson(res, 200, { user: { email: 'admin@quini6.com', role: 'admin' } }, req);
     } else {
       sendJson(res, 401, { message: 'No autorizado' }, req);
     }

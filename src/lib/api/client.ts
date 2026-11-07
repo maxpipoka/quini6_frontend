@@ -2,19 +2,17 @@
  * API Client - ky-based HTTP client with Zod validation, retry logic, and error handling
  */
 
-import ky, { type KyInstance, type Options, TimeoutError } from 'ky';
+import ky, { type KyInstance, type Options } from 'ky';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { ApiErrorResponse, ApiHttpError } from './errors';
+import type { ApiHttpError } from './errors';
 import {
-  ApiNetworkError,
-  ApiTimeoutError,
   ApiRetryError,
   ApiValidationError as ApiValidationErrorClass,
-  ApiHttpError as ApiHttpErrorClass,
   isApiValidationError,
   isApiHttpError,
 } from './errors';
+import { createBeforeErrorHook } from './beforeError';
 import * as schemas from '../schemas';
 import type { z } from 'zod';
 
@@ -161,80 +159,7 @@ export class ApiClient {
             return response;
           },
         ],
-        beforeError: [
-          async (error) => {
-            const { response } = error;
-            if (response) {
-              const requestId = extractRequestId(response.headers);
-              const timestamp = new Date().toISOString();
-              const path = response.url;
-
-              let errorData: ApiErrorResponse | null = null;
-              try {
-                errorData = (await response.clone().json()) as ApiErrorResponse;
-              } catch {
-                // Ignore JSON parse errors
-              }
-
-              // Create appropriate error based on status code
-              if (response.status === 400 && errorData?.message) {
-                const errors = Array.isArray(errorData.message)
-                  ? errorData.message
-                  : [errorData.message];
-                throw new ApiValidationErrorClass(
-                  Array.isArray(errorData.message)
-                    ? errorData.message.join(', ')
-                    : errorData.message,
-                  requestId,
-                  response.status,
-                  timestamp,
-                  path,
-                  errors
-                );
-              }
-
-              if (isNonRetryableStatus(response.status)) {
-                throw new ApiHttpErrorClass(
-                  (errorData?.message as string) || `HTTP ${response.status}`,
-                  requestId,
-                  response.status,
-                  timestamp,
-                  path,
-                  errorData
-                );
-              }
-
-              // For retryable errors, throw a generic error that will trigger retry
-              throw new ApiHttpErrorClass(
-                (errorData?.message as string) || `HTTP ${response.status}`,
-                requestId,
-                response.status,
-                timestamp,
-                path,
-                errorData
-              );
-            }
-
-            // Network error
-            if (error instanceof TypeError) {
-              const requestId = generateRequestId();
-              throw new ApiNetworkError(
-                'Network error: Failed to fetch',
-                requestId,
-                error,
-                error.request?.url || ''
-              );
-            }
-
-            // Timeout error
-            if (error instanceof TimeoutError) {
-              const requestId = generateRequestId();
-              throw new ApiTimeoutError(requestId, error.request?.url || '', this.config.timeout);
-            }
-
-            throw error;
-          },
-        ],
+        beforeError: [createBeforeErrorHook({ timeout: this.config.timeout })],
       },
     });
   }

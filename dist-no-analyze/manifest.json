@@ -1,0 +1,20 @@
+{
+  "name": "Quini 6 Estadísticas",
+  "short_name": "Quini 6",
+  "description": "Estadísticas históricas del Quini 6 - Consulte sorteos, busque combinaciones y analice frecuencias",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "reference"],
+  "lang": "es-AR"
+}

@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Activity,
+} from 'lucide-react';
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -11,9 +18,12 @@ const NAV_ITEMS = [
   { href: '/admin/change-password', label: 'Cambiar contraseña', icon: Settings },
 ];
 
+const AUTH_NAV_ITEMS = [{ href: '/admin/health', label: 'Salud del sistema', icon: Activity }];
+
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(isCollapsed);
   const [currentPath, setCurrentPath] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const STORAGE_KEY = 'sidebar-collapsed';
 
   useEffect(() => {
@@ -22,6 +32,25 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
       setCollapsed(saved === 'true');
     }
     setCurrentPath(window.location.pathname);
+    // Check auth state from window
+    setIsAuthenticated(!!(window as unknown as { __AUTH_USER__?: unknown }).__AUTH_USER__);
+  }, []);
+
+  // Listen for auth changes
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsAuthenticated(!!(window as unknown as { __AUTH_USER__?: unknown }).__AUTH_USER__);
+    };
+
+    // Check on mount and when window events fire
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+    window.addEventListener('focus', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('focus', checkAuth);
+    };
   }, []);
 
   const toggle = () => {
@@ -56,6 +85,9 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     return match?.[1] ? decodeURIComponent(match[1]) : null;
   }
 
+  // Combine nav items based on auth state
+  const navItems = [...NAV_ITEMS, ...(isAuthenticated ? AUTH_NAV_ITEMS : [])];
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-40 border-r border-border bg-surface transition-all duration-300 ${collapsed ? 'w-16' : ''}`}
@@ -67,7 +99,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         style={{ minWidth: 'var(--sidebar-w-16-width)' }}
       >
         <ul className="space-y-1">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
+          {navItems.map(({ href, label, icon: Icon }) => (
             <li key={href}>
               <a
                 href={href}

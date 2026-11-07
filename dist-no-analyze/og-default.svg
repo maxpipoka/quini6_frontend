@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a5f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="280" font-family="Inter, system-ui, sans-serif" font-size="48" font-weight="700" fill="white" text-anchor="middle">Quini 6 Estadísticas</text>
+  <text x="600" y="350" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="400" fill="rgba(255,255,255,0.9)" text-anchor="middle">Estadísticas históricas del Quini 6</text>
+  <text x="600" y="410" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="400" fill="rgba(255,255,255,0.7)" text-anchor="middle">Consulte sorteos, busque combinaciones y analice frecuencias</text>
+</svg>
