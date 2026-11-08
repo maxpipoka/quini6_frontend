@@ -3,7 +3,7 @@ import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import { EnumChangefreq } from 'sitemap';
 import { visualizer } from 'rollup-plugin-visualizer';
 import type { PluginOption } from 'vite';
@@ -31,7 +31,7 @@ if (fs.existsSync(drawDatesPath)) {
 export default defineConfig({
   output: 'server',
   site: 'https://quini6.com',
-  adapter: node({ mode: 'standalone' }),
+  adapter: vercel(),
   devToolbar: { enabled: false },
   integrations: [
     tailwind(),
