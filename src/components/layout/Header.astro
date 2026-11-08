@@ -34,33 +34,21 @@ const { currentPath = '/' } = Astro.props;
       >
         <a
           href="/"
-          class={`font-medium transition-colors ${
-            currentPath === '/'
-              ? 'text-text-primary'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
+          class={`rounded-lg font-medium transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${currentPath === '/' ? 'text-text-primary' : 'text-text-secondary'}`}
           aria-current={currentPath === '/' ? 'page' : undefined}
         >
           Inicio
         </a>
         <a
           href="/sorteos"
-          class={`font-medium transition-colors ${
-            currentPath.startsWith('/sorteos')
-              ? 'text-text-primary'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
+          class={`rounded-lg font-medium transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${currentPath.startsWith('/sorteos') ? 'text-text-primary' : 'text-text-secondary'}`}
           aria-current={currentPath.startsWith('/sorteos') ? 'page' : undefined}
         >
           Historial de sorteos
         </a>
         <a
           href="/buscar"
-          class={`font-medium transition-colors ${
-            currentPath === '/buscar'
-              ? 'text-text-primary'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
+          class={`rounded-lg font-medium transition-colors hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${currentPath === '/buscar' ? 'text-text-primary' : 'text-text-secondary'}`}
           aria-current={currentPath === '/buscar' ? 'page' : undefined}
         >
           Buscar combinación
@@ -72,7 +60,7 @@ const { currentPath = '/' } = Astro.props;
         <button
           id="theme-toggle"
           type="button"
-          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary"
+          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           aria-label="Cambiar tema"
           aria-pressed="false"
         >
@@ -96,7 +84,7 @@ const { currentPath = '/' } = Astro.props;
         <button
           id="mobile-menu-toggle"
           type="button"
-          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary md:hidden"
+          class="rounded-lg p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 md:hidden"
           aria-label="Abrir menú"
           aria-expanded="false"
           aria-controls="mobile-menu"
@@ -128,7 +116,7 @@ const { currentPath = '/' } = Astro.props;
       <nav class="flex flex-col gap-2">
         <a
           href="/"
-          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+          class={`rounded-lg px-4 py-2 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
             currentPath === '/'
               ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
               : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
@@ -139,7 +127,7 @@ const { currentPath = '/' } = Astro.props;
         </a>
         <a
           href="/sorteos"
-          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+          class={`rounded-lg px-4 py-2 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
             currentPath.startsWith('/sorteos')
               ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
               : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
@@ -150,7 +138,7 @@ const { currentPath = '/' } = Astro.props;
         </a>
         <a
           href="/buscar"
-          class={`rounded-lg px-4 py-2 font-medium transition-colors ${
+          class={`rounded-lg px-4 py-2 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
             currentPath === '/buscar'
               ? 'dark:bg-primary-900/20 bg-primary-50 text-primary-700 dark:text-primary-300'
               : 'text-text-secondary hover:bg-neutral-100 hover:text-text-primary'
@@ -356,7 +344,10 @@ const { currentPath = '/' } = Astro.props;
         console.log('[Header] Menu toggle clicked');
         console.log('[Header] mobileMenu:', mobileMenu);
         console.log('[Header] mobileMenu.classList:', mobileMenu.classList);
-        console.log('[Header] mobileMenu.classList.contains(hidden):', mobileMenu.classList.contains('hidden'));
+        console.log(
+          '[Header] mobileMenu.classList.contains(hidden):',
+          mobileMenu.classList.contains('hidden')
+        );
         const isOpen = mobileMenu.classList.contains('hidden');
         if (isOpen) {
           console.log('[Header] Opening menu');

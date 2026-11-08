@@ -3,14 +3,35 @@ import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
+import node from '@astrojs/node';
 import { EnumChangefreq } from 'sitemap';
 import { visualizer } from 'rollup-plugin-visualizer';
 import type { PluginOption } from 'vite';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+interface DrawDatesData {
+  dates: Record<number, string>;
+}
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const drawDatesPath = path.resolve(__dirname, 'src/lib/draw-dates.json');
+let drawDates: Record<number, string> = {};
+if (fs.existsSync(drawDatesPath)) {
+  try {
+    const data = JSON.parse(fs.readFileSync(drawDatesPath, 'utf-8')) as DrawDatesData;
+    drawDates = data.dates || {};
+  } catch {
+    drawDates = {};
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server',
   site: 'https://quini6.com',
+  adapter: node({ mode: 'standalone' }),
   devToolbar: { enabled: false },
   integrations: [
     tailwind(),
@@ -64,16 +85,14 @@ export default defineConfig({
         // Draw detail pages - match /sorteos/[officialNumber]
         const drawDetailMatch = normalizedUrl.match(/^https:\/\/quini6\.com\/sorteos\/(\d+)$/);
         if (drawDetailMatch) {
-          // For draw detail pages, we can't easily get the draw date at build time
-          // without fetching from API. We'll use a reasonable default.
-          // In production, this would be enhanced with actual draw dates.
+          const officialNumber = Number(drawDetailMatch[1]);
+          const drawDate = drawDates[officialNumber];
           return {
             ...item,
             changefreq: EnumChangefreq.YEARLY,
             priority: 0.6,
-            // Note: lastmod would ideally be the draw date
-            // For now using build time as fallback
-            lastmod: new Date().toISOString(),
+            // Use actual draw date from build-time generated data
+            lastmod: drawDate ?? new Date().toISOString(),
           };
         }
 
@@ -92,6 +111,11 @@ export default defineConfig({
     envPrefix: 'VITE_',
     optimizeDeps: {
       exclude: ['msw'],
+    },
+    build: {
+      rollupOptions: {
+        external: ['react', 'react-dom', 'react/jsx-runtime', 'react-dom/client'],
+      },
     },
     resolve: {
       alias: {

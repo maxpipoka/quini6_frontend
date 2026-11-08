@@ -69,14 +69,14 @@ function getStatusLabel(status: string): string {
 
 function formatTimestamp(isoString: string): string {
   try {
-    return new Date(isoString).toLocaleString('es-AR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
   } catch {
     return isoString;
   }
@@ -108,6 +108,14 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
   initialApiHealth,
   initialDbHealth,
 }) => {
+  console.log('[HealthDashboard] Component rendered');
+  const isDev = import.meta.env.DEV;
+  const baseUrl = isDev ? '' : import.meta.env.VITE_API_BASE_URL;
+  console.log(
+    '[HealthDashboard] VITE_API_BASE_URL at render:',
+    baseUrl || '(using relative URLs in dev)'
+  );
+  console.log('[HealthDashboard] import.meta.env.DEV:', isDev);
   const [apiHealth, setApiHealth] = useState<HealthCheck | null>(initialApiHealth ?? null);
   const [dbHealth, setDbHealth] = useState<HealthDb | null>(initialDbHealth ?? null);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,12 +126,15 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
 
   // Load history from localStorage on mount
   useEffect(() => {
+    console.log('[HealthDashboard] Loading history from localStorage');
     const loadedHistory = loadHistory();
+    console.log('[HealthDashboard] Loaded history:', loadedHistory);
     setHistory(loadedHistory);
   }, []);
 
   // Auto-refresh effect
   useEffect(() => {
+    console.log('[HealthDashboard] Setting up auto-refresh interval');
     const interval = setInterval(() => {
       void fetchHealthData();
     }, AUTO_REFRESH_INTERVAL);
@@ -132,13 +143,16 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
   }, []);
 
   const fetchHealthData = useCallback(async () => {
+    console.log('[HealthDashboard] fetchHealthData called');
     setIsLoading(true);
     setError(null);
 
     try {
-      // Use the same API client that the app uses
-      const baseUrl = import.meta.env.VITE_API_BASE_URL;
-      if (!baseUrl) {
+      // Use relative URLs in dev (goes through Vite proxy), absolute in prod
+      const isDev = import.meta.env.DEV;
+      const baseUrl = isDev ? '' : import.meta.env.VITE_API_BASE_URL;
+      console.log('[HealthDashboard] baseUrl:', baseUrl || '(using relative URLs in dev)');
+      if (!baseUrl && !isDev) {
         throw new Error('VITE_API_BASE_URL is not configured');
       }
 
@@ -146,6 +160,7 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
         fetch(`${baseUrl}/health`, { credentials: 'include' }),
         fetch(`${baseUrl}/health/db`, { credentials: 'include' }),
       ]);
+      console.log('[HealthDashboard] API responses:', { apiResponse, dbResponse });
 
       let newApiHealth: HealthCheck | null = null;
       let newDbHealth: HealthDb | null = null;
@@ -196,8 +211,11 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
         dbHealth: newDbHealth,
       };
 
+      console.log('[HealthDashboard] Adding to history:', newEntry);
+
       setHistory((prev) => {
         const updated = [newEntry, ...prev].slice(0, MAX_HISTORY_ENTRIES);
+        console.log('[HealthDashboard] Saving history:', updated);
         saveHistory(updated);
         return updated;
       });
@@ -211,6 +229,7 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
   }, []);
 
   const handleManualRefresh = () => {
+    console.log('[HealthDashboard] Manual refresh clicked');
     void fetchHealthData();
   };
 
@@ -253,7 +272,7 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
           <button
             onClick={handleManualRefresh}
             disabled={isLoading}
-            className="btn btn-secondary flex items-center gap-2"
+            className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
             data-testid="refresh-button"
           >
             <RefreshCw
@@ -269,7 +288,7 @@ export const HealthDashboard: React.FC<HealthDashboardProps> = ({
       {/* Error Alert */}
       {error && (
         <div
-          className="border-error-200 flex items-center gap-3 rounded-lg border bg-error-50 px-4 py-3 text-error-700"
+          className="flex items-center gap-3 rounded-lg border border-error-100 bg-error-50 px-4 py-3 text-error-700"
           role="alert"
           data-testid="error-alert"
         >

@@ -6,7 +6,7 @@
 
 # Interface: ImportParserInput
 
-Defined in: [lib/types/import-worker.ts:7](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L7)
+Defined in: [lib/types/import-worker.ts:7](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L7)
 
 TypeScript types for import parser Web Worker communication
 Shared between main thread and worker
@@ -17,7 +17,7 @@ Shared between main thread and worker
 
 > **file**: `ArrayBuffer`
 
-Defined in: [lib/types/import-worker.ts:8](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L8)
+Defined in: [lib/types/import-worker.ts:8](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L8)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [lib/types/import-worker.ts:8](https://github.com/maxpipoka/quini6_f
 
 > **fileName**: `string`
 
-Defined in: [lib/types/import-worker.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L9)
+Defined in: [lib/types/import-worker.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L9)
 
 ***
 
@@ -33,4 +33,4 @@ Defined in: [lib/types/import-worker.ts:9](https://github.com/maxpipoka/quini6_f
 
 > **mimeType**: `string`
 
-Defined in: [lib/types/import-worker.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L10)
+Defined in: [lib/types/import-worker.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L10)

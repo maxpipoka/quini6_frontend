@@ -8,4 +8,4 @@
 
 > `const` **FrequencyParamsSchema**: `ZodObject`\<\{ `fromDate`: `ZodOptional`\<`ZodString`\>; `toDate`: `ZodOptional`\<`ZodString`\>; `modality`: `ZodOptional`\<`ZodEnum`\<\[`"TRADICIONAL"`, `"LA_SEGUNDA"`, `"REVANCHA"`, `"SIEMPRE_SALE"`\]\>\>; \}, `"strip"`, `ZodTypeAny`, \{ `fromDate?`: `string`; `toDate?`: `string`; `modality?`: `"TRADICIONAL"` \| `"LA_SEGUNDA"` \| `"REVANCHA"` \| `"SIEMPRE_SALE"`; \}, \{ `fromDate?`: `string`; `toDate?`: `string`; `modality?`: `"TRADICIONAL"` \| `"LA_SEGUNDA"` \| `"REVANCHA"` \| `"SIEMPRE_SALE"`; \}\>
 
-Defined in: [lib/schemas.ts:124](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L124)
+Defined in: [lib/schemas.ts:124](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L124)

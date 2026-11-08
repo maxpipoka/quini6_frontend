@@ -6,7 +6,7 @@
 
 # Interface: DrawSummary
 
-Defined in: [lib/auth/types.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L48)
+Defined in: [lib/auth/types.ts:48](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L48)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/auth/types.ts:48](https://github.com/maxpipoka/quini6_frontend/
 
 > **officialNumber**: `number`
 
-Defined in: [lib/auth/types.ts:49](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L49)
+Defined in: [lib/auth/types.ts:49](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L49)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/auth/types.ts:49](https://github.com/maxpipoka/quini6_frontend/
 
 > **date**: `string`
 
-Defined in: [lib/auth/types.ts:50](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L50)
+Defined in: [lib/auth/types.ts:50](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L50)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [lib/auth/types.ts:50](https://github.com/maxpipoka/quini6_frontend/
 
 > **modality**: `"tradicional"` \| `"la_segunda"` \| `"revancha"` \| `"siempre_sale"`
 
-Defined in: [lib/auth/types.ts:51](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L51)
+Defined in: [lib/auth/types.ts:51](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L51)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [lib/auth/types.ts:51](https://github.com/maxpipoka/quini6_frontend/
 
 > **numbers**: `number`[]
 
-Defined in: [lib/auth/types.ts:52](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L52)
+Defined in: [lib/auth/types.ts:52](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L52)

@@ -12,20 +12,20 @@ async function openMobileMenu(page: Page) {
   console.log(`isMobile: ${isMobile}`);
   if (isMobile) {
     console.log('Clicking menu toggle...');
-    
+
     // First check if the script is loaded - check for the Header script
     const scriptLoaded = await page.evaluate(() => {
       return document.readyState;
     });
     console.log('Document readyState:', scriptLoaded);
-    
+
     // Check if event listener is attached
     const hasListener = await page.evaluate(() => {
       const btn = document.getElementById('mobile-menu-toggle');
       return btn ? 'true' : 'false';
     });
     console.log('Button exists:', hasListener);
-    
+
     // Check if Header script ran (its initMobileMenu was called)
     const headerScriptRan = await page.evaluate(() => {
       // Check if the click handler is attached by seeing if there's a click handler
@@ -34,7 +34,7 @@ async function openMobileMenu(page: Page) {
       return { btn: !!btn, menu: !!menu, btnOnClick: btn?.onclick };
     });
     console.log('Header script check:', headerScriptRan);
-    
+
     // Try calling initMobileMenu directly if it exists
     const initResult = await page.evaluate(() => {
       if (typeof window.initMobileMenu === 'function') {
@@ -44,14 +44,14 @@ async function openMobileMenu(page: Page) {
       return 'initMobileMenu not found';
     });
     console.log('Init result:', initResult);
-    
+
     // Let's check if the script actually ran by looking at console logs
     const scriptRan = await page.evaluate(() => {
       // Check if our log was printed
       return window.__headerScriptRan || false;
     });
     console.log('Script ran flag:', scriptRan);
-    
+
     // Manually trigger the click handler via evaluate to activate focus trap
     const clickResult = await page.evaluate(() => {
       const btn = document.getElementById('mobile-menu-toggle');
@@ -65,23 +65,22 @@ async function openMobileMenu(page: Page) {
       return 'not found';
     });
     console.log('Manual click result:', clickResult);
-    
+
     // Let's try to manually open the menu AND set up focus trap
     const manualSetup = await page.evaluate(() => {
       const btn = document.getElementById('mobile-menu-toggle');
       const menu = document.getElementById('mobile-menu');
-      if (btn && menu && menu.classList.contains('hidden')) {
+      if (btn && menu?.classList.contains('hidden')) {
         menu.classList.remove('hidden');
         btn.setAttribute('aria-expanded', 'true');
         btn.setAttribute('aria-label', 'Cerrar menú');
-        
+
         // Now manually set up focus trap like the openMenu function does
         // We need to inline the trapFocus logic here
-        const container = menu;
-        let previouslyFocusedElement = null;
-        let focusableElements = [];
-        
-        function getFocusableElements(container) {
+        const container: HTMLElement = menu;
+        let focusableElements: HTMLElement[] = [];
+
+        const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
           const selector = [
             'button:not([disabled]):not([tabindex="-1"])',
             '[href]:not([disabled]):not([tabindex="-1"])',
@@ -91,32 +90,33 @@ async function openMobileMenu(page: Page) {
             '[tabindex]:not([tabindex="-1"])',
             '[contenteditable="true"]:not([tabindex="-1"])',
           ].join(', ');
-          
-          const elements = Array.from(container.querySelectorAll(selector));
+
+          const elements = Array.from(container.querySelectorAll<HTMLElement>(selector));
           const isTestEnv = document.body?.offsetParent === null;
-          
-          return elements.filter((el) => {
+
+          return elements.filter((el: HTMLElement) => {
             if (isTestEnv) {
               const style = window.getComputedStyle(el);
               return style.display !== 'none' && style.visibility !== 'hidden';
             }
             return el.offsetParent !== null;
           });
-        }
-        
-        function updateFocusableElements() {
+        };
+
+        const updateFocusableElements = (): void => {
           focusableElements = getFocusableElements(container);
-        }
-        
-        function closeMenu() {
+        };
+
+        const closeMenu = (): void => {
+          if (!menu || !btn) return;
           menu.classList.add('hidden');
           btn.setAttribute('aria-expanded', 'false');
           btn.setAttribute('aria-label', 'Abrir menú');
           document.removeEventListener('keydown', handleKeydown);
           btn.focus(); // Focus the toggle button explicitly
-        }
-        
-        function handleKeydown(event) {
+        };
+
+        const handleKeydown = (event: KeyboardEvent): void => {
           if (event.key === 'Escape') {
             event.preventDefault();
             closeMenu();
@@ -138,50 +138,67 @@ async function openMobileMenu(page: Page) {
               firstElement.focus();
             }
           }
-        }
-        
-        function initialize() {
-          previouslyFocusedElement = document.activeElement;
+        };
+
+        const initialize = (): void => {
           updateFocusableElements();
-          console.log('[MANUAL] Focusable elements:', focusableElements.map(el => el.tagName + ' ' + (el.getAttribute('href') ?? el.textContent?.trim())));
+          console.log(
+            '[MANUAL] Focusable elements:',
+            focusableElements.map(
+              (el: HTMLElement) =>
+                el.tagName + ' ' + (el.getAttribute('href') ?? el.textContent?.trim())
+            )
+          );
           const firstFocusable = focusableElements[0];
-          console.log('[MANUAL] First focusable:', firstFocusable?.tagName, firstFocusable?.getAttribute('href'));
+          console.log(
+            '[MANUAL] First focusable:',
+            firstFocusable?.tagName,
+            firstFocusable?.getAttribute('href')
+          );
           firstFocusable?.focus();
-          console.log('[MANUAL] After focus, activeElement:', document.activeElement?.tagName, document.activeElement?.getAttribute('href'));
+          console.log(
+            '[MANUAL] After focus, activeElement:',
+            document.activeElement?.tagName,
+            document.activeElement?.getAttribute('href')
+          );
           document.addEventListener('keydown', handleKeydown);
-        }
-        
+        };
+
         initialize();
-        
+
         // Expose closeMenu for tests
         window.__closeMobileMenu = closeMenu;
-        
+
         return 'focus trap set up manually';
       }
       return 'already open or elements not found';
     });
     console.log('Manual setup result:', manualSetup);
-    
+
     // Also click via playwright for good measure - NO, don't click again as it steals focus
     // await menuToggle.click();
     // Wait a bit for the menu to open
     await page.waitForTimeout(500);
-    
+
     // Debug: check page content and DOM
     const bodyHTML = await page.content();
     console.log('Body contains mobile-menu:', bodyHTML.includes('mobile-menu'));
-    
+
     // Check if the button was actually clicked - get its state
     const buttonAriaExpanded = await menuToggle.getAttribute('aria-expanded');
     console.log('Button aria-expanded:', buttonAriaExpanded);
-    
+
     // Check what's actually focused
     const focusedElement = await page.evaluate(() => {
       const el = document.activeElement;
-      return el ? el.tagName + ' ' + (el.getAttribute('href') ?? el.textContent?.trim() ?? el.id ?? el.className) : 'null';
+      return el
+        ? el.tagName +
+            ' ' +
+            (el.getAttribute('href') ?? el.textContent?.trim() ?? el.id ?? el.className)
+        : 'null';
     });
     console.log('Focused element after open:', focusedElement);
-    
+
     // Check if the Header script executed
     const headerInit = await page.evaluate(() => {
       // Check if the click handler exists
@@ -193,7 +210,7 @@ async function openMobileMenu(page: Page) {
       return 'button not found';
     });
     console.log('Header init check:', headerInit);
-    
+
     const isVisible = await mobileMenu.locator('a[href="/sorteos"]').isVisible();
     console.log(`Menu link visible after click: ${isVisible}`);
 

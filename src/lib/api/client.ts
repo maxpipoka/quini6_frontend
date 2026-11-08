@@ -271,6 +271,12 @@ export class ApiClient {
     });
   }
 
+  async getDrawByNumber(officialNumber: number): Promise<schemas.DrawResponse> {
+    return this.request('get', `draws/${officialNumber}`, {
+      validateWith: schemas.DrawResponseSchema,
+    });
+  }
+
   async getDrawHistory(
     params: {
       page?: number;

@@ -9,11 +9,11 @@ const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..', '..');
 
 test.describe('Bundle Analysis', () => {
-  const distDir = join(projectRoot, 'dist');
+  const distDir = join(projectRoot, 'dist', 'client');
   const statsHtmlPath = join(distDir, 'stats.html');
   const bundleStatsJsonPath = join(distDir, 'bundle-stats.json');
 
-  test.beforeAll(async () => {
+  test.beforeAll(() => {
     // Clean previous build
     try {
       execSync('rm -rf dist', { cwd: projectRoot, stdio: 'ignore' });
@@ -39,7 +39,7 @@ test.describe('Bundle Analysis', () => {
     }
   });
 
-  test.afterAll(async () => {
+  test.afterAll(() => {
     // Clean up after tests
     try {
       execSync('rm -rf dist', { cwd: projectRoot, stdio: 'ignore' });
@@ -117,7 +117,7 @@ test.describe('Bundle Analysis - Build without analyze flag', () => {
   const statsHtmlPath = join(distDir, 'stats.html');
   const bundleStatsJsonPath = join(distDir, 'bundle-stats.json');
 
-  test.beforeAll(async () => {
+  test.beforeAll(() => {
     // Clean previous build
     try {
       execSync('rm -rf dist-no-analyze', { cwd: projectRoot, stdio: 'ignore' });
@@ -143,7 +143,7 @@ test.describe('Bundle Analysis - Build without analyze flag', () => {
     }
   });
 
-  test.afterAll(async () => {
+  test.afterAll(() => {
     try {
       execSync('rm -rf dist-no-analyze', { cwd: projectRoot, stdio: 'ignore' });
     } catch {

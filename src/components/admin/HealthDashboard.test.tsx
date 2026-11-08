@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { HealthDashboard } from './HealthDashboard';
 import type { HealthHistoryEntry } from './HealthDashboard';
 import type { HealthCheck, HealthDb } from '../../lib/schemas';
-import { server } from '../../test/setup';
+import { server } from '@/test/setup';
 import { http, HttpResponse } from 'msw';
 
 // Helper to flush all pending microtasks
@@ -29,8 +29,8 @@ Object.defineProperty(global, 'localStorage', {
   writable: true,
 });
 
-// Mock import.meta.env
-const originalEnv = import.meta.env;
+// Set up environment variables for tests - using relative URLs like dev mode
+vi.stubEnv('VITE_API_BASE_URL', 'http://localhost:3001');
 
 const mockHealthCheck: HealthCheck = {
   status: 'ok',
@@ -78,15 +78,6 @@ describe('HealthDashboard', () => {
     vi.clearAllMocks();
     vi.useRealTimers(); // Use real timers - MSW doesn't work well with fake timers
     mockLocalStorage.getItem.mockReturnValue(null);
-
-    Object.defineProperty(import.meta, 'env', {
-      value: {
-        ...originalEnv,
-        VITE_API_BASE_URL: 'http://localhost:3001/api',
-      },
-      writable: true,
-      configurable: true,
-    });
   });
 
   afterEach(() => {
@@ -94,11 +85,6 @@ describe('HealthDashboard', () => {
     server.resetHandlers();
     vi.useRealTimers();
     vi.resetModules();
-    Object.defineProperty(import.meta, 'env', {
-      value: originalEnv,
-      writable: true,
-      configurable: true,
-    });
 
     // Small delay to let any pending intervals clear
     return new Promise((resolve) => setTimeout(resolve, 50));
@@ -142,8 +128,8 @@ describe('HealthDashboard', () => {
       });
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => healthPromise),
-        http.get('http://localhost:3001/api/health/db', () => dbPromise)
+        http.get('/health', () => healthPromise),
+        http.get('/health/db', () => dbPromise)
       );
 
       // Render WITHOUT initial data so component shows loading state
@@ -203,8 +189,8 @@ describe('HealthDashboard', () => {
       });
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => healthPromise),
-        http.get('http://localhost:3001/api/health/db', () => dbPromise)
+        http.get('/health', () => healthPromise),
+        http.get('/health/db', () => dbPromise)
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -237,8 +223,8 @@ describe('HealthDashboard', () => {
       };
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(updatedHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(updatedHealthDb))
+        http.get('/health', () => HttpResponse.json(updatedHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(updatedHealthDb))
       );
 
       // Render WITH initial data so no auto-refresh fetch happens (component doesn't fetch on mount)
@@ -265,8 +251,8 @@ describe('HealthDashboard', () => {
 
     it('shows error alert on fetch failure', async () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.error()),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.error())
+        http.get('/health', () => HttpResponse.error()),
+        http.get('/health/db', () => HttpResponse.error())
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -282,10 +268,10 @@ describe('HealthDashboard', () => {
 
     it('shows error alert on non-ok response', async () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () =>
+        http.get('/health', () =>
           HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 })
         ),
-        http.get('http://localhost:3001/api/health/db', () =>
+        http.get('/health/db', () =>
           HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 })
         )
       );
@@ -319,8 +305,8 @@ describe('HealthDashboard', () => {
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(savedHistory));
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -354,8 +340,8 @@ describe('HealthDashboard', () => {
       };
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(updatedHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(updatedHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -395,8 +381,8 @@ describe('HealthDashboard', () => {
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(fullHistory));
 
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -501,12 +487,12 @@ describe('HealthDashboard', () => {
   });
 
   describe('Auto-refresh', () => {
-    it('sets up auto-refresh interval', async () => {
+    it('sets up auto-refresh interval', () => {
       // For this test we just verify the component renders without error
       // Testing actual interval requires fake timers which conflict with MSW
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -517,8 +503,8 @@ describe('HealthDashboard', () => {
 
     it('cleans up interval on unmount', () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       const { unmount } = renderDashboard({
@@ -537,8 +523,8 @@ describe('HealthDashboard', () => {
   describe('Last refresh timestamp', () => {
     it('updates last refresh time after successful fetch', async () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -555,8 +541,8 @@ describe('HealthDashboard', () => {
   describe('Error state', () => {
     it('displays error alert with retry button', async () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.error()),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.error())
+        http.get('/health', () => HttpResponse.error()),
+        http.get('/health/db', () => HttpResponse.error())
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });
@@ -574,7 +560,7 @@ describe('HealthDashboard', () => {
       let apiCallCount = 0;
       let dbCallCount = 0;
       server.use(
-        http.get('http://localhost:3001/api/health', () => {
+        http.get('/health', () => {
           apiCallCount++;
           // First call (initial refresh) fails, second call (retry) succeeds
           if (apiCallCount === 1) {
@@ -582,7 +568,7 @@ describe('HealthDashboard', () => {
           }
           return HttpResponse.json(mockHealthCheck);
         }),
-        http.get('http://localhost:3001/api/health/db', () => {
+        http.get('/health/db', () => {
           dbCallCount++;
           if (dbCallCount === 1) {
             return HttpResponse.error();
@@ -618,8 +604,8 @@ describe('HealthDashboard', () => {
   describe('Next refresh countdown', () => {
     it('shows next refresh countdown after refresh', async () => {
       server.use(
-        http.get('http://localhost:3001/api/health', () => HttpResponse.json(mockHealthCheck)),
-        http.get('http://localhost:3001/api/health/db', () => HttpResponse.json(mockHealthDb))
+        http.get('/health', () => HttpResponse.json(mockHealthCheck)),
+        http.get('/health/db', () => HttpResponse.json(mockHealthDb))
       );
 
       renderDashboard({ initialApiHealth: mockHealthCheck, initialDbHealth: mockHealthDb });

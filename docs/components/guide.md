@@ -421,7 +421,7 @@ const className = clsx(
 
 ## 🔗 Related Documentation
 
-- [TypeDoc API Reference](../api/) — Run `npm run docs:generate`
+- [TypeDoc API Reference](../api/README.md) — Run `npm run docs:generate`
 - [Deploy Runbook](../runbooks/deploy.md)
 - [Rollback Runbook](../runbooks/rollback.md)
 - [Debugging Runbook](../runbooks/debugging.md)

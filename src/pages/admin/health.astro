@@ -1,22 +1,56 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { HealthDashboard } from '../../components/admin/HealthDashboard.tsx';
+import type { HealthCheck, HealthDb } from '../../lib/schemas';
 
 /**
  * Admin Health Check Page
- * Fetches health data client-side for static generation compatibility.
- * The HealthDashboard component handles all data fetching and auto-refresh.
+ * Fetches initial health data server-side for immediate display.
+ * The HealthDashboard component handles auto-refresh client-side.
  */
+
+// Force server-side rendering to access request headers and cookies
+export const prerender = false;
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+let initialApiHealth: HealthCheck | null = null;
+let initialDbHealth: HealthDb | null = null;
+
+if (apiBaseUrl) {
+  try {
+    // Server-side fetch without ky (which requires browser APIs)
+    const testSessionHeader = Astro.request.headers.get('x-test-session');
+    const cookieHeader = Astro.request.headers.get('cookie') ?? '';
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (testSessionHeader) {
+      headers['x-test-session'] = testSessionHeader;
+    }
+    if (cookieHeader) {
+      headers.Cookie = cookieHeader;
+    }
+
+    const [apiRes, dbRes] = await Promise.allSettled([
+      fetch(`${apiBaseUrl}/health`, { headers }),
+      fetch(`${apiBaseUrl}/health/db`, { headers }),
+    ]);
+
+    if (apiRes.status === 'fulfilled' && apiRes.value.ok) {
+      initialApiHealth = (await apiRes.value.json()) as HealthCheck;
+    }
+    if (dbRes.status === 'fulfilled' && dbRes.value.ok) {
+      initialDbHealth = (await dbRes.value.json()) as HealthDb;
+    }
+  } catch {
+    // Ignore errors, client will retry
+  }
+}
 ---
 
 <Layout title="Salud del sistema - Admin - Quini 6">
-  <style>
-    .health-page {
-      max-width: 800px;
-    }
-  </style>
-
-  <div class="health-page">
+  <div class="max-w-3xl">
     <HealthDashboard
       client:visible
       initialApiHealth={initialApiHealth}

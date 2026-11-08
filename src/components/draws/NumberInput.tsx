@@ -119,13 +119,13 @@ function NumberField(props: NumberFieldProps) {
           text-center text-heading-md font-semibold text-text-primary
           placeholder-text-muted transition-colors
           duration-150 focus:outline-none
-          focus:ring-2 focus:ring-offset-0
+          focus-visible:ring-2 focus-visible:ring-offset-0
           disabled:cursor-not-allowed disabled:bg-neutral-50
           disabled:opacity-50 dark:disabled:bg-neutral-800
           ${
             displayError
-              ? 'dark:focus:ring-error-900/30 border-error-500 focus:border-error-500 focus:ring-error-100'
-              : 'border-border focus:border-focus focus:ring-focus-ring'
+              ? 'dark:focus-visible:ring-error-900/30 border-error-500 focus-visible:border-error-500 focus-visible:ring-error-100'
+              : 'border-border focus-visible:border-focus focus-visible:ring-focus-ring'
           }
         `}
         placeholder="--"

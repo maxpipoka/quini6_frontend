@@ -1,250 +1,91 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { trackEvent, isPlausibleAvailable, type EventName, type EventProps } from './analytics';
+import { trackEvent, isPlausibleAvailable, type EventName } from './analytics';
 
-// Store original window.plausible
-const originalPlausible = (globalThis as unknown as { plausible?: unknown }).plausible;
+describe('analytics.ts', () => {
+  const _originalWindow = global.window;
+  const originalConsoleDebug = console.debug;
+  const originalConsoleWarn = console.warn;
 
-describe('Analytics - trackEvent', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    // Clear window.plausible
-    delete (globalThis as unknown as { plausible?: unknown }).plausible;
+    vi.stubGlobal('window', {});
+    console.debug = vi.fn();
+    console.warn = vi.fn();
   });
 
   afterEach(() => {
-    // Restore original
-    if (originalPlausible !== undefined) {
-      (globalThis as unknown as { plausible?: unknown }).plausible = originalPlausible;
-    } else {
-      delete (globalThis as unknown as { plausible?: unknown }).plausible;
-    }
+    vi.unstubAllGlobals();
+    console.debug = originalConsoleDebug;
+    console.warn = originalConsoleWarn;
   });
 
-  describe('when Plausible is available', () => {
-    const mockPlausible = vi.fn();
+  describe('trackEvent', () => {
+    it('calls plausible when available with correct event name and props', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
 
-    beforeEach(() => {
-      (globalThis as unknown as { plausible?: unknown }).plausible = mockPlausible;
-    });
-
-    it('calls plausible with correct event name and props', () => {
-      trackEvent('search_combination', {
-        numbers: '01,05,12,23,34,45',
-        hasResults: true,
-        totalMatches: 3,
-      });
+      trackEvent('search_combination', { numbers: '01,05,12', hasResults: true, totalMatches: 1 });
 
       expect(mockPlausible).toHaveBeenCalledTimes(1);
       expect(mockPlausible).toHaveBeenCalledWith('search_combination', {
-        props: {
-          numbers: '01,05,12,23,34,45',
-          hasResults: true,
-          totalMatches: 3,
-        },
+        props: { numbers: '01,05,12', hasResults: true, totalMatches: 1 },
       });
     });
 
-    it('calls plausible with admin_login event', () => {
-      trackEvent('admin_login', { success: true });
+    it('calls plausible with empty props when props is undefined', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
 
-      expect(mockPlausible).toHaveBeenCalledWith('admin_login', {
-        props: { success: true },
-      });
+      trackEvent('admin_login', undefined);
+
+      expect(mockPlausible).toHaveBeenCalledTimes(1);
+      expect(mockPlausible).toHaveBeenCalledWith('admin_login', { props: {} });
     });
 
-    it('calls plausible with admin_login_failed event with errorType', () => {
-      trackEvent('admin_login_failed', {
-        success: false,
-        errorType: 'invalid_credentials',
-      });
+    it('does not call plausible when not available (no-op)', () => {
+      vi.stubGlobal('window', { plausible: undefined });
 
-      expect(mockPlausible).toHaveBeenCalledWith('admin_login_failed', {
-        props: { success: false, errorType: 'invalid_credentials' },
-      });
+      trackEvent('import_start', { fileName: 'test.csv', fileSize: 100, rowCount: 5 });
+
+      expect(console.debug).toHaveBeenCalledWith(
+        '[Analytics] Plausible not available, skipping event:',
+        'import_start',
+        { fileName: 'test.csv', fileSize: 100, rowCount: 5 }
+      );
     });
 
-    it('calls plausible with import_start event', () => {
-      trackEvent('import_start', {
-        fileName: 'draws.csv',
-        fileSize: 1024,
-        rowCount: 50,
-      });
+    it('logs warning when window.plausible is not a function (throws on call)', () => {
+      vi.stubGlobal('window', { plausible: 'not a function' });
 
-      expect(mockPlausible).toHaveBeenCalledWith('import_start', {
-        props: { fileName: 'draws.csv', fileSize: 1024, rowCount: 50 },
-      });
-    });
+      trackEvent('import_commit', { importId: '123', policy: 'skip', selectedRows: 10 });
 
-    it('calls plausible with import_commit event', () => {
-      trackEvent('import_commit', {
-        importId: 'abc-123',
-        policy: 'skip',
-        selectedRows: 48,
-      });
-
-      expect(mockPlausible).toHaveBeenCalledWith('import_commit', {
-        props: { importId: 'abc-123', policy: 'skip', selectedRows: 48 },
-      });
-    });
-
-    it('calls plausible with import_error event', () => {
-      trackEvent('import_error', {
-        importId: 'abc-123',
-        stage: 'preview',
-        errorMessage: 'Validation failed',
-      });
-
-      expect(mockPlausible).toHaveBeenCalledWith('import_error', {
-        props: { importId: 'abc-123', stage: 'preview', errorMessage: 'Validation failed' },
-      });
-    });
-
-    it('calls plausible with health_check_view event', () => {
-      trackEvent('health_check_view', {
-        apiStatus: 'ok',
-        dbStatus: 'ok',
-      });
-
-      expect(mockPlausible).toHaveBeenCalledWith('health_check_view', {
-        props: { apiStatus: 'ok', dbStatus: 'ok' },
-      });
-    });
-
-    it('calls plausible with health_check_refresh event', () => {
-      trackEvent('health_check_refresh', {});
-
-      expect(mockPlausible).toHaveBeenCalledWith('health_check_refresh', {
-        props: {},
-      });
-    });
-
-    it('handles empty props object', () => {
-      trackEvent('health_check_refresh');
-
-      expect(mockPlausible).toHaveBeenCalledWith('health_check_refresh', {
-        props: {},
-      });
-    });
-
-    it('handles undefined props', () => {
-      trackEvent('search_combination', undefined);
-
-      expect(mockPlausible).toHaveBeenCalledWith('search_combination', {
-        props: {},
-      });
-    });
-
-    it('catches and logs errors without throwing', () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      mockPlausible.mockImplementationOnce(() => {
-        throw new Error('Plausible error');
-      });
-
-      expect(() =>
-        trackEvent('search_combination', {
-          numbers: '01,02,03,04,05,06',
-          hasResults: true,
-          totalMatches: 1,
-        })
-      ).not.toThrow();
-
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      // Code tries to call plausible, it throws, caught and warns
+      expect(console.warn).toHaveBeenCalledWith(
         '[Analytics] Failed to track event:',
-        'search_combination',
+        'import_commit',
         expect.any(Error)
       );
-
-      consoleWarnSpy.mockRestore();
-    });
-  });
-
-  describe('when Plausible is NOT available', () => {
-    it('does not throw and returns early', () => {
-      // Ensure plausible is not defined
-      delete (globalThis as unknown as { plausible?: unknown }).plausible;
-
-      expect(() =>
-        trackEvent('search_combination', {
-          numbers: '01,02,03,04,05,06',
-          hasResults: true,
-          totalMatches: 1,
-        })
-      ).not.toThrow();
     });
 
-    it('logs debug in development mode when Plausible not available', () => {
-      const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-
-      const originalDev = import.meta.env.DEV;
-      Object.defineProperty(import.meta, 'env', {
-        value: { ...import.meta.env, DEV: true },
-        writable: true,
-        configurable: true,
+    it('fails silently and logs warning when plausible throws', () => {
+      const mockPlausible = vi.fn(() => {
+        throw new Error('Plausible error');
       });
+      vi.stubGlobal('window', { plausible: mockPlausible });
 
-      trackEvent('admin_login', { success: true });
+      trackEvent('import_error', { importId: '456', stage: 'parse', errorMessage: 'Invalid CSV' });
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[Analytics] Plausible not available, skipping event:',
-        'admin_login',
-        { success: true }
+      expect(mockPlausible).toHaveBeenCalledTimes(1);
+      expect(console.warn).toHaveBeenCalledWith(
+        '[Analytics] Failed to track event:',
+        'import_error',
+        expect.any(Error)
       );
-
-      consoleSpy.mockRestore();
-      Object.defineProperty(import.meta, 'env', {
-        value: { ...import.meta.env, DEV: originalDev },
-        writable: true,
-        configurable: true,
-      });
     });
 
-    it('does nothing when window is undefined (SSR)', () => {
-      // Simulate SSR by removing window
-      const originalWindow = globalThis.window;
-      delete (globalThis as unknown as { window?: unknown }).window;
+    it('works for all valid EventName types', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
 
-      expect(() =>
-        trackEvent('search_combination', {
-          numbers: '01,02,03,04,05,06',
-          hasResults: true,
-          totalMatches: 1,
-        })
-      ).not.toThrow();
-
-      // Restore window
-      globalThis.window = originalWindow;
-    });
-  });
-
-  describe('isPlausibleAvailable', () => {
-    it('returns true when Plausible is a function', () => {
-      (globalThis as unknown as { plausible?: unknown }).plausible = vi.fn();
-      expect(isPlausibleAvailable()).toBe(true);
-    });
-
-    it('returns false when Plausible is undefined', () => {
-      delete (globalThis as unknown as { plausible?: unknown }).plausible;
-      expect(isPlausibleAvailable()).toBe(false);
-    });
-
-    it('returns false when Plausible is not a function', () => {
-      (globalThis as unknown as { plausible?: unknown }).plausible = 'not a function';
-      expect(isPlausibleAvailable()).toBe(false);
-    });
-
-    it('returns false when window is undefined', () => {
-      const originalWindow = globalThis.window;
-      delete (globalThis as unknown as { window?: unknown }).window;
-
-      expect(isPlausibleAvailable()).toBe(false);
-
-      globalThis.window = originalWindow;
-    });
-  });
-
-  describe('EventName type safety', () => {
-    it('accepts all valid event names', () => {
       const events: EventName[] = [
         'search_combination',
         'admin_login',
@@ -256,29 +97,108 @@ describe('Analytics - trackEvent', () => {
         'health_check_refresh',
       ];
 
-      // This is a compile-time check - if it compiles, types are correct
       events.forEach((event) => {
-        expect(typeof event).toBe('string');
+        trackEvent(event);
       });
+
+      expect(mockPlausible).toHaveBeenCalledTimes(events.length);
+      events.forEach((event, index) => {
+        expect(mockPlausible).toHaveBeenNthCalledWith(index + 1, event, { props: {} });
+      });
+    });
+
+    it('works with HealthCheckViewProps', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
+
+      trackEvent('health_check_view', { apiStatus: 'ok', dbStatus: 'down' });
+
+      expect(mockPlausible).toHaveBeenCalledWith('health_check_view', {
+        props: { apiStatus: 'ok', dbStatus: 'down' },
+      });
+    });
+
+    it('works with AdminLoginProps including errorType', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
+
+      trackEvent('admin_login_failed', { success: false, errorType: 'invalid_credentials' });
+
+      expect(mockPlausible).toHaveBeenCalledWith('admin_login_failed', {
+        props: { success: false, errorType: 'invalid_credentials' },
+      });
+    });
+
+    it('works with ImportStartProps', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
+
+      trackEvent('import_start', { fileName: 'data.csv', fileSize: 2048, rowCount: 50 });
+
+      expect(mockPlausible).toHaveBeenCalledWith('import_start', {
+        props: { fileName: 'data.csv', fileSize: 2048, rowCount: 50 },
+      });
+    });
+
+    it('works with ImportCommitProps', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
+
+      trackEvent('import_commit', { importId: 'abc', policy: 'merge', selectedRows: 25 });
+
+      expect(mockPlausible).toHaveBeenCalledWith('import_commit', {
+        props: { importId: 'abc', policy: 'merge', selectedRows: 25 },
+      });
+    });
+
+    it('works with ImportErrorProps', () => {
+      const mockPlausible = vi.fn();
+      vi.stubGlobal('window', { plausible: mockPlausible });
+
+      trackEvent('import_error', {
+        importId: 'xyz',
+        stage: 'commit',
+        errorMessage: 'Duplicate key',
+      });
+
+      expect(mockPlausible).toHaveBeenCalledWith('import_error', {
+        props: { importId: 'xyz', stage: 'commit', errorMessage: 'Duplicate key' },
+      });
+    });
+
+    it('returns early when window is undefined (SSR)', () => {
+      vi.unstubAllGlobals();
+      // @ts-expect-error - deleting window for SSR simulation
+      delete global.window;
+
+      trackEvent('search_combination', { numbers: '01,02,03', hasResults: false, totalMatches: 0 });
+
+      // Should not throw and should return early
+      expect(true).toBe(true);
     });
   });
 
-  describe('EventProps type safety', () => {
-    it('accepts all valid event property types', () => {
-      const props: EventProps[] = [
-        { numbers: '01,02,03,04,05,06', hasResults: true, totalMatches: 1 },
-        { success: true },
-        { success: false, errorType: 'network_error' },
-        { fileName: 'test.csv', fileSize: 100, rowCount: 10 },
-        { importId: 'abc', policy: 'replace', selectedRows: 5 },
-        { importId: 'abc', stage: 'commit', errorMessage: 'Failed' },
-        { apiStatus: 'ok', dbStatus: 'down' },
-        { customProp: 'value' }, // Record<string, unknown> fallback
-      ];
+  describe('isPlausibleAvailable', () => {
+    it('returns true when window.plausible is a function', () => {
+      vi.stubGlobal('window', { plausible: vi.fn() });
+      expect(isPlausibleAvailable()).toBe(true);
+    });
 
-      props.forEach((prop) => {
-        expect(typeof prop).toBe('object');
-      });
+    it('returns false when window.plausible is undefined', () => {
+      vi.stubGlobal('window', { plausible: undefined });
+      expect(isPlausibleAvailable()).toBe(false);
+    });
+
+    it('returns false when window.plausible is not a function', () => {
+      vi.stubGlobal('window', { plausible: 'not a function' });
+      expect(isPlausibleAvailable()).toBe(false);
+    });
+
+    it('returns false when window is undefined (SSR)', () => {
+      vi.unstubAllGlobals();
+      // @ts-expect-error - deleting window for SSR simulation
+      delete global.window;
+      expect(isPlausibleAvailable()).toBe(false);
     });
   });
 });

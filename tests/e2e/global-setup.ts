@@ -15,7 +15,7 @@ const ADMIN_STORAGE_STATE = path.join(__dirname, '..', '.auth', 'admin.json');
 const TEST_SESSION_ID = 'test-session';
 
 async function globalSetup(config: FullConfig) {
-  const baseURL = config.projects[0]?.use?.baseURL ?? 'http://localhost:4321';
+  const _baseURL = config.projects[0]?.use?.baseURL ?? 'http://localhost:4321';
 
   // Ensure auth directory exists
   const fs = await import('fs');
@@ -27,7 +27,7 @@ async function globalSetup(config: FullConfig) {
   // Launch browser and create a context with the fixed test session cookie
   const browser = await chromium.launch();
   const context = await browser.newContext();
-  const page = await context.newPage();
+  const _page = await context.newPage();
 
   // Set the fixed test session cookie
   await context.addCookies([

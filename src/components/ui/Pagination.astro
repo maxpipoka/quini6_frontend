@@ -32,8 +32,8 @@ const paginationId = `pagination-${Math.random().toString(36).slice(2, 9)}`;
 
 const linkClass =
   'inline-flex items-center justify-center rounded-lg border border-border bg-surface p-2 text-text-secondary transition-colors hover:bg-neutral-100 hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 dark:hover:bg-neutral-800';
-const disabledLinkClass =
-  'inline-flex items-center justify-center rounded-lg border border-border bg-surface p-2 text-text-secondary opacity-50';
+const disabledButtonClass =
+  'inline-flex items-center justify-center rounded-lg border border-border bg-surface p-2 text-text-secondary opacity-50 cursor-not-allowed';
 
 // Calculate visible page range
 function getVisiblePages(
@@ -109,7 +109,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
             </svg>
           </a>
         ) : (
-          <span class={disabledLinkClass} aria-disabled="true" aria-label="Primera página">
+          <button disabled class={disabledButtonClass} aria-label="Primera página">
             <svg
               class="size-5"
               fill="none"
@@ -124,7 +124,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
                 d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
               />
             </svg>
-          </span>
+          </button>
         ))
     }
 
@@ -148,7 +148,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
             </svg>
           </a>
         ) : (
-          <span class={disabledLinkClass} aria-disabled="true" aria-label="Página anterior">
+          <button disabled class={disabledButtonClass} aria-label="Página anterior">
             <svg
               class="size-5"
               fill="none"
@@ -163,7 +163,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </span>
+          </button>
         ))
     }
 
@@ -216,7 +216,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
             </svg>
           </a>
         ) : (
-          <span class={disabledLinkClass} aria-disabled="true" aria-label="Página siguiente">
+          <button disabled class={disabledButtonClass} aria-label="Página siguiente">
             <svg
               class="size-5"
               fill="none"
@@ -231,7 +231,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
                 d="M9 5l7 7-7 7"
               />
             </svg>
-          </span>
+          </button>
         ))
     }
 
@@ -255,7 +255,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
             </svg>
           </a>
         ) : (
-          <span class={disabledLinkClass} aria-disabled="true" aria-label="Última página">
+          <button disabled class={disabledButtonClass} aria-label="Última página">
             <svg
               class="size-5"
               fill="none"
@@ -270,7 +270,7 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
                 d="M13 5l7 7-7 7M5 5l7 7-7 7"
               />
             </svg>
-          </span>
+          </button>
         ))
     }
   </div>
@@ -281,18 +281,21 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
 </nav>
 
 <style>
-  a:focus-visible {
+  a:focus-visible,
+  button:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 
   @media (forced-colors: active) {
-    a {
+    a,
+    button {
       forced-color-adjust: none;
       border-color: CanvasText;
       background-color: Canvas;
     }
-    a:hover {
+    a:hover,
+    button:hover {
       background-color: Highlight;
       color: HighlightText;
     }
@@ -304,7 +307,8 @@ const visiblePages = getVisiblePages(page, totalPages, maxPageButtons);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    a {
+    a,
+    button {
       transition: none;
     }
   }

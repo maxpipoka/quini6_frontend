@@ -1,40 +1,7 @@
 // Shared sitemap generation logic used by both astro.config.mjs and src/pages/sitemap.xml.ts
 import { EnumChangefreq } from 'sitemap';
 import { SITE_URL as DEFAULT_SITE_URL } from '../config/site.js';
-
-// Known draw detail URLs (would be fetched from API in production)
-const DRAW_DETAIL_URLS = [
-  '3216',
-  '3217',
-  '3218',
-  '3219',
-  '3220',
-  '3221',
-  '3222',
-  '3223',
-  '3224',
-  '3225',
-  '3226',
-  '3227',
-  '3228',
-  '3229',
-  '3230',
-  '3231',
-  '3232',
-  '3233',
-  '3234',
-  '3235',
-  '3236',
-  '3237',
-  '3238',
-  '3239',
-  '3240',
-  '3241',
-  '3242',
-  '3243',
-  '3244',
-  '3245',
-];
+import { drawDates, getAllDrawNumbers } from './draw-dates.js';
 
 interface SitemapPage {
   url: string;
@@ -44,21 +11,27 @@ interface SitemapPage {
 }
 
 /**
- * Build-time draw schedule used for `lastmod` on detail pages.
- * Mirrors the mock schedule in src/pages/sorteos/[officialNumber].astro
- * (draw 3245 = 2024-06-01T20:00:00Z, weekly cadence, one step per official number).
- * TODO: replace with the real draw date fetched from the API at build time.
+ * Get draw dates from build-time generated data.
+ * Falls back to calculated date if not found in generated data.
  */
-const LATEST_DRAW_OFFICIAL_NUMBER = 3245;
-const LATEST_DRAW_DATE_MS = Date.UTC(2024, 5, 1, 20, 0, 0);
-const DRAW_CADENCE_MS = 7 * 24 * 60 * 60 * 1000;
-
-/**
- * `lastmod` for a draw detail page: the draw date itself, not the build time.
- */
-export function drawLastmod(officialNumber: number): string {
+export function getDrawLastmod(officialNumber: number): string {
+  const date = drawDates[officialNumber];
+  if (date) {
+    return date;
+  }
+  // Fallback: calculate based on latest known draw (3245 = 2024-06-01T20:00:00Z)
+  const LATEST_DRAW_OFFICIAL_NUMBER = 3245;
+  const LATEST_DRAW_DATE_MS = Date.UTC(2024, 5, 1, 20, 0, 0);
+  const DRAW_CADENCE_MS = 7 * 24 * 60 * 60 * 1000;
   const offset = LATEST_DRAW_OFFICIAL_NUMBER - officialNumber;
   return new Date(LATEST_DRAW_DATE_MS - offset * DRAW_CADENCE_MS).toISOString();
+}
+
+/**
+ * @deprecated Use getDrawLastmod instead. Kept for backward compatibility with tests.
+ */
+export function drawLastmod(officialNumber: number): string {
+  return getDrawLastmod(officialNumber);
 }
 
 /**
@@ -118,7 +91,7 @@ export function sitemapSerialize(item: SitemapPage): SitemapPage {
       changefreq: EnumChangefreq.YEARLY,
       priority: 0.6,
       // lastmod reflects the draw date, not the build time
-      lastmod: drawLastmod(Number(drawDetailMatch[1])),
+      lastmod: getDrawLastmod(Number(drawDetailMatch[1])),
     };
   }
 
@@ -155,13 +128,13 @@ export function generateSitemapUrls(siteUrl: string = DEFAULT_SITE_URL): Sitemap
     });
   }
 
-  // Draw detail pages
-  for (const drawNumber of DRAW_DETAIL_URLS) {
+  // Draw detail pages - use build-time generated draw numbers
+  for (const drawNumber of getAllDrawNumbers()) {
     urls.push({
       url: `${siteUrl}/sorteos/${drawNumber}`,
       changefreq: EnumChangefreq.YEARLY,
       priority: 0.6,
-      lastmod: drawLastmod(Number(drawNumber)),
+      lastmod: getDrawLastmod(drawNumber),
     });
   }
 

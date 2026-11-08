@@ -6,7 +6,7 @@
 
 # Interface: AdminLoginProps
 
-Defined in: [lib/analytics.ts:31](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L31)
+Defined in: [lib/analytics.ts:31](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L31)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/analytics.ts:31](https://github.com/maxpipoka/quini6_frontend/b
 
 > **success**: `boolean`
 
-Defined in: [lib/analytics.ts:32](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L32)
+Defined in: [lib/analytics.ts:32](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L32)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [lib/analytics.ts:32](https://github.com/maxpipoka/quini6_frontend/b
 
 > `optional` **errorType?**: `"unknown"` \| `"invalid_credentials"` \| `"network_error"` \| `"server_error"`
 
-Defined in: [lib/analytics.ts:33](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L33)
+Defined in: [lib/analytics.ts:33](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L33)

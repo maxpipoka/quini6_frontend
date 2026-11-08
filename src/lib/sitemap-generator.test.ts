@@ -86,11 +86,11 @@ describe('sitemapSerialize', () => {
 describe('generateSitemapUrls', () => {
   it('emits the three public pages plus all draw detail pages', () => {
     const urls = generateSitemapUrls('https://example.com');
-    // 3 public + 30 known draws
-    expect(urls).toHaveLength(33);
+    // 3 public + 50 draws (from build-time generated data)
+    expect(urls).toHaveLength(53);
     expect(urls.map((u) => u.url)).toContain('https://example.com/');
     expect(urls.map((u) => u.url)).toContain('https://example.com/sorteos/3245');
-    expect(urls.map((u) => u.url)).toContain('https://example.com/sorteos/3216');
+    expect(urls.map((u) => u.url)).toContain('https://example.com/sorteos/3196');
   });
 
   it('never includes admin or test-fixtures URLs', () => {

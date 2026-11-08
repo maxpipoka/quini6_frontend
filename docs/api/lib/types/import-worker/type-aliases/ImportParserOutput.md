@@ -8,4 +8,4 @@
 
 > **ImportParserOutput** = [`ImportParserProgress`](../interfaces/ImportParserProgress.md) \| [`ImportParserResult`](../interfaces/ImportParserResult.md) \| [`ImportParserError`](../interfaces/ImportParserError.md)
 
-Defined in: [lib/types/import-worker.ts:31](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L31)
+Defined in: [lib/types/import-worker.ts:31](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L31)

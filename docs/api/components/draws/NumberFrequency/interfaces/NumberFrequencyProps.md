@@ -6,7 +6,7 @@
 
 # Interface: NumberFrequencyProps
 
-Defined in: [components/draws/NumberFrequency.tsx:4](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberFrequency.tsx#L4)
+Defined in: [components/draws/NumberFrequency.tsx:4](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/draws/NumberFrequency.tsx#L4)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/draws/NumberFrequency.tsx:4](https://github.com/maxpipok
 
 > **data**: `object`[]
 
-Defined in: [components/draws/NumberFrequency.tsx:5](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberFrequency.tsx#L5)
+Defined in: [components/draws/NumberFrequency.tsx:5](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/draws/NumberFrequency.tsx#L5)
 
 #### number
 
@@ -34,4 +34,4 @@ Defined in: [components/draws/NumberFrequency.tsx:5](https://github.com/maxpipok
 
 > `optional` **highlightNumber?**: `number`
 
-Defined in: [components/draws/NumberFrequency.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/NumberFrequency.tsx#L10)
+Defined in: [components/draws/NumberFrequency.tsx:10](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/draws/NumberFrequency.tsx#L10)

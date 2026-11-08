@@ -6,7 +6,7 @@
 
 # Class: ApiHttpError
 
-Defined in: [lib/api/errors.ts:94](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L94)
+Defined in: [lib/api/errors.ts:94](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L94)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [lib/api/errors.ts:94](https://github.com/maxpipoka/quini6_frontend/
 
 > **new ApiHttpError**(`message`, `requestId`, `statusCode`, `timestamp`, `path`, `responseBody?`): `ApiHttpError`
 
-Defined in: [lib/api/errors.ts:97](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L97)
+Defined in: [lib/api/errors.ts:97](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L97)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [lib/api/errors.ts:97](https://github.com/maxpipoka/quini6_frontend/
 
 > `readonly` **requestId**: `string`
 
-Defined in: [lib/api/errors.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L16)
+Defined in: [lib/api/errors.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L16)
 
 #### Inherited from
 
@@ -72,7 +72,7 @@ Defined in: [lib/api/errors.ts:16](https://github.com/maxpipoka/quini6_frontend/
 
 > `readonly` **statusCode**: `number`
 
-Defined in: [lib/api/errors.ts:17](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L17)
+Defined in: [lib/api/errors.ts:17](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L17)
 
 #### Inherited from
 
@@ -84,7 +84,7 @@ Defined in: [lib/api/errors.ts:17](https://github.com/maxpipoka/quini6_frontend/
 
 > `readonly` **timestamp**: `string`
 
-Defined in: [lib/api/errors.ts:18](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L18)
+Defined in: [lib/api/errors.ts:18](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L18)
 
 #### Inherited from
 
@@ -96,7 +96,7 @@ Defined in: [lib/api/errors.ts:18](https://github.com/maxpipoka/quini6_frontend/
 
 > `readonly` **path**: `string`
 
-Defined in: [lib/api/errors.ts:19](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L19)
+Defined in: [lib/api/errors.ts:19](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L19)
 
 #### Inherited from
 
@@ -108,7 +108,7 @@ Defined in: [lib/api/errors.ts:19](https://github.com/maxpipoka/quini6_frontend/
 
 > `readonly` **responseBody**: `unknown`
 
-Defined in: [lib/api/errors.ts:95](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L95)
+Defined in: [lib/api/errors.ts:95](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L95)
 
 ## Methods
 
@@ -116,7 +116,7 @@ Defined in: [lib/api/errors.ts:95](https://github.com/maxpipoka/quini6_frontend/
 
 > **toJSON**(): `object`
 
-Defined in: [lib/api/errors.ts:110](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/errors.ts#L110)
+Defined in: [lib/api/errors.ts:110](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/errors.ts#L110)
 
 #### Returns
 

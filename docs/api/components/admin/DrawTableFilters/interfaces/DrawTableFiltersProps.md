@@ -6,7 +6,7 @@
 
 # Interface: DrawTableFiltersProps
 
-Defined in: [components/admin/DrawTableFilters.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L13)
+Defined in: [components/admin/DrawTableFilters.tsx:13](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawTableFilters.tsx#L13)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/admin/DrawTableFilters.tsx:13](https://github.com/maxpip
 
 > `optional` **initialFilters?**: `Partial`\<[`DrawFilters`](DrawFilters.md)\>
 
-Defined in: [components/admin/DrawTableFilters.tsx:14](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L14)
+Defined in: [components/admin/DrawTableFilters.tsx:14](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawTableFilters.tsx#L14)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [components/admin/DrawTableFilters.tsx:14](https://github.com/maxpip
 
 > **onFilterChange**: (`filters`) => `void`
 
-Defined in: [components/admin/DrawTableFilters.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L15)
+Defined in: [components/admin/DrawTableFilters.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawTableFilters.tsx#L15)
 
 #### Parameters
 
@@ -40,4 +40,4 @@ Defined in: [components/admin/DrawTableFilters.tsx:15](https://github.com/maxpip
 
 > `optional` **isLoading?**: `boolean`
 
-Defined in: [components/admin/DrawTableFilters.tsx:16](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawTableFilters.tsx#L16)
+Defined in: [components/admin/DrawTableFilters.tsx:16](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawTableFilters.tsx#L16)

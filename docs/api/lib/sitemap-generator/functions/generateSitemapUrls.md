@@ -8,7 +8,7 @@
 
 > **generateSitemapUrls**(`siteUrl?`): `SitemapPage`[]
 
-Defined in: [lib/sitemap-generator.ts:138](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/sitemap-generator.ts#L138)
+Defined in: [lib/sitemap-generator.ts:138](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/sitemap-generator.ts#L138)
 
 Generate complete sitemap URLs for the sitemap.xml endpoint
 This replicates what the @astrojs/sitemap integration does

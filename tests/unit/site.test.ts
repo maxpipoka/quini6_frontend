@@ -15,7 +15,7 @@ describe('site.ts', () => {
     expect(siteUrl).toMatch(/^https?:\/\/.+/);
   });
 
-  it('SITE_URL defaults to https://quini6.com when VITE_SITE_URL not set', async () => {
+  it('SITE_URL defaults to https://quini6.com when VITE_SITE_URL not set', () => {
     // This test validates the fallback logic
     // We can't easily test with different env values in Vitest without module reloading
     // But we can verify the fallback constant is correct in the source

@@ -6,7 +6,7 @@
 
 # Interface: ChangePasswordInput
 
-Defined in: [lib/auth/types.ts:19](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L19)
+Defined in: [lib/auth/types.ts:19](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L19)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/auth/types.ts:19](https://github.com/maxpipoka/quini6_frontend/
 
 > **currentPassword**: `string`
 
-Defined in: [lib/auth/types.ts:20](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L20)
+Defined in: [lib/auth/types.ts:20](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L20)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [lib/auth/types.ts:20](https://github.com/maxpipoka/quini6_frontend/
 
 > **newPassword**: `string`
 
-Defined in: [lib/auth/types.ts:21](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L21)
+Defined in: [lib/auth/types.ts:21](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L21)

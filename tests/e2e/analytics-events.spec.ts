@@ -4,15 +4,13 @@ type PlausibleCall = [string, { props?: Record<string, unknown> } | undefined];
 
 declare global {
   interface Window {
-    plausibleCalls: PlausibleCall[];
+    plausibleCalls?: PlausibleCall[];
   }
 }
 
 function findCall(calls: PlausibleCall[] | undefined, eventName: string): PlausibleCall {
   if (!calls || calls.length === 0) {
-    throw new Error(
-      `Expected plausible event "${eventName}" but got: []`
-    );
+    throw new Error(`Expected plausible event "${eventName}" but got: []`);
   }
   const call = calls.find((c) => c[0] === eventName);
   if (!call) {
@@ -30,7 +28,7 @@ test.describe('Analytics Events E2E', () => {
       window.plausibleCalls = [];
       const originalPlausible: typeof window.plausible = window.plausible;
       window.plausible = (eventName: string, options?: { props: Record<string, unknown> }) => {
-        window.plausibleCalls.push([eventName, options]);
+        (window.plausibleCalls ??= []).push([eventName, options]);
         if (originalPlausible) {
           originalPlausible(eventName, options);
         }
@@ -59,7 +57,9 @@ test.describe('Analytics Events E2E', () => {
       await adminPage.waitForLoadState('networkidle');
 
       // Check if plausible was called with search_combination
-      const calls = await adminPage.evaluate(() => window.plausibleCalls);
+      const calls = (await adminPage.evaluate(
+        () => window.plausibleCalls ?? []
+      )) as PlausibleCall[];
       const searchCall = findCall(calls, 'search_combination');
 
       expect(searchCall[1]).toHaveProperty('props');
@@ -93,7 +93,7 @@ test.describe('Analytics Events E2E', () => {
       await adminPage.click('button[type="submit"]');
       await adminPage.waitForLoadState('networkidle');
 
-      const calls = await adminPage.evaluate(() => window.plausibleCalls);
+      const calls = await adminPage.evaluate(() => window.plausibleCalls ?? []);
       const searchCall = findCall(calls, 'search_combination');
 
       expect(searchCall[1]?.props?.hasResults).toBe(false);
@@ -102,36 +102,36 @@ test.describe('Analytics Events E2E', () => {
   });
 
   test.describe('Admin login event', () => {
-    test('should track admin_login event on successful login', async ({ page, browser }) => {
+    test('should track admin_login event on successful login', async ({ browser }) => {
       // Create a fresh context without the beforeEach initScript clearing on navigation
       const context = await browser.newContext();
       const adminPage = await context.newPage();
-      
+
       // Add the init script with a Promise to wait for the event
       await adminPage.addInitScript(() => {
         window.plausibleCalls = [];
         window.__plausibleEventPromise = null;
         window.__plausibleEventResolve = null;
-        
+
         const originalPlausible = window.plausible;
         window.plausible = (eventName, options) => {
           console.log('[TEST WRAPPER] plausible called:', eventName, options);
-          window.plausibleCalls.push([eventName, options]);
-          
+          (window.plausibleCalls ??= []).push([eventName, options]);
+
           // Resolve the promise if we're waiting for this event
           if (window.__plausibleEventResolve && eventName === window.__plausibleEventPromise) {
             window.__plausibleEventResolve([eventName, options]);
             window.__plausibleEventPromise = null;
             window.__plausibleEventResolve = null;
           }
-          
+
           if (originalPlausible) {
             originalPlausible(eventName, options);
           }
         };
-        
+
         // Function to wait for a specific event
-        window.waitForPlausibleEvent = (eventName) => {
+        window.waitForPlausibleEvent = (eventName: string) => {
           window.__plausibleEventPromise = eventName;
           return new Promise((resolve) => {
             window.__plausibleEventResolve = resolve;
@@ -146,7 +146,7 @@ test.describe('Analytics Events E2E', () => {
           });
         };
       });
-      
+
       await adminPage.goto('/admin/login');
       await adminPage.waitForLoadState('networkidle');
 
@@ -161,53 +161,53 @@ test.describe('Analytics Events E2E', () => {
       adminPage.on('console', (msg) => console.log(`BROWSER LOG: ${msg.text()}`));
 
       // Click submit and wait for the trackEvent to fire using the Promise
-      const eventPromise = adminPage.evaluate(() => window.waitForPlausibleEvent('admin_login'));
-      
+      const eventPromise = adminPage.evaluate(() => window.waitForPlausibleEvent?.('admin_login'));
+
       await adminPage.click('button[type="submit"]');
-      
+
       // Wait for the event to be captured
       const eventResult = await eventPromise;
       console.log('Event result:', eventResult);
-      
+
       // Use the event result directly since page unloads after redirect
-      const loginCall = eventResult;
-      
+      const loginCall = eventResult as PlausibleCall | null;
+
       await context.close();
 
-      expect(loginCall[1]).toHaveProperty('props');
-      expect(loginCall[1]?.props?.success).toBe(true);
+      expect(loginCall?.[1]).toHaveProperty('props');
+      expect(loginCall?.[1]?.props?.success).toBe(true);
     });
 
     test('should track admin_login_failed event on failed login', async ({ browser }) => {
       // Create a fresh context without the beforeEach initScript clearing on navigation
       const context = await browser.newContext();
       const adminPage = await context.newPage();
-      
+
       // Add the init script with a Promise to wait for the event
       await adminPage.addInitScript(() => {
         window.plausibleCalls = [];
         window.__plausibleEventPromise = null;
         window.__plausibleEventResolve = null;
-        
+
         const originalPlausible = window.plausible;
         window.plausible = (eventName, options) => {
           console.log('[TEST WRAPPER] plausible called:', eventName, options);
-          window.plausibleCalls.push([eventName, options]);
-          
+          (window.plausibleCalls ??= []).push([eventName, options]);
+
           // Resolve the promise if we're waiting for this event
           if (window.__plausibleEventResolve && eventName === window.__plausibleEventPromise) {
             window.__plausibleEventResolve([eventName, options]);
             window.__plausibleEventPromise = null;
             window.__plausibleEventResolve = null;
           }
-          
+
           if (originalPlausible) {
             originalPlausible(eventName, options);
           }
         };
-        
+
         // Function to wait for a specific event
-        window.waitForPlausibleEvent = (eventName) => {
+        window.waitForPlausibleEvent = (eventName: string) => {
           window.__plausibleEventPromise = eventName;
           return new Promise((resolve) => {
             window.__plausibleEventResolve = resolve;
@@ -222,7 +222,7 @@ test.describe('Analytics Events E2E', () => {
           });
         };
       });
-      
+
       await adminPage.goto('/admin/login');
       await adminPage.waitForLoadState('networkidle');
 
@@ -241,22 +241,24 @@ test.describe('Analytics Events E2E', () => {
       adminPage.on('console', (msg) => console.log(`BROWSER LOG: ${msg.text()}`));
 
       // Click submit and wait for the trackEvent to fire using the Promise
-      const eventPromise = adminPage.evaluate(() => window.waitForPlausibleEvent('admin_login_failed'));
-      
+      const eventPromise = adminPage.evaluate(() =>
+        window.waitForPlausibleEvent?.('admin_login_failed')
+      );
+
       await adminPage.click('button[type="submit"]');
-      
+
       // Wait for the event to be captured
       const eventResult = await eventPromise;
       console.log('Event result:', eventResult);
-      
+
       // Use the event result directly
-      const loginFailedCall = eventResult;
-      
+      const loginFailedCall = eventResult as PlausibleCall | null;
+
       await context.close();
 
-      expect(loginFailedCall[1]).toHaveProperty('props');
-      expect(loginFailedCall[1]?.props?.success).toBe(false);
-      expect(loginFailedCall[1]?.props?.errorType).toBeDefined();
+      expect(loginFailedCall?.[1]).toHaveProperty('props');
+      expect(loginFailedCall?.[1]?.props?.success).toBe(false);
+      expect(loginFailedCall?.[1]?.props?.errorType).toBeDefined();
     });
   });
 

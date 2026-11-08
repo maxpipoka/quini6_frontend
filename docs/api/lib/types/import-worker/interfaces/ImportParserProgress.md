@@ -6,7 +6,7 @@
 
 # Interface: ImportParserProgress
 
-Defined in: [lib/types/import-worker.ts:14](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L14)
+Defined in: [lib/types/import-worker.ts:14](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L14)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/types/import-worker.ts:14](https://github.com/maxpipoka/quini6_
 
 > **type**: `"PROGRESS"`
 
-Defined in: [lib/types/import-worker.ts:15](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L15)
+Defined in: [lib/types/import-worker.ts:15](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L15)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/types/import-worker.ts:15](https://github.com/maxpipoka/quini6_
 
 > **parsed**: `number`
 
-Defined in: [lib/types/import-worker.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L16)
+Defined in: [lib/types/import-worker.ts:16](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L16)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [lib/types/import-worker.ts:16](https://github.com/maxpipoka/quini6_
 
 > **total**: `number`
 
-Defined in: [lib/types/import-worker.ts:17](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/types/import-worker.ts#L17)
+Defined in: [lib/types/import-worker.ts:17](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/types/import-worker.ts#L17)

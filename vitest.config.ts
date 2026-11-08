@@ -9,6 +9,9 @@ export default defineConfig({
     environment: './src/test/jsdom-environment.ts',
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'tests/unit/**/*.test.ts'],
     setupFiles: ['src/test/polyfills.ts', 'src/test/setup.ts'],
+    // Run tests in development mode so import.meta.env.DEV === true
+    // This makes component use relative URLs (/health) that MSW can intercept
+    mode: 'development',
     // Coverage instrumentation slows module (re)imports in dynamic-import hooks
     hookTimeout: 30000,
     testTimeout: 15000,

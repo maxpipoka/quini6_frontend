@@ -2,10 +2,18 @@
 import Layout from '../../layouts/Layout.astro';
 import { Sidebar } from '../../components/admin/Sidebar.tsx';
 
-const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
+const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN ?? '';
 ---
 
 <Layout title="Admin - Quini 6">
+  <slot name="head-scripts">
+    {
+      plausibleDomain && (
+        <script data-domain={plausibleDomain} src="https://plausible.io/js/script.js" defer />
+      )
+    }
+  </slot>
+
   <style>
     .min-h-screen bg-neutral-50 dark:bg-neutral-900 {
       min-height: 100vh;
@@ -73,14 +81,6 @@ const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
       padding: 2rem;
     }
   </style>
-
-  <!-- Plausible Analytics Script -->
-  {plausibleDomain && (
-    <script
-      is:inline
-      set:html={`const script = document.createElement('script'); script.defer = true; script.dataset.domain = '${plausibleDomain}'; script.src = 'https://plausible.io/js/script.js'; document.head.appendChild(script);`}
-    />
-  )}
 
   <!-- Sentry & Web Vitals Initialization -->
   <script is:inline>

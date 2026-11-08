@@ -8,4 +8,4 @@
 
 > `const` **default**: `Meta`\<*typeof* [`DatePicker`](../../DatePicker/variables/DatePicker.md)\>
 
-Defined in: [components/draws/DatePicker.stories.tsx:5](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/draws/DatePicker.stories.tsx#L5)
+Defined in: [components/draws/DatePicker.stories.tsx:5](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/draws/DatePicker.stories.tsx#L5)

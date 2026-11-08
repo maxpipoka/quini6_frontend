@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/admin/auth/debug-cookies',
   '/admin/debug-cookies',
   '/admin/imports/upload',
+  '/admin/health',
 ];
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -19,7 +20,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Extract request ID from incoming headers for Sentry correlation
   const requestId =
-    context.request.headers.get('x-request-id') ?? context.request.headers.get('request-id');
+    context.request.headers.get('x-request-id') ?? context.request.headers.get('request-id') ?? '';
   if (requestId) {
     Sentry.setTag('requestId', requestId);
   }
@@ -35,7 +36,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // Check for session cookie (set by backend on login)
     const sessionCookie = cookies.get('session');
     const cookieHeader = context.request.headers.get('cookie') ?? 'none';
-    
+
     // Parse cookie header manually as backup
     let manualSession = null;
     if (cookieHeader !== 'none') {
@@ -48,10 +49,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
         }
       }
     }
-    
+
     // Check for test header (Playwright can set this easily)
     const testSessionHeader = context.request.headers.get('x-test-session');
-    
+
     console.log(
       '[Middleware] Path:',
       pathname,
@@ -68,13 +69,25 @@ export const onRequest = defineMiddleware(async (context, next) => {
     );
 
     // In E2E tests, also accept test-session - check both ways
-    const hasTestSession = cookieHeader.includes('test-session') || 
-                           (sessionCookie && sessionCookie.value === 'test-session') ||
-                           manualSession === 'test-session' ||
-                           testSessionHeader === 'test-session';
-    
-    console.log('[Middleware] hasTestSession:', hasTestSession);
-    
+    const hasTestSession =
+      cookieHeader.includes('test-session') ||
+      sessionCookie?.value === 'test-session' ||
+      (manualSession !== null && manualSession === 'test-session') ||
+      testSessionHeader === 'test-session';
+
+    console.log(
+      '[Middleware] hasTestSession:',
+      hasTestSession,
+      'cookieHeader.includes:',
+      cookieHeader.includes('test-session'),
+      'sessionCookie.value:',
+      sessionCookie?.value,
+      'manualSession:',
+      manualSession,
+      'testSessionHeader:',
+      testSessionHeader
+    );
+
     if (!sessionCookie && !hasTestSession) {
       console.log('[Middleware] NO SESSION - Redirecting');
       // Redirect to login with redirect parameter

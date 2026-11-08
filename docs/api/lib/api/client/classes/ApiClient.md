@@ -6,7 +6,7 @@
 
 # Class: ApiClient
 
-Defined in: [lib/api/client.ts:85](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L85)
+Defined in: [lib/api/client.ts:85](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L85)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: [lib/api/client.ts:85](https://github.com/maxpipoka/quini6_frontend/
 
 > **new ApiClient**(`config`): `ApiClient`
 
-Defined in: [lib/api/client.ts:117](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L117)
+Defined in: [lib/api/client.ts:117](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L117)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [lib/api/client.ts:117](https://github.com/maxpipoka/quini6_frontend
 
 > **getLatestDraw**(): `Promise`\<\{ `id`: `string`; `officialNumber`: `number`; `drawDate`: `string`; `createdAt`: `string`; `updatedAt`: `string`; `results`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:262](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L262)
+Defined in: [lib/api/client.ts:262](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L262)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [lib/api/client.ts:262](https://github.com/maxpipoka/quini6_frontend
 
 > **getDraw**(`officialNumber`): `Promise`\<\{ `id`: `string`; `officialNumber`: `number`; `drawDate`: `string`; `createdAt`: `string`; `updatedAt`: `string`; `results`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:268](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L268)
+Defined in: [lib/api/client.ts:268](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L268)
 
 #### Parameters
 
@@ -62,7 +62,7 @@ Defined in: [lib/api/client.ts:268](https://github.com/maxpipoka/quini6_frontend
 
 > **getDrawHistory**(`params?`): `Promise`\<\{ `data`: `object`[]; `page`: `number`; `limit`: `number`; `total`: `number`; `totalPages`: `number`; \}\>
 
-Defined in: [lib/api/client.ts:274](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L274)
+Defined in: [lib/api/client.ts:274](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L274)
 
 #### Parameters
 
@@ -90,7 +90,7 @@ Defined in: [lib/api/client.ts:274](https://github.com/maxpipoka/quini6_frontend
 
 > **searchExactCombination**(`numbers`, `dateRange?`): `Promise`\<\{ `found`: `boolean`; `totalMatches`: `number`; `matches`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:292](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L292)
+Defined in: [lib/api/client.ts:292](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L292)
 
 #### Parameters
 
@@ -118,7 +118,7 @@ Defined in: [lib/api/client.ts:292](https://github.com/maxpipoka/quini6_frontend
 
 > **getNumberFrequency**(`params?`): `Promise`\<\{ `modality?`: `"TRADICIONAL"` \| `"LA_SEGUNDA"` \| `"REVANCHA"` \| `"SIEMPRE_SALE"`; `fromDate?`: `string`; `toDate?`: `string`; `totalDraws`: `number`; `frequencies`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:309](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L309)
+Defined in: [lib/api/client.ts:309](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L309)
 
 #### Parameters
 
@@ -146,7 +146,7 @@ Defined in: [lib/api/client.ts:309](https://github.com/maxpipoka/quini6_frontend
 
 > **healthCheck**(): `Promise`\<\{ `status`: `"ok"` \| `"degraded"` \| `"down"`; `timestamp`: `string`; `uptime`: `number`; `version`: `string`; \}\>
 
-Defined in: [lib/api/client.ts:323](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L323)
+Defined in: [lib/api/client.ts:323](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L323)
 
 #### Returns
 
@@ -158,7 +158,7 @@ Defined in: [lib/api/client.ts:323](https://github.com/maxpipoka/quini6_frontend
 
 > **healthDbCheck**(): `Promise`\<\{ `status`: `"ok"` \| `"down"`; `latency`: `number`; `timestamp`: `string`; \}\>
 
-Defined in: [lib/api/client.ts:329](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L329)
+Defined in: [lib/api/client.ts:329](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L329)
 
 #### Returns
 
@@ -170,7 +170,7 @@ Defined in: [lib/api/client.ts:329](https://github.com/maxpipoka/quini6_frontend
 
 > **adminLogin**(`credentials`): `Promise`\<\{ `user`: `unknown`; \}\>
 
-Defined in: [lib/api/client.ts:339](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L339)
+Defined in: [lib/api/client.ts:339](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L339)
 
 #### Parameters
 
@@ -194,7 +194,7 @@ Defined in: [lib/api/client.ts:339](https://github.com/maxpipoka/quini6_frontend
 
 > **adminMe**(): `Promise`\<`unknown`\>
 
-Defined in: [lib/api/client.ts:346](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L346)
+Defined in: [lib/api/client.ts:346](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L346)
 
 #### Returns
 
@@ -206,7 +206,7 @@ Defined in: [lib/api/client.ts:346](https://github.com/maxpipoka/quini6_frontend
 
 > **adminLogout**(): `Promise`\<`void`\>
 
-Defined in: [lib/api/client.ts:350](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L350)
+Defined in: [lib/api/client.ts:350](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L350)
 
 #### Returns
 
@@ -218,7 +218,7 @@ Defined in: [lib/api/client.ts:350](https://github.com/maxpipoka/quini6_frontend
 
 > **adminChangePassword**(`data`): `Promise`\<`void`\>
 
-Defined in: [lib/api/client.ts:354](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L354)
+Defined in: [lib/api/client.ts:354](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L354)
 
 #### Parameters
 
@@ -242,7 +242,7 @@ Defined in: [lib/api/client.ts:354](https://github.com/maxpipoka/quini6_frontend
 
 > **adminCreateDraw**(`data`): `Promise`\<\{ `id`: `string`; `officialNumber`: `number`; `drawDate`: `string`; `createdAt`: `string`; `updatedAt`: `string`; `results`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:361](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L361)
+Defined in: [lib/api/client.ts:361](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L361)
 
 #### Parameters
 
@@ -270,7 +270,7 @@ Defined in: [lib/api/client.ts:361](https://github.com/maxpipoka/quini6_frontend
 
 > **adminUpdateDraw**(`id`, `data`): `Promise`\<\{ `id`: `string`; `officialNumber`: `number`; `drawDate`: `string`; `createdAt`: `string`; `updatedAt`: `string`; `results`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:369](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L369)
+Defined in: [lib/api/client.ts:369](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L369)
 
 #### Parameters
 
@@ -302,7 +302,7 @@ Defined in: [lib/api/client.ts:369](https://github.com/maxpipoka/quini6_frontend
 
 > **adminDeleteDraw**(`id`): `Promise`\<`void`\>
 
-Defined in: [lib/api/client.ts:377](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L377)
+Defined in: [lib/api/client.ts:377](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L377)
 
 #### Parameters
 
@@ -320,7 +320,7 @@ Defined in: [lib/api/client.ts:377](https://github.com/maxpipoka/quini6_frontend
 
 > **adminImportPreview**(`file`): `Promise`\<`unknown`\>
 
-Defined in: [lib/api/client.ts:381](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L381)
+Defined in: [lib/api/client.ts:381](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L381)
 
 #### Parameters
 
@@ -338,7 +338,7 @@ Defined in: [lib/api/client.ts:381](https://github.com/maxpipoka/quini6_frontend
 
 > **adminImportCommit**(`data`): `Promise`\<`unknown`\>
 
-Defined in: [lib/api/client.ts:390](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L390)
+Defined in: [lib/api/client.ts:390](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L390)
 
 #### Parameters
 
@@ -362,7 +362,7 @@ Defined in: [lib/api/client.ts:390](https://github.com/maxpipoka/quini6_frontend
 
 > **adminListImports**(`params?`): `Promise`\<`unknown`\>
 
-Defined in: [lib/api/client.ts:397](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L397)
+Defined in: [lib/api/client.ts:397](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L397)
 
 #### Parameters
 
@@ -402,7 +402,7 @@ Defined in: [lib/api/client.ts:397](https://github.com/maxpipoka/quini6_frontend
 
 > **adminGetImport**(`id`): `Promise`\<`unknown`\>
 
-Defined in: [lib/api/client.ts:410](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L410)
+Defined in: [lib/api/client.ts:410](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L410)
 
 #### Parameters
 
@@ -420,7 +420,7 @@ Defined in: [lib/api/client.ts:410](https://github.com/maxpipoka/quini6_frontend
 
 > **importPreview**(`rows`): `Promise`\<\{ `importId`: `string`; `validCount`: `number`; `invalidCount`: `number`; \}\>
 
-Defined in: [lib/api/client.ts:422](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L422)
+Defined in: [lib/api/client.ts:422](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L422)
 
 Submit parsed rows for import preview
 POST /admin/imports/preview
@@ -441,7 +441,7 @@ POST /admin/imports/preview
 
 > **importCommit**(`importId`, `policy`, `_options?`): `Promise`\<\{ `created`: `number`; `updated`: `number`; `skipped`: `number`; `failed`: `number`; `errors`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:434](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L434)
+Defined in: [lib/api/client.ts:434](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L434)
 
 Commit a previewed import with conflict resolution policy
 POST /admin/imports/{importId}/commit?policy={policy}
@@ -472,7 +472,7 @@ POST /admin/imports/{importId}/commit?policy={policy}
 
 > **getImportHistory**(`params?`): `Promise`\<\{ `data`: `object`[]; `page`: `number`; `limit`: `number`; `total`: `number`; `totalPages`: `number`; \}\>
 
-Defined in: [lib/api/client.ts:451](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L451)
+Defined in: [lib/api/client.ts:451](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L451)
 
 Get paginated import history
 GET /admin/imports
@@ -519,7 +519,7 @@ GET /admin/imports
 
 > **getImportErrors**(`importId`): `Promise`\<\{ `errors`: `object`[]; \}\>
 
-Defined in: [lib/api/client.ts:470](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L470)
+Defined in: [lib/api/client.ts:470](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L470)
 
 Get detailed errors for a specific import
 GET /admin/imports/{importId}/errors

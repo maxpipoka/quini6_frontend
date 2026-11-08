@@ -37,3 +37,14 @@ interface Window {
     email: string;
   };
 }
+
+// Test utilities (added by test files)
+interface Window {
+  plausibleCalls?: [string, { props?: Record<string, unknown> } | undefined][];
+  __plausibleEventPromise?: string | null;
+  __plausibleEventResolve?: ((value: unknown) => void) | null;
+  waitForPlausibleEvent?: (eventName: string) => Promise<unknown>;
+  __closeMobileMenu?: () => void;
+  initMobileMenu?: () => void;
+  __headerScriptRan?: boolean;
+}

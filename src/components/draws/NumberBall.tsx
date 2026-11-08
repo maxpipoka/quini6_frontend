@@ -29,7 +29,8 @@ const variantClasses: Record<NumberBallVariant, string> = {
   primary: 'bg-primary-500 text-white border-primary-500',
   secondary: 'bg-secondary-500 text-white border-secondary-500',
   success: 'bg-success-500 text-white border-success-500',
-  warning: 'bg-warning-500 text-neutral-900 border-warning-500 dark:text-neutral-50',
+  warning:
+    'bg-warning-500 text-neutral-900 border-warning-500 dark:bg-warning-500 dark:text-neutral-900',
 };
 
 // ============================================================================

@@ -31,8 +31,6 @@ const canonicalUrl = canonical ? `${siteUrl}${canonical}` : Astro.url.href;
 const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-default.jpg`;
 
 const pageTitle = title.includes('Quini 6') ? title : `${title} | Quini 6 Estadísticas`;
-
-const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
 ---
 
 <!doctype html>
@@ -71,11 +69,10 @@ const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Favicon & Manifest -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#3b82f6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1e3a5f" media="(prefers-color-scheme: dark)" />
 
@@ -144,6 +141,9 @@ const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN || '';
 
     <!-- ClientRouter for SPA-like navigation (must be in head) -->
     <ClientRouter />
+
+    <!-- Slot for page-specific head scripts (e.g., Plausible analytics) -->
+    <slot name="head-scripts" />
   </head>
   <body class="flex min-h-screen flex-col">
     <!-- Skip Link for Accessibility -->

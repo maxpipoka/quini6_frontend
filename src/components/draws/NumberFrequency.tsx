@@ -38,7 +38,7 @@ export const NumberFrequency: React.FC<NumberFrequencyProps> = ({ data, highligh
                 style={{ width: `${item.percentage}%` }}
               />
             </div>
-            <div className="flex justify-between text-[10px] text-text-muted">
+            <div className="flex justify-between text-xs text-text-muted">
               <span>{item.count}</span>
               <span>{item.percentage.toFixed(1)}%</span>
             </div>

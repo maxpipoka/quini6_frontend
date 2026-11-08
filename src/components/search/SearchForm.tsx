@@ -115,7 +115,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
-            className="rounded-lg border border-border bg-surface px-4 py-2 font-medium text-text-primary transition-colors hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+            className="rounded-lg border border-border bg-surface px-4 py-2 font-medium text-text-primary transition-colors hover:bg-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:bg-neutral-800 dark:hover:bg-neutral-700"
             onClick={handleClear}
           >
             Limpiar
@@ -123,7 +123,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ apiBaseUrl }) => {
           <button
             type="submit"
             data-testid="search-button"
-            className="rounded-lg bg-primary-600 px-4 py-2 font-medium text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-primary-600 px-4 py-2 font-medium text-white transition-colors hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={status === 'loading'}
           >
             {status === 'loading' ? 'Buscando...' : 'Buscar combinación'}

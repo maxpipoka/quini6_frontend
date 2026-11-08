@@ -6,7 +6,7 @@
 
 # Interface: ImportPreviewRow
 
-Defined in: [lib/schemas.ts:373](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L373)
+Defined in: [lib/schemas.ts:373](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L373)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/schemas.ts:373](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **rowNumber**: `number`
 
-Defined in: [lib/schemas.ts:374](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L374)
+Defined in: [lib/schemas.ts:374](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L374)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/schemas.ts:374](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **date**: `string`
 
-Defined in: [lib/schemas.ts:375](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L375)
+Defined in: [lib/schemas.ts:375](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L375)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [lib/schemas.ts:375](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **modality**: `string`
 
-Defined in: [lib/schemas.ts:376](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L376)
+Defined in: [lib/schemas.ts:376](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L376)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [lib/schemas.ts:376](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **tradicional**: `number`[] \| `null`
 
-Defined in: [lib/schemas.ts:377](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L377)
+Defined in: [lib/schemas.ts:377](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L377)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [lib/schemas.ts:377](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **laSegunda**: `number`[] \| `null`
 
-Defined in: [lib/schemas.ts:378](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L378)
+Defined in: [lib/schemas.ts:378](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L378)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [lib/schemas.ts:378](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **revancha**: `number`[] \| `null`
 
-Defined in: [lib/schemas.ts:379](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L379)
+Defined in: [lib/schemas.ts:379](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L379)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [lib/schemas.ts:379](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **siempreSale**: `number`[] \| `null`
 
-Defined in: [lib/schemas.ts:380](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L380)
+Defined in: [lib/schemas.ts:380](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L380)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [lib/schemas.ts:380](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **reintegro**: `number` \| `null`
 
-Defined in: [lib/schemas.ts:381](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L381)
+Defined in: [lib/schemas.ts:381](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L381)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [lib/schemas.ts:381](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **isValid**: `boolean`
 
-Defined in: [lib/schemas.ts:382](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L382)
+Defined in: [lib/schemas.ts:382](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L382)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: [lib/schemas.ts:382](https://github.com/maxpipoka/quini6_frontend/bl
 
 > **errors**: `object`[]
 
-Defined in: [lib/schemas.ts:383](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L383)
+Defined in: [lib/schemas.ts:383](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L383)
 
 #### rowNumber
 

@@ -15,8 +15,10 @@ Allow: /
 # Sitemap location
 Sitemap: ${siteUrl}/sitemap.xml
 
-# Disallow admin paths
+# Disallow admin paths (except login and health for SEO crawl)
 Disallow: /admin/
+Allow: /admin/login
+Allow: /admin/health
 Disallow: /api/
 Disallow: /_astro/
 Disallow: /_image/

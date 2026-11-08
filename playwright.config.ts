@@ -83,7 +83,8 @@ export default defineConfig({
       reuseExistingServer: true,
       timeout: 120000,
       env: {
-        VITE_SITE_URL: 'https://quini6.com',
+        VITE_SITE_URL: 'http://localhost:4321',
+        VITE_API_BASE_URL: '/api',
         VITE_PLAUSIBLE_DOMAIN: 'quini6.example.com',
       },
     },

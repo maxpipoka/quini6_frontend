@@ -22,11 +22,34 @@ export const test = base.extend<TestFixtures>({
   // Create a clean context for each test with admin auth
   adminPage: async ({ browser }, use) => {
     const context = await browser.newContext({
-      storageState: ADMIN_STORAGE_STATE,
+      // Don't use storageState, rely on headers and cookies
       extraHTTPHeaders: {
         'x-test-session': 'test-session',
       },
     });
+    // Add the session cookie to the context
+    await context.addCookies([
+      {
+        name: 'session',
+        value: 'test-session',
+        domain: 'localhost',
+        path: '/',
+        expires: -1,
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Lax',
+      },
+      {
+        name: 'csrf_token',
+        value: 'test-csrf-token',
+        domain: 'localhost',
+        path: '/',
+        expires: -1,
+        httpOnly: false,
+        secure: false,
+        sameSite: 'Lax',
+      },
+    ]);
     const page = await context.newPage();
     await use(page);
     await context.close();

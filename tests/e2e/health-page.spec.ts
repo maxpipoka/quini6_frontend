@@ -29,7 +29,9 @@ test.describe('Health Check Page E2E', () => {
 
     // Verify card content
     await expect(adminPage.locator('[data-testid="api-status-card"]')).toContainText('API Backend');
-    await expect(adminPage.locator('[data-testid="db-status-card"]')).toContainText('Base de Datos');
+    await expect(adminPage.locator('[data-testid="db-status-card"]')).toContainText(
+      'Base de Datos'
+    );
 
     // Verify status badges (green for ok, yellow for degraded, red for down)
     const apiStatusBadge = adminPage.locator('[data-testid="api-status-card"] .inline-flex');
@@ -75,7 +77,9 @@ test.describe('Health Check Page E2E', () => {
     await expect(adminPage.locator('[data-testid="history-table"]')).toBeVisible({ timeout: 5000 });
 
     // Should show at least the current check in history
-    expect(await adminPage.locator('[data-testid="history-table"] tbody tr').count()).toBeGreaterThan(0);
+    expect(
+      await adminPage.locator('[data-testid="history-table"] tbody tr').count()
+    ).toBeGreaterThan(0);
   });
 
   test('should show auto-refresh indicator', async ({ adminPage }) => {
@@ -132,15 +136,24 @@ test.describe('Health Check Page E2E', () => {
       adminPage.locator('[data-testid="error-alert"] button:has-text("Reintentar")')
     ).toBeVisible();
   });
-
   test('should persist history to localStorage', async ({ adminPage }) => {
     await adminPage.goto('/admin/health');
+
+    // Wait for the dashboard to be visible
     await adminPage.waitForSelector('[data-testid="health-dashboard"]', { timeout: 10000 });
+
+    // Wait for network idle to let initial load complete
+    await adminPage.waitForLoadState('networkidle');
 
     // Trigger a refresh to add to history
     const refreshButton = adminPage.locator('[data-testid="refresh-button"]');
     await refreshButton.click();
-    await adminPage.waitForTimeout(3000);
+
+    // Wait for API calls to complete - wait for network to be idle again
+    await adminPage.waitForLoadState('networkidle');
+
+    // Give a moment for localStorage to be updated
+    await adminPage.waitForTimeout(1000);
 
     // Check localStorage
     const history = await adminPage.evaluate(() => {
@@ -148,6 +161,7 @@ test.describe('Health Check Page E2E', () => {
       return stored ? JSON.parse(stored) : [];
     });
 
+    console.log('[Test] localStorage history:', history);
     expect(history.length).toBeGreaterThan(0);
     expect(history[0]).toHaveProperty('timestamp');
     expect(history[0]).toHaveProperty('apiHealth');
@@ -164,7 +178,9 @@ test.describe('Health Check Page E2E', () => {
 
     // Should be on health page
     await expect(adminPage).toHaveURL(/\/admin\/health/);
-    await expect(adminPage.locator('[data-testid="health-dashboard"]')).toBeVisible({ timeout: 10000 });
+    await expect(adminPage.locator('[data-testid="health-dashboard"]')).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('should show correct status colors for API and DB', async ({ adminPage }) => {

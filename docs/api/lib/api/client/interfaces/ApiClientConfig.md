@@ -6,7 +6,7 @@
 
 # Interface: ApiClientConfig
 
-Defined in: [lib/api/client.ts:23](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L23)
+Defined in: [lib/api/client.ts:23](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L23)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/api/client.ts:23](https://github.com/maxpipoka/quini6_frontend/
 
 > **baseUrl**: `string`
 
-Defined in: [lib/api/client.ts:24](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L24)
+Defined in: [lib/api/client.ts:24](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L24)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/api/client.ts:24](https://github.com/maxpipoka/quini6_frontend/
 
 > `optional` **timeout?**: `number`
 
-Defined in: [lib/api/client.ts:25](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L25)
+Defined in: [lib/api/client.ts:25](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L25)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [lib/api/client.ts:25](https://github.com/maxpipoka/quini6_frontend/
 
 > `optional` **defaultHeaders?**: `Record`\<`string`, `string`\>
 
-Defined in: [lib/api/client.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L26)
+Defined in: [lib/api/client.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L26)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [lib/api/client.ts:26](https://github.com/maxpipoka/quini6_frontend/
 
 > `optional` **retryAttempts?**: `number`
 
-Defined in: [lib/api/client.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L27)
+Defined in: [lib/api/client.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L27)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [lib/api/client.ts:27](https://github.com/maxpipoka/quini6_frontend/
 
 > `optional` **retryDelay?**: (`attempt`) => `number`
 
-Defined in: [lib/api/client.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/api/client.ts#L28)
+Defined in: [lib/api/client.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/api/client.ts#L28)
 
 #### Parameters
 

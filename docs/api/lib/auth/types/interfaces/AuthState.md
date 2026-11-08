@@ -6,7 +6,7 @@
 
 # Interface: AuthState
 
-Defined in: [lib/auth/types.ts:8](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L8)
+Defined in: [lib/auth/types.ts:8](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L8)
 
 ## Extended by
 
@@ -18,7 +18,7 @@ Defined in: [lib/auth/types.ts:8](https://github.com/maxpipoka/quini6_frontend/b
 
 > **user**: [`User`](User.md) \| `null`
 
-Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L9)
+Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L9)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/b
 
 > **isLoading**: `boolean`
 
-Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L10)
+Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L10)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/
 
 > **isAuthenticated**: `boolean`
 
-Defined in: [lib/auth/types.ts:11](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L11)
+Defined in: [lib/auth/types.ts:11](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L11)

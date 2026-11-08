@@ -42,7 +42,8 @@ const mockImportErrors = {
 
 export const handlers = [
   // Health check endpoints (for HealthDashboard tests)
-  http.get('http://localhost:3001/api/health', () => {
+  // Use relative URLs to match component behavior in dev mode (import.meta.env.DEV === true)
+  http.get('/health', () => {
     return HttpResponse.json({
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -51,7 +52,7 @@ export const handlers = [
     });
   }),
 
-  http.get('http://localhost:3001/api/health/db', () => {
+  http.get('/health/db', () => {
     return HttpResponse.json({
       status: 'ok',
       timestamp: new Date().toISOString(),

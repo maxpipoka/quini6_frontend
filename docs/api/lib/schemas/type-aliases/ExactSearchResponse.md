@@ -8,4 +8,4 @@
 
 > **ExactSearchResponse** = `z.infer`\<*typeof* [`ExactSearchResponseSchema`](../variables/ExactSearchResponseSchema.md)\>
 
-Defined in: [lib/schemas.ts:118](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/schemas.ts#L118)
+Defined in: [lib/schemas.ts:118](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/schemas.ts#L118)

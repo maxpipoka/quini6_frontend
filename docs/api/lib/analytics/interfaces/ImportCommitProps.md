@@ -6,7 +6,7 @@
 
 # Interface: ImportCommitProps
 
-Defined in: [lib/analytics.ts:42](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L42)
+Defined in: [lib/analytics.ts:42](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L42)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [lib/analytics.ts:42](https://github.com/maxpipoka/quini6_frontend/b
 
 > **importId**: `string`
 
-Defined in: [lib/analytics.ts:43](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L43)
+Defined in: [lib/analytics.ts:43](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L43)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [lib/analytics.ts:43](https://github.com/maxpipoka/quini6_frontend/b
 
 > **policy**: `"skip"` \| `"replace"` \| `"merge"`
 
-Defined in: [lib/analytics.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L44)
+Defined in: [lib/analytics.ts:44](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L44)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [lib/analytics.ts:44](https://github.com/maxpipoka/quini6_frontend/b
 
 > **selectedRows**: `number`
 
-Defined in: [lib/analytics.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/analytics.ts#L45)
+Defined in: [lib/analytics.ts:45](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/analytics.ts#L45)

@@ -6,7 +6,7 @@
 
 # Interface: AuthContextValue
 
-Defined in: [lib/auth/types.ts:24](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L24)
+Defined in: [lib/auth/types.ts:24](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L24)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [lib/auth/types.ts:24](https://github.com/maxpipoka/quini6_frontend/
 
 > **user**: [`User`](User.md) \| `null`
 
-Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L9)
+Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L9)
 
 #### Inherited from
 
@@ -30,7 +30,7 @@ Defined in: [lib/auth/types.ts:9](https://github.com/maxpipoka/quini6_frontend/b
 
 > **isLoading**: `boolean`
 
-Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L10)
+Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L10)
 
 #### Inherited from
 
@@ -42,7 +42,7 @@ Defined in: [lib/auth/types.ts:10](https://github.com/maxpipoka/quini6_frontend/
 
 > **isAuthenticated**: `boolean`
 
-Defined in: [lib/auth/types.ts:11](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L11)
+Defined in: [lib/auth/types.ts:11](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L11)
 
 #### Inherited from
 
@@ -54,7 +54,7 @@ Defined in: [lib/auth/types.ts:11](https://github.com/maxpipoka/quini6_frontend/
 
 > **login**: (`creds`) => `Promise`\<`void`\>
 
-Defined in: [lib/auth/types.ts:25](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L25)
+Defined in: [lib/auth/types.ts:25](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L25)
 
 #### Parameters
 
@@ -72,7 +72,7 @@ Defined in: [lib/auth/types.ts:25](https://github.com/maxpipoka/quini6_frontend/
 
 > **logout**: () => `Promise`\<`void`\>
 
-Defined in: [lib/auth/types.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L26)
+Defined in: [lib/auth/types.ts:26](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L26)
 
 #### Returns
 
@@ -84,7 +84,7 @@ Defined in: [lib/auth/types.ts:26](https://github.com/maxpipoka/quini6_frontend/
 
 > **changePassword**: (`data`) => `Promise`\<`void`\>
 
-Defined in: [lib/auth/types.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L27)
+Defined in: [lib/auth/types.ts:27](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L27)
 
 #### Parameters
 
@@ -102,7 +102,7 @@ Defined in: [lib/auth/types.ts:27](https://github.com/maxpipoka/quini6_frontend/
 
 > **refresh**: () => `Promise`\<`void`\>
 
-Defined in: [lib/auth/types.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L28)
+Defined in: [lib/auth/types.ts:28](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L28)
 
 #### Returns
 
@@ -114,7 +114,7 @@ Defined in: [lib/auth/types.ts:28](https://github.com/maxpipoka/quini6_frontend/
 
 > **getCsrfToken**: () => `string` \| `null`
 
-Defined in: [lib/auth/types.ts:29](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/auth/types.ts#L29)
+Defined in: [lib/auth/types.ts:29](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/auth/types.ts#L29)
 
 #### Returns
 

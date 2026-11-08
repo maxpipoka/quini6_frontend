@@ -8,7 +8,7 @@
 
 > **sitemapFilter**(`page`): `boolean`
 
-Defined in: [lib/sitemap-generator.ts:67](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/lib/sitemap-generator.ts#L67)
+Defined in: [lib/sitemap-generator.ts:67](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/lib/sitemap-generator.ts#L67)
 
 Filter function to exclude admin and test-fixtures routes
 

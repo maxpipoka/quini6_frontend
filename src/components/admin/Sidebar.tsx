@@ -103,7 +103,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
             <li key={href}>
               <a
                 href={href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
                   currentPath === href ? 'bg-primary-500/10 text-primary-500' : ''
                 }`}
                 title={collapsed ? label : undefined}
@@ -120,7 +120,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
         {!collapsed && (
           <button
             onClick={handleLogout}
-            className="bg-error-500/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:text-error-500"
+            className="bg-error-500/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:text-error-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-error-500 focus-visible:ring-offset-2"
           >
             <LogOut className="size-5 flex-shrink-0" aria-hidden="true" />
             <span className="font-medium">Cerrar sesión</span>
@@ -129,7 +129,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
 
         <button
           onClick={toggle}
-          className={`flex w-full items-center justify-center rounded-lg px-3 py-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary ${
+          className={`flex w-full items-center justify-center rounded-lg px-3 py-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
             collapsed ? 'ml-auto' : ''
           }`}
           aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}

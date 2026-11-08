@@ -6,7 +6,7 @@
 
 # Interface: HealthHistoryEntry
 
-Defined in: [components/admin/HealthDashboard.tsx:20](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/HealthDashboard.tsx#L20)
+Defined in: [components/admin/HealthDashboard.tsx:20](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/HealthDashboard.tsx#L20)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/admin/HealthDashboard.tsx:20](https://github.com/maxpipo
 
 > **timestamp**: `string`
 
-Defined in: [components/admin/HealthDashboard.tsx:21](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/HealthDashboard.tsx#L21)
+Defined in: [components/admin/HealthDashboard.tsx:21](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/HealthDashboard.tsx#L21)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [components/admin/HealthDashboard.tsx:21](https://github.com/maxpipo
 
 > **apiHealth**: \{ `status`: `"ok"` \| `"degraded"` \| `"down"`; `timestamp`: `string`; `uptime`: `number`; `version`: `string`; \} \| `null`
 
-Defined in: [components/admin/HealthDashboard.tsx:22](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/HealthDashboard.tsx#L22)
+Defined in: [components/admin/HealthDashboard.tsx:22](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/HealthDashboard.tsx#L22)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [components/admin/HealthDashboard.tsx:22](https://github.com/maxpipo
 
 > **dbHealth**: \{ `status`: `"ok"` \| `"down"`; `latency`: `number`; `timestamp`: `string`; \} \| `null`
 
-Defined in: [components/admin/HealthDashboard.tsx:23](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/HealthDashboard.tsx#L23)
+Defined in: [components/admin/HealthDashboard.tsx:23](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/HealthDashboard.tsx#L23)

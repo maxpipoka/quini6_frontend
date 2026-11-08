@@ -6,7 +6,7 @@
 
 # Interface: DrawFormWizardProps
 
-Defined in: [components/admin/DrawFormWizard.tsx:14](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L14)
+Defined in: [components/admin/DrawFormWizard.tsx:14](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L14)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: [components/admin/DrawFormWizard.tsx:14](https://github.com/maxpipok
 
 > `optional` **initialData?**: `Partial`\<\{ `officialNumber`: `number`; `drawDate`: `string`; `results`: `object`[]; \}\>
 
-Defined in: [components/admin/DrawFormWizard.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L15)
+Defined in: [components/admin/DrawFormWizard.tsx:15](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L15)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [components/admin/DrawFormWizard.tsx:15](https://github.com/maxpipok
 
 > `optional` **isEditing?**: `boolean`
 
-Defined in: [components/admin/DrawFormWizard.tsx:16](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L16)
+Defined in: [components/admin/DrawFormWizard.tsx:16](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L16)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [components/admin/DrawFormWizard.tsx:16](https://github.com/maxpipok
 
 > `optional` **drawId?**: `string`
 
-Defined in: [components/admin/DrawFormWizard.tsx:17](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L17)
+Defined in: [components/admin/DrawFormWizard.tsx:17](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L17)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [components/admin/DrawFormWizard.tsx:17](https://github.com/maxpipok
 
 > **onSubmit**: (`data`) => `Promise`\<`void`\>
 
-Defined in: [components/admin/DrawFormWizard.tsx:18](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L18)
+Defined in: [components/admin/DrawFormWizard.tsx:18](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L18)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [components/admin/DrawFormWizard.tsx:18](https://github.com/maxpipok
 
 > **onCancel**: () => `void`
 
-Defined in: [components/admin/DrawFormWizard.tsx:19](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L19)
+Defined in: [components/admin/DrawFormWizard.tsx:19](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L19)
 
 #### Returns
 
@@ -68,4 +68,4 @@ Defined in: [components/admin/DrawFormWizard.tsx:19](https://github.com/maxpipok
 
 > `optional` **isLoading?**: `boolean`
 
-Defined in: [components/admin/DrawFormWizard.tsx:20](https://github.com/maxpipoka/quini6_frontend/blob/8c4672644da6592ce81e785866b473183e5202e0/src/components/admin/DrawFormWizard.tsx#L20)
+Defined in: [components/admin/DrawFormWizard.tsx:20](https://github.com/maxpipoka/quini6_frontend/blob/9f722dfc2bfe14741847adbac029e48d9370d9af/src/components/admin/DrawFormWizard.tsx#L20)

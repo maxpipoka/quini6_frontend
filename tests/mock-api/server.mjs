@@ -82,6 +82,18 @@ function notFound(res, path, message, req) {
   }, req);
 }
 
+// Sentry envelope endpoint for integration tests
+function handleSentryEnvelope(req, res) {
+  const envelope = req.url.split('/envelope/')[1] || '';
+  const envelopeData = {
+    envelope: envelope,
+    timestamp: new Date().toISOString(),
+    headers: Object.fromEntries(req.headers),
+  };
+  sentryEnvelopes.push(envelopeData);
+  sendJson(res, 200, { status: 'ok' }, req);
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
@@ -99,6 +111,9 @@ function readBody(req) {
 
 // In-memory session store (per worker, cleared on restart)
 const sessions = new Map();
+
+// In-memory Sentry envelope store for integration tests
+const sentryEnvelopes = [];
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url ?? '/', `http://localhost:${PORT}`);
@@ -120,7 +135,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Health check
-  if (path === '/api/health') {
+  // Handle both /api/health (direct) and /health (via dev server proxy)
+  if (path === '/api/health' || path === '/health') {
     // Accept x-test-session header OR session cookie for E2E auth bypass (like middleware does)
     const testSessionHeader = req.headers['x-test-session'];
     const cookie = req.headers.cookie || '';
@@ -143,8 +159,15 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Sentry envelope endpoint for integration tests
+  if (path.startsWith('/api/') && path.includes('/envelope/')) {
+    handleSentryEnvelope(req, res);
+    return;
+  }
+
   // DB Health check
-  if (path === '/api/health/db') {
+  // Handle both /api/health/db (direct) and /health/db (via dev server proxy)
+  if (path === '/api/health/db' || path === '/health/db') {
     // Accept x-test-session header OR session cookie for E2E auth bypass
     const testSessionHeader = req.headers['x-test-session'];
     const cookie = req.headers.cookie || '';

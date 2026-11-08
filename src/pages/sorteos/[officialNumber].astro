@@ -20,9 +20,9 @@ interface DrawLike {
 }
 
 interface Props {
-  draw: DrawLike;
-  prevDraw: DrawLike | null;
-  nextDraw: DrawLike | null;
+  draw?: DrawLike;
+  prevDraw?: DrawLike | null;
+  nextDraw?: DrawLike | null;
 }
 
 /**
@@ -114,7 +114,35 @@ export const headers = {
   'Cache-Control': 'public, max-age=0, stale-while-revalidate=60',
 };
 
-const { draw, prevDraw, nextDraw } = Astro.props;
+const { draw: drawProp, prevDraw: prevDrawProp, nextDraw: nextDrawProp } = Astro.props;
+const officialNumber = Number(Astro.params.officialNumber);
+
+// Fetch draw data if not provided via props (fallback mode)
+let draw = drawProp;
+let prevDraw = prevDrawProp;
+let nextDraw = nextDrawProp;
+
+if (!draw) {
+  try {
+    const apiClient = getApiClient();
+    const drawData = await apiClient.getDrawByNumber(officialNumber);
+    draw = drawData;
+
+    // Also fetch prev/next for navigation
+    const allDraws = await apiClient.getDrawHistory({ page: 1, limit: 1000 });
+    const sortedDraws = allDraws.data.sort((a, b) => a.officialNumber - b.officialNumber);
+    const currentIndex = sortedDraws.findIndex((d) => d.officialNumber === officialNumber);
+    if (currentIndex > 0) prevDraw = sortedDraws[currentIndex - 1];
+    if (currentIndex < sortedDraws.length - 1) nextDraw = sortedDraws[currentIndex + 1];
+  } catch (error) {
+    console.error(`Failed to fetch draw ${officialNumber}:`, error);
+  }
+}
+
+// If still no draw, show 404 (Astro will handle this via fallback)
+if (!draw) {
+  return Astro.redirect('/404');
+}
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -155,12 +183,7 @@ const canonicalUrl = `/sorteos/${draw.officialNumber}`;
 // Use default og-image since per-draw images don't exist yet
 ---
 
-<Layout
-  title={pageTitle}
-  description={pageDescription}
-  canonical={canonicalUrl}
-  ogType="article"
->
+<Layout title={pageTitle} description={pageDescription} canonical={canonicalUrl} ogType="article">
   <Header currentPath="/sorteos" />
 
   <main id="main-content" role="main">
