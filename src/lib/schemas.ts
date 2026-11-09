@@ -9,12 +9,33 @@ import { z } from 'zod';
 // Enums & Constants
 // ============================================================================
 
-export const ModalityEnum = z.enum([
+// Backend returns modalities with suffixes like "_PRIMERA", "_SEGUNDA"
+// We accept both canonical and backend variants, normalize to canonical
+const CanonicalModalityEnum = z.enum([
   'TRADICIONAL',
   'LA_SEGUNDA',
   'REVANCHA',
   'SIEMPRE_SALE',
 ] as const);
+
+const BackendModalityEnum = z.enum([
+  'TRADICIONAL_PRIMERA',
+  'TRADICIONAL_SEGUNDA',
+  'LA_SEGUNDA_PRIMERA',
+  'LA_SEGUNDA_SEGUNDA',
+  'REVANCHA_PRIMERA',
+  'REVANCHA_SEGUNDA',
+  'SIEMPRE_SALE_PRIMERA',
+  'SIEMPRE_SALE_SEGUNDA',
+] as const);
+
+export const ModalityEnum = z.union([CanonicalModalityEnum, BackendModalityEnum]).transform((val) => {
+  if (val.startsWith('TRADICIONAL')) return 'TRADICIONAL';
+  if (val.startsWith('LA_SEGUNDA')) return 'LA_SEGUNDA';
+  if (val.startsWith('REVANCHA')) return 'REVANCHA';
+  if (val.startsWith('SIEMPRE_SALE')) return 'SIEMPRE_SALE';
+  return val;
+});
 
 export type Modality = z.infer<typeof ModalityEnum>;
 
@@ -31,7 +52,7 @@ export const MODALITY_LABELS: Record<Modality, string> = {
 // Number Validation
 // ============================================================================
 
-export const DrawNumberSchema = z.number().int().min(0).max(45);
+export const DrawNumberSchema = z.coerce.number().int().min(0).max(45);
 
 export const SixUniqueNumbersSchema = z
   .array(DrawNumberSchema)
