@@ -128,8 +128,8 @@ if (!draw) {
     const drawData = await apiClient.getDrawByNumber(officialNumber);
     draw = drawData;
 
-    // Also fetch prev/next for navigation
-    const allDraws = await apiClient.getDrawHistory({ page: 1, limit: 1000 });
+    // Also fetch prev/next for navigation (max limit 100 per backend)
+    const allDraws = await apiClient.getDrawHistory({ page: 1, limit: 100 });
     const sortedDraws = allDraws.data.sort((a, b) => a.officialNumber - b.officialNumber);
     const currentIndex = sortedDraws.findIndex((d) => d.officialNumber === officialNumber);
     if (currentIndex > 0) prevDraw = sortedDraws[currentIndex - 1];
