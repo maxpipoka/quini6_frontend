@@ -186,7 +186,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                         {MODALITY_LABELS[result.modality] ?? result.modality}
                       </span>
                       <div
-                        class="flex gap-1.5"
+                        class="flex gap-2"
                         role="img"
                         aria-label={`${MODALITY_LABELS[result.modality]}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
                       >
@@ -263,7 +263,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                           {MODALITY_LABELS[result.modality] ?? result.modality}
                         </span>
                         <div
-                          class="flex gap-0.5"
+                          class="flex gap-1.5"
                           role="img"
                           aria-label={`${MODALITY_LABELS[result.modality]}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
                         >
