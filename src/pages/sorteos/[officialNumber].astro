@@ -225,7 +225,7 @@ const canonicalUrl = `/sorteos/${draw.officialNumber}`;
       {/* Modalities Grid */}
       <section aria-labelledby="modalities-heading" class="mb-12">
         <h2 id="modalities-heading" class="sr-only">Modalidades del sorteo</h2>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col gap-6">
           {
             draw.results.map((result) => (
               <article key={result.modality} class="card-elevated p-6 text-center">
