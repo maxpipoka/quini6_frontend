@@ -8,7 +8,7 @@ export const prerender = true;
 export function GET({ site }: APIContext): Response {
   const siteUrl = (site?.href ?? CONFIG_SITE_URL).replace(/\/$/, '');
 
-  const robotsTxt = `# Quini 6 Frontend - Robots.txt
+  const robotsTxt = `# Info Quini 6 - Robots.txt
 User-agent: *
 Allow: /
 

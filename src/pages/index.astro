@@ -111,7 +111,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
 
 <Layout
   title="Inicio"
-  description="Resultados y estadísticas del Quini 6 - Consulte el último sorteo, historial completo y busque sus números favoritos."
+  description="Resultados y estadísticas del Info Quini 6 - Consulte el último sorteo, historial completo y busque sus números favoritos."
 >
   <Header currentPath="/" />
 
@@ -126,7 +126,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
             Resultados y estadísticas del <span class="text-primary-600">Quini 6</span>
           </h1>
           <p class="mb-8 text-lg text-text-secondary">
-            Consulte sorteos históricos, busque sus combinaciones favoritas y analice la frecuencia
+            Consultá sorteos históricos, buscá tus combinaciones favoritas y analizá la frecuencia
             de los números. Datos oficiales actualizados.
           </p>
           <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -140,16 +140,13 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
     <!-- Featured Card: Último Sorteo -->
     <section class="py-12 md:py-16" aria-labelledby="latest-draw-heading">
       <Container maxWidth="lg">
-        <div class="mb-8 flex items-center justify-between">
-          <h2 id="latest-draw-heading" class="font-sans text-heading-xl text-text-primary">
+        <div class="mb-8 text-center">
+          <h2
+            id="latest-draw-heading"
+            class="font-sans text-heading-xl uppercase text-text-primary"
+          >
             Último sorteo
           </h2>
-          <a
-            href="/sorteos"
-            class="text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
-          >
-            Ver todos →
-          </a>
         </div>
 
         {
@@ -179,14 +176,14 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
               </div>
 
               <div class="p-6 md:p-8">
-                <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div class="flex flex-col gap-10">
                   {latestDraw.results.map((result) => (
-                    <div key={result.modality} class="flex flex-col items-center gap-3 text-center">
-                      <span class="text-caption font-semibold uppercase tracking-wide text-text-secondary">
+                    <div key={result.modality} class="flex flex-col items-center gap-6 text-center">
+                      <span class="text-3xl font-bold uppercase tracking-wide text-text-primary">
                         {MODALITY_LABELS[result.modality] ?? result.modality}
                       </span>
                       <div
-                        class="flex gap-1.5"
+                        class="flex gap-2"
                         role="img"
                         aria-label={`${MODALITY_LABELS[result.modality]}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
                       >
@@ -194,7 +191,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
                           <NumberBall
                             key={idx}
                             number={num}
-                            size="lg"
+                            size="xl"
                             variant={MODALITY_COLORS[result.modality] ?? 'primary'}
                           />
                         ))}
@@ -214,6 +211,22 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
       </Container>
     </section>
 
+    <!-- Ad Slot (Small) -->
+    <section class="py-4" aria-labelledby="ad-heading-small" role="complementary">
+      <Container maxWidth="lg">
+        <div
+          id="ad-slot-small"
+          class="flex aspect-[10/1] items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800"
+          role="region"
+          aria-label="Espacio publicitario"
+        >
+          <div class="p-2 text-center">
+            <p class="text-xs text-text-secondary">Anuncio</p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
     <!-- Recent Draws -->
     <section class="bg-surface py-12 md:py-16" aria-labelledby="recent-draws-heading">
       <Container maxWidth="lg">
@@ -221,12 +234,7 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
           <h2 id="recent-draws-heading" class="font-sans text-heading-xl text-text-primary">
             Sorteos recientes
           </h2>
-          <a
-            href="/sorteos"
-            class="text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
-          >
-            Ver todos →
-          </a>
+          <Button variant="secondary" size="sm" href="/sorteos"> Ver todos → </Button>
         </div>
 
         {
@@ -238,47 +246,35 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
               </Button>
             </div>
           ) : recentDraws ? (
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div class="space-y-3">
               {recentDraws.map((draw) => (
                 <a
                   key={draw.id}
                   href={`/sorteos/${draw.officialNumber}`}
-                  class="card-elevated block p-6 transition-shadow hover:shadow-lg"
+                  class="card-elevated dark:hover:bg-primary-900/20 flex items-center justify-between border-l-4 border-primary-500 p-4 transition-colors hover:bg-primary-50"
                 >
-                  <div class="mb-4 flex items-center justify-between">
-                    <span class="text-sm font-semibold text-primary-600 dark:text-primary-400">
+                  <div class="flex flex-col">
+                    <span class="text-lg font-semibold text-text-primary">
                       Sorteo Nº {draw.officialNumber}
                     </span>
-                    <time class="text-caption text-text-secondary" dateTime={draw.drawDate}>
-                      {formatShortDate(draw.drawDate)}
+                    <time class="text-sm text-text-secondary" dateTime={draw.drawDate}>
+                      {formatDate(draw.drawDate)}
                     </time>
                   </div>
-                  <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-                    {draw.results.map((result) => (
-                      <div
-                        key={result.modality}
-                        class="flex flex-col items-center gap-1.5 text-center"
-                      >
-                        <span class="text-xs font-medium uppercase tracking-wide text-text-secondary">
-                          {MODALITY_LABELS[result.modality] ?? result.modality}
-                        </span>
-                        <div
-                          class="flex gap-0.5"
-                          role="img"
-                          aria-label={`${MODALITY_LABELS[result.modality]}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
-                        >
-                          {result.numbers.map((num, idx) => (
-                            <NumberBall
-                              key={idx}
-                              number={num}
-                              size="sm"
-                              variant={MODALITY_COLORS[result.modality] ?? 'primary'}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <svg
+                    class="h-5 w-5 text-text-secondary transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </a>
               ))}
             </div>
@@ -297,11 +293,11 @@ const MODALITY_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'war
       <Container maxWidth="lg">
         <div class="text-center text-white">
           <h2 id="cta-heading" class="mb-4 font-sans text-display-sm text-white">
-            ¿Quiere buscar una combinación específica?
+            ¿Querés buscar una combinación específica?
           </h2>
           <p class="mx-auto mb-8 max-w-2xl text-lg text-primary-100">
-            Ingrese sus 6 números y le mostraremos en qué sorteos han salido juntos, con todas las
-            modalidades y fechas.
+            Ingresá tus 6 números y te mostraremos si alguna vez salieron juntos, en qué sorteos han
+            salido, con todas las modalidades y fechas.
           </p>
           <Button href="/buscar" size="lg" variant="secondary"> Buscar combinación </Button>
         </div>

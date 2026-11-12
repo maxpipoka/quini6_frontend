@@ -7,7 +7,7 @@ describe('site.ts', () => {
 
   it('SITE_NAME is constant', async () => {
     const { SITE_NAME } = await import('../../src/config/site.ts');
-    expect(SITE_NAME).toBe('Quini 6 Estadísticas');
+    expect(SITE_NAME).toBe('Info Quini 6');
   });
 
   it('SITE_URL is a valid URL', async () => {

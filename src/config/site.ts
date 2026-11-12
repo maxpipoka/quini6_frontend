@@ -5,4 +5,4 @@
  */
 
 export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://quini6.com';
-export const SITE_NAME = 'Quini 6 Estadísticas';
+export const SITE_NAME = 'Info Quini 6';

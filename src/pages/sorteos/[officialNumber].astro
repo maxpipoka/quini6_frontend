@@ -225,7 +225,7 @@ const canonicalUrl = `/sorteos/${draw.officialNumber}`;
       {/* Modalities Grid */}
       <section aria-labelledby="modalities-heading" class="mb-12">
         <h2 id="modalities-heading" class="sr-only">Modalidades del sorteo</h2>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col gap-6">
           {
             draw.results.map((result) => (
               <article key={result.modality} class="card-elevated p-6 text-center">
@@ -235,7 +235,7 @@ const canonicalUrl = `/sorteos/${draw.officialNumber}`;
                   </span>
                 </header>
                 <div
-                  class="flex flex-wrap justify-center gap-2"
+                  class="flex flex-wrap justify-center gap-3"
                   role="img"
                   aria-label={`${MODALITY_LABELS[result.modality] ?? result.modality}: ${result.numbers.map((n) => n.toString().padStart(2, '0')).join(', ')}`}
                 >

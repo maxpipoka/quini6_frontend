@@ -5,7 +5,7 @@ import { formatDrawNumber } from '../../lib/schemas';
 // Types
 // ============================================================================
 
-export type NumberBallSize = 'sm' | 'md' | 'lg';
+export type NumberBallSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type NumberBallVariant = 'primary' | 'secondary' | 'success' | 'warning';
 
 export interface NumberBallProps {
@@ -23,6 +23,8 @@ const sizeClasses: Record<NumberBallSize, string> = {
   sm: 'w-6 h-6 text-caption',
   md: 'w-8 h-8 text-base-sm',
   lg: 'w-12 h-12 text-lg',
+  xl: 'w-20 h-20 text-2xl',
+  '2xl': 'w-32 h-32 text-5xl',
 };
 
 const variantClasses: Record<NumberBallVariant, string> = {
