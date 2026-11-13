@@ -39,33 +39,11 @@ import { Header, Footer, Container } from '../components/layout';
           <h2>2. Qué tecnologías usamos</h2>
 
           <h3>2.1 Cookies estrictamente necesarias (sin consentimiento)</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Origen</th>
-                <th>Duración</th>
-                <th>Finalidad</th>
-                <th>Base legal</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>session</code></td>
-                <td>Backend (API)</td>
-                <td>Sesión (expira al cerrar navegador)</td>
-                <td>Autenticación en área de administración (<code>/admin/*</code>). Identifica tu sesión de administrador.</td>
-                <td>Interés legítimo / Ejecución de contrato (acceso admin)</td>
-              </tr>
-              <tr>
-                <td><code>csrf_token</code></td>
-                <td>Frontend (JS)</td>
-                <td>Sesión</td>
-                <td>Protección contra falsificación de petición entre sitios (CSRF) en formularios de admin.</td>
-                <td>Interés legítimo (seguridad)</td>
-              </tr>
-            </tbody>
-          </table>
+          <p>
+            <strong>Los usuarios públicos no reciben cookies.</strong> Las cookies <code>session</code> y <code>csrf_token</code>
+            solo se usan en el área de administración (<code>/admin/*</code>) para autenticación y protección CSRF.
+            Si no accedés al panel de admin, no se establece ninguna cookie.
+          </p>
 
           <h3>2.2 Almacenamiento local (localStorage) - Solo en tu navegador</h3>
           <p>Estos datos <strong>nunca salen de tu dispositivo</strong>. No se envían a nuestros servidores.</p>
@@ -85,20 +63,12 @@ import { Header, Footer, Container } from '../components/layout';
                 <td>Recordar tu preferencia de tema claro/oscuro entre visitas.</td>
                 <td>Consentimiento implícito (preferencia de usuario - Art. 5.3 ePrivacy)</td>
               </tr>
-              <tr>
-                <td><code>sidebar-collapsed</code></td>
-                <td>Solo <code>/admin/*</code></td>
-                <td>Recordar si tenés el menú lateral colapsado o expandido.</td>
-                <td>Consentimiento implícito (preferencia UI)</td>
-              </tr>
-              <tr>
-                <td><code>health-dashboard-history</code></td>
-                <td>Solo <code>/admin/health</code></td>
-                <td>Historial local de chequeos de salud del sistema (últimas 50 consultas).</td>
-                <td>Interés legítimo (funcionalidad admin)</td>
-              </tr>
             </tbody>
           </table>
+          <p class="text-sm text-text-secondary mt-2">
+            <em>Nota:</em> Las claves <code>sidebar-collapsed</code> y <code>health-dashboard-history</code>
+            solo se usan en el panel de administración (<code>/admin/*</code>) y no afectan a usuarios públicos.
+          </p>
 
           <h3>2.3 Almacenamiento de sesión (sessionStorage)</h3>
           <table>
