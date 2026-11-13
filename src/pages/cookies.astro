@@ -1,0 +1,221 @@
+---
+/**
+ * Cookie Policy Page - Info Quini 6
+ * Transparent disclosure of all cookies, localStorage, and tracking technologies used
+ */
+
+import Layout from '../layouts/Layout.astro';
+import { Header, Footer, Container } from '../components/layout';
+---
+
+<Layout
+  title="Política de Cookies"
+  description="Política de cookies de Info Quini 6. Información transparente sobre qué datos almacenamos, para qué sirven y tus derechos."
+>
+  <Header currentPath="/cookies" />
+
+  <main id="main-content" role="main">
+    <section class="bg-surface py-12 md:py-16" aria-labelledby="cookies-heading">
+      <Container maxWidth="prose">
+        <header class="mb-12 text-center">
+          <h1 id="cookies-heading" class="font-sans text-display-sm md:text-display-md text-text-primary">
+            Política de Cookies
+          </h1>
+          <p class="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
+            Última actualización: {new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+        </header>
+
+        <article class="prose prose-neutral dark:prose-invert max-w-none">
+          <h2>1. Resumen ejecutivo</h2>
+          <p>
+            <strong>Info Quini 6 <em>no utiliza cookies de seguimiento, publicidad ni análisis invasivos.</em></strong>
+            Solo empleamos tecnologías estrictamente necesarias para el funcionamiento del sitio y preferencias de usuario.
+          </p>
+          <p>
+            No vendemos tus datos. No construimos perfiles publicitarios. No compartimos información con terceros para marketing.
+          </p>
+
+          <h2>2. Qué tecnologías usamos</h2>
+
+          <h3>2.1 Cookies estrictamente necesarias (sin consentimiento)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Origen</th>
+                <th>Duración</th>
+                <th>Finalidad</th>
+                <th>Base legal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>session</code></td>
+                <td>Backend (API)</td>
+                <td>Sesión (expira al cerrar navegador)</td>
+                <td>Autenticación en área de administración (<code>/admin/*</code>). Identifica tu sesión de administrador.</td>
+                <td>Interés legítimo / Ejecución de contrato (acceso admin)</td>
+              </tr>
+              <tr>
+                <td><code>csrf_token</code></td>
+                <td>Frontend (JS)</td>
+                <td>Sesión</td>
+                <td>Protección contra falsificación de petición entre sitios (CSRF) en formularios de admin.</td>
+                <td>Interés legítimo (seguridad)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>2.2 Almacenamiento local (localStorage) - Solo en tu navegador</h3>
+          <p>Estos datos <strong>nunca salen de tu dispositivo</strong>. No se envían a nuestros servidores.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Clave</th>
+                <th>Ámbito</th>
+                <th>Finalidad</th>
+                <th>Base legal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>theme</code></td>
+                <td>Todo el sitio</td>
+                <td>Recordar tu preferencia de tema claro/oscuro entre visitas.</td>
+                <td>Consentimiento implícito (preferencia de usuario - Art. 5.3 ePrivacy)</td>
+              </tr>
+              <tr>
+                <td><code>sidebar-collapsed</code></td>
+                <td>Solo <code>/admin/*</code></td>
+                <td>Recordar si tenés el menú lateral colapsado o expandido.</td>
+                <td>Consentimiento implícito (preferencia UI)</td>
+              </tr>
+              <tr>
+                <td><code>health-dashboard-history</code></td>
+                <td>Solo <code>/admin/health</code></td>
+                <td>Historial local de chequeos de salud del sistema (últimas 50 consultas).</td>
+                <td>Interés legítimo (funcionalidad admin)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>2.3 Almacenamiento de sesión (sessionStorage)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Clave</th>
+                <th>Finalidad</th>
+                <th>Duración</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>hasNavigated</code></td>
+                <td>Evitar mover foco al título en la primera carga (accesibilidad).</td>
+                <td>Hasta cerrar la pestaña</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>2.4 Analítica: Plausible (cookieless)</h3>
+          <p>
+            Usamos <a href="https://plausible.io" target="_blank" rel="noopener noreferrer">Plausible Analytics</a>,
+            una alternativa a Google Analytics <strong>sin cookies</strong> y totalmente compatible con GDPR/ePrivacy.
+          </p>
+          <ul>
+            <li>No usa cookies ni localStorage</li>
+            <li>No recopila datos personales ni IP completas (hash anónimo)</li>
+            <li>No rastrea entre sitios</li>
+            <li>Datos agregados únicamente (páginas vistas, referrers, país aprox.)</li>
+            <li>Alojado en UE, no transfiere datos fuera</li>
+          </ul>
+          <p><strong>Base legal:</strong> Interés legítimo (mejora del sitio) — no requiere consentimiento previo.</p>
+
+          <h2>3. Qué <em>NO</em> usamos</h2>
+          <ul>
+            <li>❌ Cookies de publicidad (AdSense, DoubleClick, Meta Pixel, etc.)</li>
+            <li>❌ Cookies de analítica con seguimiento personal (Google Analytics _ga, _gid, etc.)</li>
+            <li>❌ Cookies de redes sociales (botones "Like", "Share" con tracking)</li>
+            <li>❌ Fingerprinting / canvas fingerprinting</li>
+            <li>❌ Terceros que construyan perfiles de usuario</li>
+          </ul>
+
+          <h2>4. Espacio publicitario (futuro)</h2>
+          <p>
+            El sitio incluye un <em>slot</em> para anuncios (placeholder visible en la home).
+            <strong>Actualmente no hay ninguna red de publicidad activa.</strong>
+            Si en el futuro se integrara una (ej. Google AdSense), se implementará:
+          </p>
+          <ul>
+            <li>Banner de consentimiento (CMP) previo a la carga de anuncios</li>
+            <li>Opción de rechazar cookies publicitarias</li>
+            <li>Actualización de esta política</li>
+          </ul>
+
+          <h2>5. Tus derechos</h2>
+          <p>Bajo GDPR (UE) y Ley 25.326 (Argentina), tenés derecho a:</p>
+          <ul>
+            <li><strong>Acceder</strong> a qué datos tuyos tratamos</li>
+            <li><strong>Rectificar</strong> datos inexactos</li>
+            <li><strong>Suprimir</strong> ("derecho al olvido")</li>
+            <li><strong>Oponerte</strong> al tratamiento por interés legítimo</li>
+            <li><strong>Portabilidad</strong> de tus datos</li>
+            <li><strong>Retirar consentimiento</strong> (cuando sea la base legal)</li>
+          </ul>
+          <p>Para ejercerlos: <a href="mailto:privacidad@infoquini6.com">privacidad@infoquini6.com</a></p>
+
+          <h2>6. Cómo gestionar/borrar estos datos</h2>
+          <h3>Navegador (cookies + localStorage + sessionStorage)</h3>
+          <ul>
+            <li>Chrome: <kbd>Ctrl+Shift+Delete</kbd> → "Cookies y otros datos de sitios"</li>
+            <li>Firefox: <kbd>Ctrl+Shift+Delete</kbd> → "Cookies y datos del sitio"</li>
+            <li>Safari: Preferencias → Privacidad → "Gestionar datos de sitios"</li>
+            <li>Edge: <kbd>Ctrl+Shift+Delete</kbd> → "Cookies y datos guardados"</li>
+          </ul>
+          <p>Para borrar solo este sitio: barra de dirección → 🔒/🛈 → Cookies → "Eliminar".</p>
+
+          <h3>Preferencia de tema (localStorage)</h3>
+          <p>También podés cambiar el tema con el botón 🌙/☀️ en la cabecera; eso actualiza <code>theme</code> automáticamente.</p>
+
+          <h2>7. Cambios en esta política</h2>
+          <p>
+            Cualquier cambio se publicará en esta página con nueva fecha de "Última actualización".
+            Si el cambio implica nuevo consentimiento (ej. ads), se mostrará banner solicitándolo.
+          </p>
+
+          <h2>8. Contacto</h2>
+          <address class="not-italic">
+            <strong>Responsable:</strong> Info Quini 6<br>
+            <strong>Email:</strong> <a href="mailto:privacidad@infoquini6.com">privacidad@infoquini6.com</a><br>
+            <strong>Datos oficiales:</strong> Lotería de Santa Fe (resultados públicos)
+          </address>
+        </article>
+      </Container>
+    </section>
+  </main>
+
+  <Footer showAdmin={false} />
+</Layout>
+
+<style>
+  /* Tabla responsive */
+  @media (max-width: 640px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
+
+  /* Prose tweaks para dark mode */
+  .prose th {
+    @apply bg-neutral-100 dark:bg-neutral-800 font-semibold;
+  }
+  .prose td, .prose th {
+    @apply border-border p-3 text-sm;
+  }
+  .prose code {
+    @apply bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+</style>
