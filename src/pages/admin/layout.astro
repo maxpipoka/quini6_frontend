@@ -83,7 +83,7 @@ const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN ?? '';
   </style>
 
   <!-- Sentry & Web Vitals Initialization -->
-  <script is:inline>
+  <script>
     import { initSentry, initWebVitals } from '@lib/sentry';
     // Initialize Sentry (production only, handled by @sentry/astro integration)
     // This ensures client-side configuration

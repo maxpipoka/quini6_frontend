@@ -122,12 +122,12 @@ if (!isOpen) {
   )
 }
 
-<script is:inline>
+<script>
   // Focus trap implementation
-  let previouslyFocusedElement: HTMLElement | null = null;
-  let focusableElements: HTMLElement[] = [];
+  var previouslyFocusedElement = null;
+  var focusableElements = [];
 
-  function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  function getFocusableElements(container) {
     const selector = [
       'button:not([disabled]):not([tabindex="-1"])',
       '[href]:not([disabled]):not([tabindex="-1"])',
@@ -138,12 +138,12 @@ if (!isOpen) {
       '[contenteditable="true"]:not([tabindex="-1"])',
     ].join(', ');
 
-    return Array.from(container.querySelectorAll<HTMLElement>(selector)).filter(
+    return Array.from(container.querySelectorAll(selector)).filter(
       (el) => el.offsetParent !== null
     ); // Only visible elements
   }
 
-  function trapFocus(event: KeyboardEvent) {
+  function trapFocus(event) {
     if (event.key !== 'Tab') return;
 
     const firstElement = focusableElements[0];
@@ -162,20 +162,20 @@ if (!isOpen) {
     }
   }
 
-  function handleKeydown(event: KeyboardEvent) {
+  function handleKeydown(event) {
     const modalRoot = document.querySelector('[data-modal-root]');
     if (!modalRoot) return;
 
     const closeOnEscape = modalRoot.dataset.closeOnEscape === 'true';
     if (closeOnEscape && event.key === 'Escape') {
-      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+      const closeBtn = modalRoot.querySelector('[data-modal-close]');
       closeBtn?.click();
     }
 
     trapFocus(event);
   }
 
-  function handleBackdropClick(event: MouseEvent) {
+  function handleBackdropClick(event) {
     const modalRoot = document.querySelector('[data-modal-root]');
     if (!modalRoot) return;
 
@@ -183,8 +183,8 @@ if (!isOpen) {
     if (!closeOnBackdrop) return;
 
     const panel = modalRoot.querySelector('[data-modal-panel]');
-    if (panel && !panel.contains(event.target as Node)) {
-      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+    if (panel && !panel.contains(event.target)) {
+      const closeBtn = modalRoot.querySelector('[data-modal-close]');
       closeBtn?.click();
     }
   }
@@ -194,16 +194,16 @@ if (!isOpen) {
     if (!modalRoot) return;
 
     // Store previously focused element
-    previouslyFocusedElement = document.activeElement as HTMLElement;
+    previouslyFocusedElement = document.activeElement;
 
     // Get focusable elements
     const panel = modalRoot.querySelector('[data-modal-panel]');
     if (panel) {
-      focusableElements = getFocusableElements(panel as HTMLElement);
+      focusableElements = getFocusableElements(panel);
 
       // Focus first focusable element or close button
       const firstFocusable = focusableElements[0];
-      const closeBtn = modalRoot.querySelector('[data-modal-close]') as HTMLElement;
+      const closeBtn = modalRoot.querySelector('[data-modal-close]');
       (firstFocusable || closeBtn)?.focus();
     }
 

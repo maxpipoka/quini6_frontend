@@ -57,9 +57,7 @@ const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.
     'error',
     (event) => {
       // Check if error is from an island
-      const errorBoundary = document.querySelector(
-        '[data-min-h-screen flex items-center justify-center]'
-      );
+      const errorBoundary = document.querySelector('[data-min-h-screen]');
       if (errorBoundary && event.target instanceof HTMLElement) {
         const islandRoot = event.target.closest('[data-astro-island]');
         if (islandRoot) {
@@ -84,10 +82,10 @@ const { fallback = 'Algo salió mal. Por favor, recargue la página.' } = Astro.
     }
   });
 
-  function showErrorFallback(boundary: HTMLElement, message: string) {
+  function showErrorFallback(boundary, message) {
     const fallback = boundary.querySelector('[data-error-fallback]');
     if (fallback) {
-      const content = fallback.content.cloneNode(true) as DocumentFragment;
+      const content = fallback.content.cloneNode(true);
       const messageEl = content.querySelector('p');
       if (messageEl) {
         messageEl.textContent = message;
