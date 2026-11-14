@@ -18,7 +18,9 @@ import { Header, Footer, Container } from '../components/layout';
     <section class="bg-surface py-12 md:py-16" aria-labelledby="cookies-heading">
       <Container maxWidth="prose">
         <header class="mb-12 text-center">
-          <p class="mb-3 text-sm font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400">
+          <p
+            class="mb-3 text-sm font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400"
+          >
             Privacidad
           </p>
           <h1
@@ -43,7 +45,7 @@ import { Header, Footer, Container } from '../components/layout';
           <section class="policy-section">
             <h2 class="policy-title">1. Resumen ejecutivo</h2>
             <div
-              class="mb-4 rounded-lg border-l-4 border-success-500 bg-success-50 p-4 dark:bg-success-700/20"
+              class="dark:bg-success-700/20 mb-4 rounded-lg border-l-4 border-success-500 bg-success-50 p-4"
             >
               <p class="font-medium text-success-700 dark:text-success-400">
                 No utilizamos cookies de seguimiento, publicidad ni análisis invasivos.
@@ -69,9 +71,9 @@ import { Header, Footer, Container } from '../components/layout';
             <div class="policy-callout">
               <p>
                 <strong>Los usuarios públicos no reciben cookies.</strong> Las cookies
-                <code>session</code> y <code>csrf_token</code> solo se usan en el panel de
-                administración (<code>/admin/*</code>) para autenticación y seguridad. Si no accedés
-                al admin, no se establece ninguna cookie.
+                <code>admin_session</code> y <code>csrf_token</code> solo se usan en el panel de administración
+                (<code>/admin/*</code>) para autenticación y seguridad. Si no accedés al admin, no
+                se establece ninguna cookie.
               </p>
             </div>
 
@@ -130,10 +132,8 @@ import { Header, Footer, Container } from '../components/layout';
             <!-- 2.4 Plausible -->
             <h3 class="policy-subtitle">2.4 Analítica: Plausible (sin cookies)</h3>
             <p class="policy-text">
-              Usamos <a
-                href="https://plausible.io"
-                target="_blank"
-                rel="noopener noreferrer">Plausible Analytics</a
+              Usamos <a href="https://plausible.io" target="_blank" rel="noopener noreferrer"
+                >Plausible Analytics</a
               >, una alternativa a Google Analytics sin cookies y compatible con GDPR/ePrivacy.
             </p>
             <ul class="policy-list">
@@ -144,8 +144,8 @@ import { Header, Footer, Container } from '../components/layout';
               <li>Alojado en UE, sin transferencia de datos fuera</li>
             </ul>
             <p class="policy-note">
-              <strong>Base legal:</strong> interés legítimo (mejora del sitio). No requiere
-              consentimiento previo.
+              <strong>Base legal:</strong> interés legítimo (mejora del sitio). No requiere consentimiento
+              previo.
             </p>
           </section>
 
@@ -167,8 +167,8 @@ import { Header, Footer, Container } from '../components/layout';
             <div class="policy-callout">
               <p>
                 El sitio incluye un slot para anuncios (placeholder en la home).
-                <strong>Actualmente no hay ninguna red de publicidad activa.</strong> Si en el
-                futuro se integrara una, se implementará:
+                <strong>Actualmente no hay ninguna red de publicidad activa.</strong> Si en el futuro
+                se integrara una, se implementará:
               </p>
             </div>
             <ul class="policy-list">
@@ -181,9 +181,7 @@ import { Header, Footer, Container } from '../components/layout';
           <!-- 5. Tus derechos -->
           <section class="policy-section">
             <h2 class="policy-title">5. Tus derechos</h2>
-            <p class="policy-text">
-              Bajo GDPR (UE) y Ley 25.326 (Argentina), tenés derecho a:
-            </p>
+            <p class="policy-text">Bajo GDPR (UE) y Ley 25.326 (Argentina), tenés derecho a:</p>
             <ul class="policy-list policy-list-rights">
               <li><strong>Acceder</strong> a qué datos tuyos tratamos</li>
               <li><strong>Rectificar</strong> datos inexactos</li>

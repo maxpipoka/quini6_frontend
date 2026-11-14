@@ -33,8 +33,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Protect /admin/* routes
   if (pathname.startsWith('/admin')) {
-    // Check for session cookie (set by backend on login)
-    const sessionCookie = cookies.get('session');
+    // Backend sets `admin_session`; e2e tests set `session` manually
+    const sessionCookie = cookies.get('admin_session') ?? cookies.get('session');
     const cookieHeader = context.request.headers.get('cookie') ?? 'none';
 
     // Parse cookie header manually as backup
@@ -43,7 +43,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       const cookiesArray = cookieHeader.split(';');
       for (const c of cookiesArray) {
         const [name, value] = c.trim().split('=');
-        if (name === 'session') {
+        if (name === 'admin_session' || name === 'session') {
           manualSession = value;
           break;
         }
