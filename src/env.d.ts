@@ -48,3 +48,10 @@ interface Window {
   initMobileMenu?: () => void;
   __headerScriptRan?: boolean;
 }
+
+// Globals exposed by page scripts (admin draws, edit/login pages)
+interface Window {
+  getCsrfToken?: () => string | null;
+  closeModals?: () => void;
+  openCreateModal?: () => void;
+}

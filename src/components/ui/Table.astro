@@ -38,6 +38,10 @@ const {
   'aria-describedby': ariaDescribedBy,
 } = Astro.props as Props<Record<string, unknown>>;
 
+// When the caller supplies a tbody slot, this component renders the table shell
+// and the page fills rows client-side (e.g. admin draws fetches data in the browser).
+const hasTbodySlot = Astro.slots.has('tbody');
+
 function getThClass(column: Column<Record<string, unknown>>) {
   let cls = 'text-text-secondary px-4 py-3 text-left text-sm font-semibold';
   if (column.align === 'center') cls += ' text-center';
@@ -78,18 +82,18 @@ const regionClass = 'w-full overflow-x-auto';
 
 <div class={regionClass} role="region" aria-label={ariaLabel} aria-describedby={ariaDescribedBy}>
   {
-    loadingState ? (
+    loadingState && !hasTbodySlot ? (
       <div class={loadingContainerClass} role="status" aria-live="polite">
         <Spinner size="lg" color="primary" aria-label={loadingText} />
         <p class={loadingTextClass}>{loadingText}</p>
       </div>
-    ) : data.length === 0 ? (
+    ) : data.length === 0 && !hasTbodySlot ? (
       <div class={emptyContainerClass}>
         <p class={emptyTextClass}>{emptyState}</p>
       </div>
     ) : (
       <div>
-        <div class={desktopTableClass}>
+        <div class={hasTbodySlot ? '' : desktopTableClass}>
           <table class={tableClass}>
             <thead>
               <tr class={headerRowClass}>
@@ -100,27 +104,33 @@ const regionClass = 'w-full overflow-x-auto';
                 ))}
               </tr>
             </thead>
-            <tbody class="divide-y divide-border">
-              {data.map((row, rowIndex) => (
-                <tr class={getTrClass(rowIndex)}>
-                  {columns.map((column) => {
-                    const cellValue = row[column.key];
-                    const rendered = column.render
-                      ? column.render(row, rowIndex)
-                      : (cellValue ?? '');
-                    return (
-                      <td class={getTdClass(column)} data-label={column.header}>
-                        {typeof rendered === 'object' && rendered !== null && 'html' in rendered ? (
-                          <Fragment set:html={rendered.html} />
-                        ) : (
-                          rendered
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
+            {hasTbodySlot ? (
+              <slot name="tbody" />
+            ) : (
+              <tbody class="divide-y divide-border">
+                {data.map((row, rowIndex) => (
+                  <tr class={getTrClass(rowIndex)}>
+                    {columns.map((column) => {
+                      const cellValue = row[column.key];
+                      const rendered = column.render
+                        ? column.render(row, rowIndex)
+                        : (cellValue ?? '');
+                      return (
+                        <td class={getTdClass(column)} data-label={column.header}>
+                          {typeof rendered === 'object' &&
+                          rendered !== null &&
+                          'html' in rendered ? (
+                            <Fragment set:html={rendered.html} />
+                          ) : (
+                            rendered
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
 

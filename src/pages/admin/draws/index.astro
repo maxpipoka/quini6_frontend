@@ -7,18 +7,22 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 ---
 
 <script>
-  // This page needs client-side interactivity for the modal and filters
-  // We'll handle data fetching and state management in the script
-</script>
+  import { formatDrawNumber } from '@lib/schemas';
+  import type { DrawSummary } from '@lib/schemas';
 
-<script is:inline>
+  interface DrawsPageResponse {
+    data: DrawSummary[];
+    page: number;
+    totalPages: number;
+  }
+
   // Client-side data fetching and state management
   // This runs in the browser after hydration
   let currentPage = 1;
   let currentFilters = { startDate: '', endDate: '', modality: '' };
   let totalPages = 1;
 
-  async function fetchDraws(page = 1, filters = currentFilters) {
+  async function fetchDraws(page = 1, filters = currentFilters): Promise<DrawsPageResponse> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: '20',
@@ -36,7 +40,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
       throw new Error('Error al cargar sorteos');
     }
 
-    return response.json();
+    return (await response.json()) as DrawsPageResponse;
   }
 
   async function deleteDraw(id: string) {
@@ -49,8 +53,8 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Error al eliminar sorteo');
+      const error = (await response.json()) as { message?: string };
+      throw new Error(error.message ?? 'Error al eliminar sorteo');
     }
   }
 
@@ -75,19 +79,16 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
   }
 
   // Initialize
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('astro:page-load', async () => {
     await loadDraws();
   });
 
   async function loadDraws() {
     const tableBody = document.getElementById('draws-table-body');
-    const emptyState = document.getElementById('empty-state');
-    const pagination = document.getElementById('pagination');
+    if (!tableBody) return;
 
-    if (tableBody) {
-      tableBody.innerHTML =
-        '<tr><td colspan="5" class="text-center py-8"><span class="animate-spin size-8 border-4 border-primary-500 border-t-transparent rounded-full"></span></td></tr>';
-    }
+    tableBody.innerHTML =
+      '<tr><td colspan="5" class="text-center py-8"><span class="animate-spin inline-block size-8 border-4 border-primary-500 border-t-transparent rounded-full"></span><span class="sr-only">Cargando sorteos...</span></td></tr>';
 
     try {
       const data = await fetchDraws(currentPage, currentFilters);
@@ -95,9 +96,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
       renderPagination(data.page, data.totalPages);
     } catch (error) {
       console.error('Error loading draws:', error);
-      if (tableBody) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-error-500">Error al cargar sorteos</td></tr>`;
-      }
+      tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-error-500">Error al cargar sorteos</td></tr>`;
     }
   }
 
@@ -251,8 +250,9 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 
     pagination.querySelectorAll('[data-page]').forEach((btn) => {
       btn.addEventListener('click', async (e) => {
-        const page = parseInt((e.currentTarget as HTMLElement).dataset.page || '1');
+        const page = parseInt((e.currentTarget as HTMLElement).dataset.page ?? '1');
         if (page !== currentPage && page >= 1 && page <= totalPages) {
+          currentPage = page;
           await loadDraws();
         }
       });
@@ -261,22 +261,19 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 
   // Modal handling
   let currentDrawId: string | null = null;
-  let isEditing = false;
 
   const createModal = document.getElementById('create-modal');
   const editModal = document.getElementById('edit-modal');
 
   function openCreateModal() {
-    isEditing = false;
     currentDrawId = null;
     if (createModal) {
-      (createModal as any).showModal?.();
+      (createModal as HTMLDialogElement).showModal?.();
       createModal.classList.remove('hidden');
     }
   }
 
   async function openEditModal(id: string) {
-    isEditing = true;
     currentDrawId = id;
     const editModalContent = document.getElementById('edit-modal-content');
     if (editModalContent) {
@@ -284,7 +281,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
         '<div class="flex justify-center py-8"><span class="animate-spin size-8 border-4 border-primary-500 border-t-transparent rounded-full"></span></div>';
     }
     if (editModal) {
-      (editModal as any).showModal?.();
+      (editModal as HTMLDialogElement).showModal?.();
       editModal.classList.remove('hidden');
       editModal.dataset.drawId = id;
     }
@@ -292,7 +289,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     try {
       const response = await fetch(`/api/admin/draws/${id}`, { credentials: 'include' });
       if (!response.ok) throw new Error('Error al cargar sorteo');
-      const draw = await response.json();
+      const draw = (await response.json()) as unknown;
       // The DrawFormWizard in edit modal will be initialized with draw data
       if (editModalContent) {
         // Re-render with data - the React component will handle this
@@ -309,21 +306,49 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
 
   function closeModals() {
     if (createModal) {
-      (createModal as any).close?.();
+      (createModal as HTMLDialogElement).close?.();
       createModal.classList.add('hidden');
     }
     if (editModal) {
-      (editModal as any).close?.();
+      (editModal as HTMLDialogElement).close?.();
       editModal.classList.add('hidden');
     }
     currentDrawId = null;
-    isEditing = false;
   }
 
   // Make closeModals available globally for React island onCancel handlers
   window.closeModals = closeModals;
+  window.openCreateModal = openCreateModal;
 
-  async function handleCreateSubmit(data: any) {
+  // Handle filter changes
+  window.addEventListener(
+    'filters-changed',
+    async (e: CustomEvent<{ startDate: string; endDate: string; modality: string }>) => {
+      currentFilters = e.detail;
+      currentPage = 1;
+      await loadDraws();
+    }
+  );
+
+  // Handle form submissions from DrawFormWizard
+  window.addEventListener(
+    'draw-form-submit',
+    async (e: CustomEvent<{ data: unknown; isEditing: boolean }>) => {
+      const { data, isEditing } = e.detail;
+      if (isEditing && currentDrawId) {
+        await handleEditSubmit(data, currentDrawId);
+      } else {
+        await handleCreateSubmit(data);
+      }
+    }
+  );
+
+  // Handle cross-tab refresh from import wizard
+  window.addEventListener('draws:refresh', async () => {
+    await loadDraws();
+  });
+
+  async function handleCreateSubmit(data: unknown) {
     try {
       const response = await fetch('/api/admin/draws', {
         method: 'POST',
@@ -363,109 +388,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
     }
   }
 
-  async function handleEditSubmit(data: any) {
-    if (!currentDrawId) return;
-    try {
-      const response = await fetch(`/api/admin/draws/${currentDrawId}`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': getCsrfToken() || '',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        let message = 'Error al actualizar sorteo';
-        try {
-          const errorData: unknown = await response.json();
-          // Manual type check instead of type guard
-          const isValidError =
-            errorData !== null &&
-            typeof errorData === 'object' &&
-            'message' in errorData &&
-            typeof (errorData as Record<string, unknown>).message === 'string';
-          if (isValidError) {
-            message = String((errorData as Record<string, unknown>).message);
-          }
-        } catch {
-          // ignore parse error
-        }
-        throw new Error(message);
-      }
-
-      showToast('Sorteo actualizado correctamente', 'success');
-      closeModals();
-      await loadDraws();
-    } catch (error) {
-      showToast(error instanceof Error ? error.message : 'Error al guardar', 'error');
-      throw error;
-    }
-  }
-
-  function handleCancel() {
-    closeModals();
-  }
-
-  // Handle filter changes
-  window.addEventListener('filters-changed', async (e: CustomEvent) => {
-    currentFilters = e.detail;
-    currentPage = 1;
-    await loadDraws();
-  });
-
-  // Handle form submissions from DrawFormWizard
-  window.addEventListener('draw-form-submit', async (e: CustomEvent) => {
-    const { data, isEditing } = e.detail;
-    if (isEditing && currentDrawId) {
-      await handleEditSubmit(data, currentDrawId);
-    } else {
-      await handleCreateSubmit(data);
-    }
-  });
-
-  // Handle cross-tab refresh from import wizard
-  window.addEventListener('draws:refresh', async () => {
-    await loadDraws();
-  });
-
-  async function handleCreateSubmit(data: any) {
-    try {
-      const response = await fetch('/api/admin/draws', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': getCsrfToken() || '',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData: unknown = await response.json();
-        // Manual type check instead of assuming error.message exists
-        const isValidError =
-          errorData !== null &&
-          typeof errorData === 'object' &&
-          'message' in errorData &&
-          typeof (errorData as Record<string, unknown>).message === 'string';
-        const message = isValidError
-          ? String((errorData as Record<string, unknown>).message)
-          : 'Error al guardar sorteo';
-        throw new Error(message);
-      }
-
-      showToast('Sorteo creado correctamente', 'success');
-      closeModals();
-      await loadDraws();
-    } catch (error) {
-      showToast(error instanceof Error ? error.message : 'Error al guardar', 'error');
-      throw error;
-    }
-  }
-
-  async function handleEditSubmit(data: any, drawId: string) {
+  async function handleEditSubmit(data: unknown, drawId: string) {
     try {
       const response = await fetch(`/api/admin/draws/${drawId}`, {
         method: 'PATCH',
@@ -558,8 +481,21 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
           loadingText="Cargando sorteos..."
           aria-label="Tabla de sorteos"
         >
-          <tbody id="draws-table-body" slot="tbody" class="divide-y divide-border"></tbody>
+          <tbody id="draws-table-body" slot="tbody" class="divide-y divide-border">
+            <tr>
+              <td colspan="5" class="py-8 text-center">
+                <span
+                  class="inline-block size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"
+                >
+                </span>
+                <span class="sr-only">Cargando sorteos...</span>
+              </td>
+            </tr>
+          </tbody>
         </Table>
+        <div id="empty-state" class="hidden py-12 text-center text-text-secondary">
+          No hay sorteos registrados
+        </div>
       </div>
 
       <div id="pagination" class="border-t border-border px-4 py-3"></div>
