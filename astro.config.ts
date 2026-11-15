@@ -27,6 +27,15 @@ if (fs.existsSync(drawDatesPath)) {
   }
 }
 
+// Dev API proxy target: /api is forwarded to the production backend by default
+// (mirrors the vercel.json rewrite). Test runs override it with
+// VITE_API_PROXY_TARGET=http://localhost:3001 to hit the mock API instead.
+const envProxyTarget = process.env.VITE_API_PROXY_TARGET ?? '';
+const apiProxyTarget =
+  envProxyTarget ||
+  (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/api\/?$/, '') ||
+  'https://quini6-backend.vercel.app';
+
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
@@ -153,7 +162,7 @@ export default defineConfig({
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:3001',
+          target: apiProxyTarget,
           changeOrigin: true,
           cookieDomainRewrite: { localhost: '' },
           configure: (proxy, _options) => {

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { HealthDashboard } from '../../components/admin/HealthDashboard.tsx';
+import { HealthCheckSchema, HealthDbSchema } from '../../lib/schemas';
 import type { HealthCheck, HealthDb } from '../../lib/schemas';
 
 /**
@@ -38,10 +39,12 @@ if (apiBaseUrl) {
     ]);
 
     if (apiRes.status === 'fulfilled' && apiRes.value.ok) {
-      initialApiHealth = (await apiRes.value.json()) as HealthCheck;
+      const parsed = HealthCheckSchema.safeParse(await apiRes.value.json());
+      if (parsed.success) initialApiHealth = parsed.data;
     }
     if (dbRes.status === 'fulfilled' && dbRes.value.ok) {
-      initialDbHealth = (await dbRes.value.json()) as HealthDb;
+      const parsed = HealthDbSchema.safeParse(await dbRes.value.json());
+      if (parsed.success) initialDbHealth = parsed.data;
     }
   } catch {
     // Ignore errors, client will retry

@@ -85,6 +85,7 @@ export default defineConfig({
       env: {
         VITE_SITE_URL: 'http://localhost:4321',
         VITE_API_BASE_URL: '/api',
+        VITE_API_PROXY_TARGET: 'http://localhost:3001',
         VITE_PLAUSIBLE_DOMAIN: 'quini6.example.com',
       },
     },
