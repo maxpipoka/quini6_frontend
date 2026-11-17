@@ -129,7 +129,7 @@ import { DrawFormWizard } from '@components/admin/DrawFormWizard.tsx';
         return `
         <tr class="dark:hover:bg-neutral-800/50 transition-colors hover:bg-neutral-50">
           <td class="text-text-primary px-4 py-3 text-sm font-mono">${formatDrawNumber(draw.officialNumber)}</td>
-          <td class="text-text-primary px-4 py-3 text-sm">${new Date(draw.drawDate).toLocaleDateString('es-AR')}</td>
+          <td class="text-text-primary px-4 py-3 text-sm">${new Date(draw.drawDate).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}</td>
           <td class="text-text-primary px-4 py-3 text-sm flex flex-wrap gap-1">${resultsHtml}</td>
           <td class="text-text-primary px-4 py-3 text-sm">
             <div class="flex items-center gap-2">

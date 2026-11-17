@@ -47,6 +47,7 @@ function formatDateForDisplay(isoString: string): string {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
+      timeZone: 'America/Argentina/Buenos_Aires',
     });
   } catch {
     return isoString;
