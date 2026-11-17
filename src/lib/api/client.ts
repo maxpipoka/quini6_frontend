@@ -485,9 +485,120 @@ export class ApiClient {
 // ============================================================================
 
 let apiClientInstance: ApiClient | null = null;
+let apiClientInstanceDevFallback: ApiClient | null = null;
 
 export function createApiClient(config: ApiClientConfig): ApiClient {
   return new ApiClient(config);
+}
+
+function isNetworkOrServerError(error: unknown): boolean {
+  if (error instanceof TypeError && error.message.includes('fetch')) {
+    return true;
+  }
+  if (error && typeof error === 'object' && 'statusCode' in error) {
+    const statusCode = (error as { statusCode: number }).statusCode;
+    // In dev, also fallback on 404 since mock API has different data
+    if (import.meta.env.DEV && statusCode === 404) {
+      return true;
+    }
+    return statusCode >= 500 && statusCode < 600;
+  }
+  return false;
+}
+
+class ApiClientWithFallback {
+  private primary: ApiClient;
+  private fallback: ApiClient;
+
+  constructor(primary: ApiClient, fallback: ApiClient) {
+    this.primary = primary;
+    this.fallback = fallback;
+  }
+
+  private async requestWithFallback<T>(method: string, url: string, options: RequestOptions = {}): Promise<T> {
+    try {
+      return await this.primary.request<T>(method, url, options);
+    } catch (error) {
+      if (import.meta.env.DEV && isNetworkOrServerError(error)) {
+        console.warn(`[API Fallback] Primary failed, trying mock API: ${url}`, error);
+        return this.fallback.request<T>(method, url, options);
+      }
+      throw error;
+    }
+  }
+
+  async request<T>(method: string, url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback<T>(method, url, options);
+  }
+
+  async get<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback('get', url, options);
+  }
+
+  async post<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback('post', url, options);
+  }
+
+  async put<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback('put', url, options);
+  }
+
+  async patch<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback('patch', url, options);
+  }
+
+  async delete<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.requestWithFallback('delete', url, options);
+  }
+
+  // Expose primary client properties
+  get client() {
+    return this.primary.client;
+  }
+
+  get config() {
+    return this.primary.config;
+  }
+}
+
+// Create a Proxy that delegates unknown methods to primary with fallback
+function createApiClientWithFallbackProxy(primary: ApiClient, fallback: ApiClient): ApiClient {
+  const wrapper = new ApiClientWithFallback(primary, fallback);
+  
+  return new Proxy(wrapper, {
+    get(target, prop, receiver) {
+      // First check if it's on the wrapper
+      const wrapperValue = Reflect.get(target, prop, receiver);
+      if (wrapperValue !== undefined) {
+        if (typeof wrapperValue === 'function') {
+          return wrapperValue.bind(target);
+        }
+        return wrapperValue;
+      }
+      
+      // Then check primary client
+      const primaryValue = Reflect.get(primary, prop);
+      if (typeof primaryValue === 'function') {
+        // Wrap method calls with fallback
+        return async (...args: unknown[]) => {
+          try {
+            return await primaryValue.apply(primary, args);
+          } catch (error) {
+            if (import.meta.env.DEV && isNetworkOrServerError(error)) {
+              console.warn(`[API Fallback] Primary failed, trying mock API: ${prop}`, error);
+              const fallbackMethod = Reflect.get(fallback, prop);
+              if (typeof fallbackMethod === 'function') {
+                return fallbackMethod.apply(fallback, args);
+              }
+            }
+            throw error;
+          }
+        };
+      }
+      
+      return primaryValue;
+    },
+  }) as unknown as ApiClient;
 }
 
 export function getApiClient(): ApiClient {
@@ -499,6 +610,23 @@ export function getApiClient(): ApiClient {
     apiClientInstance = createApiClient({ baseUrl });
   }
   return apiClientInstance;
+}
+
+export function getApiClientWithFallback(): ApiClient {
+  const primary = getApiClient();
+  
+  if (!import.meta.env.DEV) {
+    return primary;
+  }
+
+  if (!apiClientInstanceDevFallback) {
+    const fallbackUrl = import.meta.env.VITE_API_PROXY_TARGET 
+      ? `${import.meta.env.VITE_API_PROXY_TARGET}/api`
+      : 'http://localhost:3001/api';
+    apiClientInstanceDevFallback = createApiClient({ baseUrl: fallbackUrl });
+  }
+
+  return createApiClientWithFallbackProxy(primary, apiClientInstanceDevFallback);
 }
 
 export function setApiClient(client: ApiClient): void {

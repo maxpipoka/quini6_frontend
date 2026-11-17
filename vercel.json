@@ -1,5 +1,15 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output",
+  "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://quini6-backend.vercel.app/api/$1" }
-  ]
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs22.x",
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"]
 }

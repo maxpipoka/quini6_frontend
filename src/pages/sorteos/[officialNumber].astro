@@ -8,7 +8,7 @@
 
 import Layout from '../../layouts/Layout.astro';
 import { Header, Footer, Container } from '../../components/layout';
-import { getApiClient } from '../../lib/api/client';
+import { getApiClientWithFallback } from '../../lib/api/client';
 import type { Modality, SixUniqueNumbers } from '../../lib/schemas';
 import NumberBall from '../../components/draws/NumberBall.tsx';
 
@@ -124,7 +124,7 @@ let nextDraw = nextDrawProp;
 
 if (!draw) {
   try {
-    const apiClient = getApiClient();
+    const apiClient = getApiClientWithFallback();
     const drawData = await apiClient.getDrawByNumber(officialNumber);
     draw = drawData;
 
