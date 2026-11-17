@@ -64,33 +64,30 @@ export async function getStaticPaths() {
   // Check if we're in a build environment with API access
   const hasApiAccess = !!import.meta.env.VITE_API_BASE_URL;
 
-  let allDraws: DrawLike[] = MOCK_DRAWS;
+  let allDraws: DrawLike[] = [];
 
   if (hasApiAccess) {
-    try {
-      const apiClient = getApiClient();
-      // Fetch first batch to get total count
-      const firstBatch = await apiClient.getDrawHistory({ page: 1, limit: 1 });
-      const totalDraws = firstBatch.total;
-      const BATCH_SIZE = 100;
-      const totalPages = Math.ceil(totalDraws / BATCH_SIZE);
+    const apiClient = getApiClient();
+    // Fetch first batch to get total count
+    const firstBatch = await apiClient.getDrawHistory({ page: 1, limit: 1 });
+    const totalDraws = firstBatch.total;
+    const BATCH_SIZE = 100;
+    const totalPages = Math.ceil(totalDraws / BATCH_SIZE);
 
-      // Fetch all pages in batches to control memory
-      for (let page = 1; page <= totalPages; page++) {
-        const response = await apiClient.getDrawHistory({ page, limit: BATCH_SIZE });
-        allDraws = [...allDraws, ...response.data];
+    // Fetch all pages in batches to control memory
+    for (let page = 1; page <= totalPages; page++) {
+      const response = await apiClient.getDrawHistory({ page, limit: BATCH_SIZE });
+      allDraws = [...allDraws, ...response.data];
 
-        // Optional: yield control to prevent blocking
-        if (page % 5 === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 0));
-        }
+      // Optional: yield control to prevent blocking
+      if (page % 5 === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
-    } catch (error) {
-      console.warn('Could not fetch draws from API, using mock data:', error);
-      allDraws = MOCK_DRAWS;
     }
   } else {
+    // Only use mock data if NO API is configured
     console.info('VITE_API_BASE_URL not set, using mock data for static generation');
+    allDraws = MOCK_DRAWS;
   }
 
   // Sort by officialNumber ascending
