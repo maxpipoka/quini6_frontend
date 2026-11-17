@@ -79,7 +79,7 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
       </nav>
 
       <div className="border-t border-border p-4">
-        {!collapsed && (
+        {!collapsed && isAuthenticated && (
           <button
             onClick={handleLogout}
             className="bg-error-500/10 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-text-secondary transition-colors hover:text-error-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-error-500 focus-visible:ring-offset-2"
