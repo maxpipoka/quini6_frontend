@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../lib/auth/AuthProvider';
 import {
   LayoutDashboard,
   Settings,
@@ -21,9 +22,9 @@ const NAV_ITEMS = [
 const AUTH_NAV_ITEMS = [{ href: '/admin/health', label: 'Salud del sistema', icon: Activity }];
 
 export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
+  const { user, isLoading, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(isCollapsed);
   const [currentPath, setCurrentPath] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const STORAGE_KEY = 'sidebar-collapsed';
 
   useEffect(() => {
@@ -32,25 +33,6 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
       setCollapsed(saved === 'true');
     }
     setCurrentPath(window.location.pathname);
-    // Check auth state from window
-    setIsAuthenticated(!!(window as unknown as { __AUTH_USER__?: unknown }).__AUTH_USER__);
-  }, []);
-
-  // Listen for auth changes
-  useEffect(() => {
-    const checkAuth = () => {
-      setIsAuthenticated(!!(window as unknown as { __AUTH_USER__?: unknown }).__AUTH_USER__);
-    };
-
-    // Check on mount and when window events fire
-    checkAuth();
-    window.addEventListener('storage', checkAuth);
-    window.addEventListener('focus', checkAuth);
-
-    return () => {
-      window.removeEventListener('storage', checkAuth);
-      window.removeEventListener('focus', checkAuth);
-    };
   }, []);
 
   const toggle = () => {
@@ -60,32 +42,12 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
     onToggle?.();
   };
 
-  const handleLogout = () => {
-    fetch('/api/admin/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'X-CSRF-Token': getCsrfToken() ?? '',
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          window.location.href = '/admin/login';
-        } else {
-          window.location.href = '/admin/login';
-        }
-      })
-      .catch(() => {
-        window.location.href = '/admin/login';
-      });
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/admin/login';
   };
 
-  function getCsrfToken(): string | null {
-    const match = document.cookie.match(/(?:^|; )csrf_token=([^;]*)/);
-    return match?.[1] ? decodeURIComponent(match[1]) : null;
-  }
-
-  // Combine nav items based on auth state
+  const isAuthenticated = !!user;
   const navItems = [...NAV_ITEMS, ...(isAuthenticated ? AUTH_NAV_ITEMS : [])];
 
   return (

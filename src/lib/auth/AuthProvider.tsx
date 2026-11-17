@@ -27,11 +27,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.ok) {
           const data = (await response.json()) as { user: User };
           setUser(data.user);
+          if (typeof window !== 'undefined') {
+            window.__AUTH_USER__ = data.user;
+          }
         } else {
           setUser(null);
+          if (typeof window !== 'undefined') {
+            window.__AUTH_USER__ = undefined;
+          }
         }
       } catch {
         setUser(null);
+        if (typeof window !== 'undefined') {
+          window.__AUTH_USER__ = undefined;
+        }
       } finally {
         setIsLoading(false);
         refreshPromise = null;
@@ -63,6 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const data = (await response.json()) as { user: User };
     setUser(data.user);
+    if (typeof window !== 'undefined') {
+      window.__AUTH_USER__ = data.user;
+    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -74,6 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     setUser(null);
+    if (typeof window !== 'undefined') {
+      window.__AUTH_USER__ = undefined;
+    }
   }, []);
 
   const changePassword = useCallback(async (data: ChangePasswordInput) => {
